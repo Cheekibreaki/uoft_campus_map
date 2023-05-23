@@ -7,6 +7,7 @@
  */
 import Main from './src/container/Main'
 import React from 'react';
+import IndoorBuilding from './src/indoorBuilding/IndoorBuilding'
 import type {Node} from 'react';
 import {
   SafeAreaView,
@@ -29,6 +30,7 @@ import {
 const Section = ({children, title}): Node => {
   const isDarkMode = useColorScheme() === 'dark';
   return (
+    
     <View style={styles.sectionContainer}>
       <Text
         style={[
@@ -88,8 +90,10 @@ const App: () => Node = () => {
     //   </ScrollView>
     // </SafeAreaView>
     <>
-      <Main/>
+      <IndoorBuilding/>
     </>
+   
+      
   );
 };
 
