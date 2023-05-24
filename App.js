@@ -6,6 +6,7 @@
  * @flow strict-local
  */
 import Main from './src/container/Main'
+import IndoorMap from './src/component/IndoorBuilding'
 import React from 'react';
 import type {Node} from 'react';
 import {
@@ -88,7 +89,7 @@ const App: () => Node = () => {
     //   </ScrollView>
     // </SafeAreaView>
     <>
-      <Main/>
+      <IndoorMap/>
     </>
   );
 };
