@@ -4,6 +4,21 @@ import org.apache.tools.ant.taskdefs.condition.Os
 
 buildscript {
     ext {
+
+        RNMapboxMapsImpl = "mapbox" // required for v10
+    
+        useCustomMapbox = false
+
+        if (System.getenv('CI_MAP_IMPL').equals('maplibre')) {
+            RNMapboxMapsImpl = "maplibre"
+        } else if (System.getenv('CI_MAP_IMPL').equals('mapbox')) {
+            RNMapboxMapsImpl = "mapbox"
+            kotlinVersion = '1.6.21'
+        } else if (System.getenv('CI_MAP_IMPL').equals('mapbox-gl')) {
+            RNMapboxMapsImpl = "mapbox-gl"
+        }
+
+
         buildToolsVersion = "31.0.0"
         minSdkVersion = 21
         compileSdkVersion = 31
@@ -22,7 +37,8 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath("com.android.tools.build:gradle:7.1.1")
+        // classpath("com.android.tools.build:gradle:7.1.1")
+        classpath("com.android.tools.build:gradle:7.3.1")
         classpath("com.facebook.react:react-native-gradle-plugin")
         classpath("de.undercouch:gradle-download-task:5.0.1")
         // NOTE: Do not place your application dependencies here; they belong
@@ -40,6 +56,20 @@ allprojects {
             // Android JSC is installed from npm
             url("$rootDir/../node_modules/jsc-android/dist")
         }
+
+        maven {
+            url 'https://api.mapbox.com/downloads/v2/releases/maven'
+            authentication {
+                basic(BasicAuthentication)
+            }
+            credentials {
+                // Do not change the username below.
+                // This should always be `mapbox` (not your username).
+                username = "mapbox"
+                // Use the secret token you stored in gradle.properties as the password
+                password = MAPBOX_DOWNLOADS_TOKEN
+            }
+        }
         mavenCentral {
             // We don't want to fetch react-native from Maven Central as there are
             // older versions over there.
@@ -51,3 +81,6 @@ allprojects {
         maven { url 'https://www.jitpack.io' }
     }
 }
+
+
+
