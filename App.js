@@ -6,9 +6,9 @@
  * @flow strict-local
  */
 import Main from './src/container/Main'
-import IndoorMap from './src/component/IndoorBuilding'
-import React from 'react';
-import IndoorBuilding from './src/indoorBuilding/IndoorBuilding'
+// import IndoorMap from './src/component/IndoorBuilding'
+import React, { useState } from 'react';
+import IndoorBuilding from './src/component/IndoorBuilding'
 import type {Node} from 'react';
 import {
   SafeAreaView,
@@ -56,12 +56,22 @@ const Section = ({children, title}): Node => {
 };
 
 const App: () => Node = () => {
+
+  // constructor() {
+  //   this.state = {
+  //     label: "test",
+  //   };
+    
+  // };
+  const [label, setLabel] = useState('test');
+
   const isDarkMode = useColorScheme() === 'dark';
 
   const backgroundStyle = {
     backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
   };
 
+  console.log("test")
   return (
     // <SafeAreaView style={backgroundStyle}>
     //   <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
@@ -91,7 +101,7 @@ const App: () => Node = () => {
     //   </ScrollView>
     // </SafeAreaView>
     <>
-      <IndoorMap/>
+      <IndoorBuilding label={label}/>
     </>
    
       

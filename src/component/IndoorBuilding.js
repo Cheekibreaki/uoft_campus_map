@@ -7,7 +7,8 @@ import sheet from '../styles/sheet';
 import colors from '../styles/colors';
 import indoorMapGeoJSON from '../assets/indoor_3d_map.json';
 import Page from '../common/Page';
-// import BaseExamplePropTypes from '../common/BaseExamplePropTypes';
+import BaseExamplePropTypes from '../common/BaseExamplePropTypes';
+
 
 const styles = StyleSheet.create({
   slider: {
@@ -30,29 +31,66 @@ const layerStyles = {
 };
 
 class IndoorBuilding extends React.Component {
-  // static propTypes = {
-  //   ...BaseExamplePropTypes,
-  // };
-
+  static propTypes = {
+    ...BaseExamplePropTypes,
+  };
+  
   constructor(props) {
     super(props);
-
+    console.log(props); 
     this.state = {
       sliderValue: -80,
+      ...this.emptyState,
+      
     };
-
+    
+    this.onPress = this.onPress.bind(this);
     this.onSliderChange = this.onSliderChange.bind(this);
+    console.log("abc");
+    console.log(this.state.label);
+  }
+
+  componentDidMount() {
+    console.log('Component mounted');
+  }
+
+  get emptyState() {
+    return { selectedGeoJSON: null, selectedCommunityDistrict: -1 };
+  }
+
+
+  async onPress(e) {
+    console.log("test2")
+    const { screenPointX, screenPointY } = e.properties;
+
+    const featureCollection = await this.map.queryRenderedFeaturesAtPoint(
+      [screenPointX, screenPointY],
+      null,
+      ['building3d'],
+    );
+
+    if (featureCollection.features.length) {
+      this.setState({
+        selectedGeoJSON: featureCollection,
+      });
+      // console.log( JSON.stringify(this.state.selectedGeoJSON, null, 2) );
+      console.log(this.state.selectedGeoJSON);
+    } else {
+      this.setState(this.emptyState);
+    }
   }
 
   onSliderChange(value) {
     this.setState({ sliderValue: value });
+    console.log("yes");
   }
 
   render() {
     return (
-      <Page {...this.props}>
+      <Page {...this.props} >
         <MapboxGL.MapView
           ref={(ref) => (this.map = ref)}
+          onPress={this.onPress}
           style={sheet.matchParent}
         >
           <MapboxGL.Camera
