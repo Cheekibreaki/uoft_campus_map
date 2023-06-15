@@ -9,6 +9,7 @@ import Main from './src/container/Main'
 // import IndoorMap from './src/component/IndoorBuilding'
 import React, { useState } from 'react';
 import IndoorBuilding from './src/component/IndoorBuilding'
+import IndoorLabel from './src/component/IndoorLabel'
 import type {Node} from 'react';
 import {
   SafeAreaView,
@@ -71,7 +72,6 @@ const App: () => Node = () => {
     backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
   };
 
-  console.log("test")
   return (
     // <SafeAreaView style={backgroundStyle}>
     //   <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
@@ -101,7 +101,7 @@ const App: () => Node = () => {
     //   </ScrollView>
     // </SafeAreaView>
     <>
-      <IndoorBuilding label={label}/>
+      <IndoorLabel label={label}/>
     </>
    
       
