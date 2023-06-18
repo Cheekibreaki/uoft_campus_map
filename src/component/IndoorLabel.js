@@ -73,6 +73,8 @@ const [sliderValue, setSliderValue] = useState(-80);
 const [selectedGeoJSON, setSelectedGeoJSON] = useState(null);
 const [allowOverlap, setAllowOverlap] = useState(false);
 const [show, setShow] = useState(true);
+const [anchor, setAnchor] = useState({ x: 0.5, y: 0.5 });
+
 // const [selectedIndex, setSelectedIndex] = useState<number | undefined>();
 
   const onPress = async (e) => {
@@ -167,7 +169,7 @@ const handleRegionDidChange = async () => {
           return updatedCoordinates; // Return the updated state
         });
 
-        if(markerCoordinates !== null && markerCoordinates[0].latlons!==null){
+        if(markerCoordinates && markerCoordinates[0].latlons!==null){
                 // console.log(markerCoordinates[0].latlons);     
                 const newMarkers = markerCoordinates[0].latlons.map((latlons)=>{
                     return {
@@ -179,6 +181,19 @@ const handleRegionDidChange = async () => {
                 setMarkers(newMarkers);
                 console.log('this is the markers:');  
                 console.log(markers);
+                {markers.map((marker, i) => {
+                  return (
+                    <MapboxGL.MarkerView
+                      key={`MarkerView-${i}-${marker.coords.join('-')}`}
+                      coordinate={marker.coords}
+                      
+                      allowOverlap={allowOverlap}
+                      
+                      style={{ display: show ? 'flex' : 'none' }}
+                    >  
+                    </MapboxGL.MarkerView>
+                  );
+                })}
               }
 
       }
