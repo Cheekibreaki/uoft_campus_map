@@ -72,6 +72,7 @@ const [markerCoordinates, setMarkerCoordinates] = useState([]);
 const [sliderValue, setSliderValue] = useState(-80);
 const [selectedGeoJSON, setSelectedGeoJSON] = useState(null);
 const [allowOverlap, setAllowOverlap] = useState(false);
+const [show, setShow] = useState(true);
 // const [selectedIndex, setSelectedIndex] = useState<number | undefined>();
 
   const onPress = async (e) => {
@@ -83,13 +84,15 @@ const [allowOverlap, setAllowOverlap] = useState(false);
       null,
       ['building3d']
     );
-
-    if (featureCollection.features.length) {
-      setSelectedGeoJSON(featureCollection);
-      console.log(selectedGeoJSON);
-    } else {
-      setSelectedGeoJSON(null);
+    if(featureCollection!== null && featureCollection.features!==null){
+        if (featureCollection.features.length) {
+        setSelectedGeoJSON(featureCollection);
+        // console.log(selectedGeoJSON);
+      } else {
+        setSelectedGeoJSON(null);
     }
+    }  
+    
   };
 
 // const SetMarkerCoordinates = useCallback(() => {
@@ -139,75 +142,103 @@ const handleRegionDidChange = async () => {
         ['building3d']
     );
       
-      
-      if (featureCollection.features.length) {
+      if(featureCollection!== null && featureCollection.features !== null){
+        if (featureCollection.features.length) {
         setSelectedGeoJSON(featureCollection);
-        console.log(selectedGeoJSON);
+        // console.log(selectedGeoJSON);
       } else {
         console.log("no JSON found")
         setSelectedGeoJSON(null);
       }
+
+      if(selectedGeoJSON!==null && selectedGeoJSON.features!==null){
+        const features = selectedGeoJSON.features;
+        // console.log(features.length)
+        setMarkerCoordinates([])
+    
+        setMarkerCoordinates((prevCoordinates) => {
+          let updatedCoordinates = prevCoordinates.slice(); // Create a copy of the previous state
+        
+          for (const feature of features) {
+            const geometry = {"latlons": feature.geometry.coordinates.flat(),"base_height": feature.properties.base_height, "height": feature.properties.height };
+            updatedCoordinates = updatedCoordinates.concat(geometry);
+          }
+        
+          return updatedCoordinates; // Return the updated state
+        });
+
+        if(markerCoordinates !== null && markerCoordinates[0].latlons!==null){
+                // console.log(markerCoordinates[0].latlons);     
+                const newMarkers = markerCoordinates[0].latlons.map((latlons)=>{
+                    return {
+                      coords: latlons,
+                      color: 'purple',
+                    };
+                });
+                
+                setMarkers(newMarkers);
+                console.log('this is the markers:');  
+                console.log(markers);
+              }
+
+      }
+
+      }
+      
+      
+
   };
 
   const handleRegionChanging = async () => {
     setIsCameraMoving(true);
-    console.log("moving")
+    console.log("moving");
     
     const featureCollection = await map.queryRenderedFeaturesInRect(
       [],
       null,
       ['building3d']
     );
-    if (featureCollection.features.length) {
-      setSelectedGeoJSON(featureCollection);
-    }
-    const features = selectedGeoJSON.features;
-    console.log(features.length)
-    setMarkerCoordinates([])
-
-    setMarkerCoordinates((prevCoordinates) => {
-      let updatedCoordinates = prevCoordinates.slice(); // Create a copy of the previous state
+    // if(featureCollection!==null && featureCollection.features !== null){
+    //   if (featureCollection.features.length) {
+    //     setSelectedGeoJSON(featureCollection);
+    //   }
+    // }
     
-      for (const feature of features) {
-        const geometry = {"latlons": feature.geometry.coordinates.flat(),"base_height": feature.properties.base_height, "height": feature.properties.height };
-        updatedCoordinates = updatedCoordinates.concat(geometry);
-      }
-    
-      return updatedCoordinates; // Return the updated state
-    });
+    // if(selectedGeoJSON.features!==null){
+    //   const features = selectedGeoJSON.features;
+    // // console.log(features.length)
+    // setMarkerCoordinates([])
 
-
-    // console.log(markerCoordinates);
+    // setMarkerCoordinates((prevCoordinates) => {
+    //   let updatedCoordinates = prevCoordinates.slice(); // Create a copy of the previous state
     
-    // setMarkers(markerCoordinates[0].latlons)
-    // console.log(markerCoordinates[0].latlons) 
+    //   for (const feature of features) {
+    //     const geometry = {"latlons": feature.geometry.coordinates.flat(),"base_height": feature.properties.base_height, "height": feature.properties.height };
+    //     updatedCoordinates = updatedCoordinates.concat(geometry);
+    //   }
     
-    // const newMarkers = new Array(markers.length).fill(0).map((o, i) => {
-
-    //         const position = computeLabelPosition(markerCoordinates[0].latlons);
+    //   return updatedCoordinates; // Return the updated state
+    // });
+    // }
+    
+    // // console.log(markerCoordinates);
+    // if(markerCoordinates !== null && markerCoordinates[0].latlons!==null){
+    //   // console.log(markerCoordinates[0].latlons);     
+    //   const newMarkers = markerCoordinates[0].latlons.map((latlons)=>{
+    //       return {
+    //         coords: latlons,
+    //         color: 'purple',
+    //       };
+    //   });
       
-    //         return {
-    //           coords: position,
-    //           color: allColors[255],
-    //         };
-    //     });
-      
-      
-    // setMarkers(newMarkers)
-    // console.log(markers)
-
-    
-
-    // useEffect(() => {
-    //   
-    //   // eslint-disable-next-line react-hooks/exhaustive-deps
-    // }, []);
-    
-
-
+    //   setMarkers(newMarkers);
+    //   console.log(markers);  
+    // }
 
     // Perform actions before camera movement starts
   };
+
+
 
 useEffect(() => {
 if (isMapRendered) {
@@ -221,9 +252,17 @@ if (isMapRendered) {
 }
 }, [isMapRendered]);
 
+// const Markers = memo((props: BaseExampleProps) => {
+
+
+// });
+
 const onSliderChange = (value) => {
     setSliderValue(value);
 };
+
+
+
 
 return (
     <Page {...props}>
@@ -235,7 +274,6 @@ return (
         
         onCameraChanged={handleRegionChanging}
         onMapIdle={handleRegionDidChange}
-
     >
         <MapboxGL.Camera
         zoomLevel={16}
@@ -243,34 +281,19 @@ return (
         heading={30}
         centerCoordinate={[-87.61694, 41.86625]}
         />
-
         {markers.map((marker, i) => {
           return (
             <MapboxGL.MarkerView
-              key={`MarkerView-${marker.coords.join('-')}`}
+              key={`MarkerView-${i}-${marker.coords.join('-')}`}
               coordinate={marker.coords}
               
               allowOverlap={allowOverlap}
-              isSelected={i === selectedIndex}
+              
               style={{ display: show ? 'flex' : 'none' }}
-            >
-              {/* <Pressable
-                style={[
-                  styles.markerBox,
-                  { backgroundColor: marker.color, padding: 4 * size },
-                ]}
-                onPress={() =>
-                  setSelectedIndex((index) => (index === i ? -1 : i))
-                }
-              >
-                <Text style={styles.markerText}>Marker {i + 1}</Text>
-              </Pressable> */}
+            >  
             </MapboxGL.MarkerView>
           );
         })}
-
-
-
         <MapboxGL.Light style={{ position: [5, 90, sliderValue] }} />
 
         <MapboxGL.ShapeSource id="indoorBuildingSource" shape={indoorMapGeoJSON}>
