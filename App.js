@@ -9,7 +9,7 @@ import Main from './src/container/Main'
 // import IndoorMap from './src/component/IndoorBuilding'
 import React, { useState } from 'react';
 import IndoorBuilding from './src/component/IndoorBuilding'
-import IndoorLabel from './src/component/IndoorLabel'
+import IndoorLabel from './src/component/IndoorLabel_copy'
 import type {Node} from 'react';
 import {
   SafeAreaView,
