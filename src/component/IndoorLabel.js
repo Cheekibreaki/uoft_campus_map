@@ -21,28 +21,29 @@ const styles = StyleSheet.create({
 });
 
 
-// function computeLabelPosition(array) {
-//   if (array.length === 0) {
-//     return [];
-//   }
-//   let max = array[0].coords;
-//   let min = array[0].coords;
-//   for (let i = 1; i < array.length; i++) {
-//     if (array[i].coords[0] > max[0]) {
-//       max[0] = array[i].coords[0];
-//     }
-//     if (array[i].coords[1] > max[1]) {
-//       max[1] = array[i].coords[1];
-//     }
-//     if (array[i].coords[0] < min[0]) {
-//       min[0] = array[i].coords[0];
-//     }
-//     if (array[i].coords[1] < min[1]) {
-//       min[1] = array[i].coords[1];
-//     }
-//   }
+function computeLabelPosition(givenMarkers){
+  if (givenMarkers.length === 0) {
+    return [];
+  }
 
-  const position = [(max[0] + min[0]) / 2, (max[1] + min[1]) / 2];
+  let max = givenMarkers[0].coords;
+  let min = givenMarkers[0].coords;
+  for (let i = 1; i < givenMarkers.length; i++) {
+    if (givenMarkers[i].coords[0] > max[0]) {
+      max[0] = givenMarkers[i].coords[0];
+    }
+    if (givenMarkers[i].coords[1] > max[1]) {
+      max[1] = givenMarkers[i].coords[1];
+    }
+    if (givenMarkers[i].coords[0] < min[0]) {
+      min[0] = givenMarkers[i].coords[0];
+    }
+    if (givenMarkers[i].coords[1] < min[1]) {
+      min[1] = givenMarkers[i].coords[1];
+    }
+  }
+
+  let position = [(max[0] + min[0]) / 2, (max[1] + min[1]) / 2];
 
   return { position };
 }
@@ -82,14 +83,6 @@ const IndoorBuilding = (props: BaseExampleProps) => {
       ["building3d"]
     );
     console.log(featureCollection)
-    // if (featureCollection !== null && featureCollection.features !== null) {
-    //   if (featureCollection.features.length) {
-    //     setSelectedGeoJSON(featureCollection);
-    //     // console.log(selectedGeoJSON);
-    //   } else {
-    //     setSelectedGeoJSON(null);
-    //   }
-    // }
   };
 
 
@@ -107,8 +100,10 @@ const IndoorBuilding = (props: BaseExampleProps) => {
     const featureCollection = await map.queryRenderedFeaturesInRect([], null, [
       "building3d",
     ]);
-
+    console.log("Feature collection completed");
+    console.log(featureCollection)
     if (featureCollection !== null && featureCollection.features !== null) {
+      console.log("in it")
       if (featureCollection.features.length) {
         setSelectedGeoJSON(featureCollection);
         // console.log(selectedGeoJSON);
@@ -116,15 +111,19 @@ const IndoorBuilding = (props: BaseExampleProps) => {
         console.log("no JSON found");
         setSelectedGeoJSON(null);
       }
-
+      console.log("setSelectedGeoJSON:",SelectedGeoJSON)
       if (selectedGeoJSON !== null && selectedGeoJSON.features !== null) {
         const features = selectedGeoJSON.features;
         // console.log(features.length)
-        setMarkerCoordinates([]);
+        // setMarkerCoordinates([]);
+
+        
+
+
 
         setMarkerCoordinates((prevCoordinates) => {
-          let updatedCoordinates = prevCoordinates.slice(); // Create a copy of the previous state
-
+          let updatedCoordinates = []; // Create a copy of the previous state
+//   let updatedCoordinates = prevCoordinates.slice(); // Create a copy of the previous state
           for (const feature of features) {
             const geometry = {
               latlons: feature.geometry.coordinates.flat(),
@@ -137,24 +136,25 @@ const IndoorBuilding = (props: BaseExampleProps) => {
           return updatedCoordinates; // Return the updated state
         });
 
-        if (markerCoordinates && markerCoordinates[0].latlons !== null) {
-          
-          // console.log(markerCoordinates[0].latlons);
-          const newMarkers = markerCoordinates[0].latlons.map((latlons) => {
-            return {
-              coords: latlons,
-              color: "purple",
-            };
-          });
-          console.log("this is the markers:");
-          // console.log(newMarkers);
-          const resultLabel = computeLabelPosition(newMarkers);
-          setMarkers(resultLabel);
-          console.log(markers);
-          
-        }
       }
+    }else{
+      console.log("not found")
     }
+  };
+
+  const handleMapLoaded = () => {
+    const camera = mapViewRef.current.getCamera();
+    const cameraCoordinates = camera.centerCoordinate;
+    const targetCoordinates = [longitude, latitude]; // Replace with the coordinates of the target point
+
+    const distance = MapboxGL.MetersPerPixelAtLatitude(
+      cameraCoordinates[1],
+    ) * MapboxGL.MetersBetweenCoordinates(
+      cameraCoordinates,
+      targetCoordinates,
+    );
+
+    console.log('Distance:', distance);
   };
 
   const handleRegionChanging = async () => {
@@ -164,44 +164,6 @@ const IndoorBuilding = (props: BaseExampleProps) => {
     const featureCollection = await map.queryRenderedFeaturesInRect([], null, [
       "building3d",
     ]);
-    // if(featureCollection!==null && featureCollection.features !== null){
-    //   if (featureCollection.features.length) {
-    //     setSelectedGeoJSON(featureCollection);
-    //   }
-    // }
-
-    // if(selectedGeoJSON.features!==null){
-    //   const features = selectedGeoJSON.features;
-    // // console.log(features.length)
-    // setMarkerCoordinates([])
-
-    // setMarkerCoordinates((prevCoordinates) => {
-    //   let updatedCoordinates = prevCoordinates.slice(); // Create a copy of the previous state
-
-    //   for (const feature of features) {
-    //     const geometry = {"latlons": feature.geometry.coordinates.flat(),"base_height": feature.properties.base_height, "height": feature.properties.height };
-    //     updatedCoordinates = updatedCoordinates.concat(geometry);
-    //   }
-
-    //   return updatedCoordinates; // Return the updated state
-    // });
-    // }
-
-    // // console.log(markerCoordinates);
-    // if(markerCoordinates !== null && markerCoordinates[0].latlons!==null){
-    //   // console.log(markerCoordinates[0].latlons);
-    //   const newMarkers = markerCoordinates[0].latlons.map((latlons)=>{
-    //       return {
-    //         coords: latlons,
-    //         color: 'purple',
-    //       };
-    //   });
-
-    //   setMarkers(newMarkers);
-    //   console.log(markers);
-    // }
-
-    // Perform actions before camera movement starts
   };
 
   useEffect(() => {
@@ -216,9 +178,37 @@ const IndoorBuilding = (props: BaseExampleProps) => {
     }
   }, [isMapRendered]);
 
-  // const Markers = memo((props: BaseExampleProps) => {
 
-  // });
+  useEffect(() => {
+    
+    if (markerCoordinates.length !== 0 && markerCoordinates[0].latlons !== null) {
+          
+      // console.log(markerCoordinates[0].latlons);
+      const newMarkers = markerCoordinates[0].latlons.map((latlons) => {
+        return {
+          coords: latlons,
+          color: "purple",
+        };
+      });
+      console.log("this is the markers:");
+      // console.log(newMarkers);
+      // if(newMarkers){
+      //   let resultLabel = computeLabelPosition(newMarkers); 
+      //   if(resultLabel){
+      //     setMarkers(resultLabel);
+      //   }
+      // }
+      
+      setMarkers(newMarkers);
+      console.log(markers);
+     
+      
+      
+    }else{
+      console.log("markerCoordinates.length = 0")
+    }
+  }, [p]);
+
 
   const onSliderChange = (value) => {
     setSliderValue(value);
