@@ -142,9 +142,10 @@ const IndoorBuilding = (props: BaseExampleProps) => {
       };
     });
     console.log("this is the markers:");
-    // console.log(newMarkers);
+    console.log(newMarkers);
     // if(newMarkers){
-    //   let resultLabel = computeLabelPosition(newMarkers); 
+    let resultLabel = computeLabelPosition(newMarkers); 
+    console.log("resultLabel",resultLabel)
     //   if(resultLabel){
     //     setMarkers(resultLabel);
     //   }
@@ -152,7 +153,8 @@ const IndoorBuilding = (props: BaseExampleProps) => {
     
     // markers = newMarkers;
     markers = [...newMarkers];
-    console.log(markers);
+    markers = [{coords: resultLabel.position, color: "purple"}];
+    console.log("markers2",markers);
     
     
     
@@ -283,20 +285,6 @@ const IndoorBuilding = (props: BaseExampleProps) => {
           />
         </MapboxGL.ShapeSource>
 
-        <MarkerView
-          key={`MarkerView-test`}
-          coordinate={[-87.6180871, 41.8666611]}
-          style={{ display: show ? 'flex' : 'none' }}
-        >
-          <Pressable
-                style={[
-                  
-                  { backgroundColor: "black", padding: 4 * 1 },
-                ]}
-              >
-                
-          </Pressable>
-        </MarkerView>
 
       </MapView>
     </Page>
