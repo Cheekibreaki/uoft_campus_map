@@ -15,27 +15,35 @@ function computeLabelPosition(givenMarkers){
   if (givenMarkers.length === 0) {
     return [];
   }
-
-  let max = givenMarkers[0].coords;
-  let min = givenMarkers[0].coords;
+  var max0 = givenMarkers[0].coords[0];
+  var max1 = givenMarkers[0].coords[1];
+  var min0 = givenMarkers[0].coords[0];
+  var min1 = givenMarkers[0].coords[1];
   for (let i = 1; i < givenMarkers.length; i++) {
-    if (givenMarkers[i].coords[0] > max[0]) {
-      max[0] = givenMarkers[i].coords[0];
+    
+    if (givenMarkers[i].coords[0] > max0) {
+      
+      max0 = givenMarkers[i].coords[0];
     }
-    if (givenMarkers[i].coords[1] > max[1]) {
-      max[1] = givenMarkers[i].coords[1];
+    if (givenMarkers[i].coords[1] > max1) {
+      
+      max1 = givenMarkers[i].coords[1];
     }
-    if (givenMarkers[i].coords[0] < min[0]) {
-      min[0] = givenMarkers[i].coords[0];
+    if (givenMarkers[i].coords[0] < min0) {
+     
+      min0 = givenMarkers[i].coords[0];
     }
-    if (givenMarkers[i].coords[1] < min[1]) {
-      min[1] = givenMarkers[i].coords[1];
+    if (givenMarkers[i].coords[1] < min1) {
+      
+      min1 = givenMarkers[i].coords[1];
     }
   }
 
-  let position = [(max[0] + min[0]) / 2, (max[1] + min[1]) / 2];
 
-  return { position };
+
+  let position = [(max0 + min0) / 2, (max1 + min1) / 2];
+
+  return {position};
 }
 
 
@@ -151,8 +159,8 @@ const IndoorBuilding = (props: BaseExampleProps) => {
     //   }
     // }
     
-    // markers = newMarkers;
-    markers = [...newMarkers];
+    markers = newMarkers;
+    //markers = [...newMarkers];
     markers = [{coords: resultLabel.position, color: "purple"}];
     console.log("markers2",markers);
     
