@@ -11,29 +11,41 @@ import Page from "../common/Page";
 import BaseExamplePropTypes from "../common/BaseExamplePropTypes";
 
 
-function computeLabelPosition(givenMarkers){
-  if (givenMarkers.length === 0) {
+function computeLabelPosition(points){
+  console.log("given markers",points)
+  if (points.length === 0) {
     return [];
   }
 
-  let max = givenMarkers[0].coords;
-  let min = givenMarkers[0].coords;
-  for (let i = 1; i < givenMarkers.length; i++) {
-    if (givenMarkers[i].coords[0] > max[0]) {
-      max[0] = givenMarkers[i].coords[0];
-    }
-    if (givenMarkers[i].coords[1] > max[1]) {
-      max[1] = givenMarkers[i].coords[1];
-    }
-    if (givenMarkers[i].coords[0] < min[0]) {
-      min[0] = givenMarkers[i].coords[0];
-    }
-    if (givenMarkers[i].coords[1] < min[1]) {
-      min[1] = givenMarkers[i].coords[1];
-    }
-  }
+  // let max = givenMarkers[0].coords;
+  // let min = givenMarkers[0].coords;
+  // for (let i = 1; i < givenMarkers.length; i++) {
+  //   if (givenMarkers[i].coords[0] > max[0]) {
+  //     max[0] = givenMarkers[i].coords[0];
+  //   }
+  //   if (givenMarkers[i].coords[1] > max[1]) {
+  //     max[1] = givenMarkers[i].coords[1];
+  //   }
+  //   if (givenMarkers[i].coords[0] < min[0]) {
+  //     min[0] = givenMarkers[i].coords[0];
+  //   }
+  //   if (givenMarkers[i].coords[1] < min[1]) {
+  //     min[1] = givenMarkers[i].coords[1];
+  //   }
+  // }
 
-  let position = [(max[0] + min[0]) / 2, (max[1] + min[1]) / 2];
+  // let position = [(max[0] + min[0]) / 2, (max[1] + min[1]) / 2];
+
+  const position = points.reduce((acc, point) => {
+    acc[0] += point.coords[0];
+    acc[1] += point.coords[1];
+    return acc;
+  }, [0, 0]);
+  
+  position[0] /= points.length;
+  position[1] /= points.length;
+  
+  console.log('Center:', position);
 
   return { position };
 }

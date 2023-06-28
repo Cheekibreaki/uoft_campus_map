@@ -55,7 +55,7 @@
         "name": "Bird Exhibit New",
         "height": 0,
         "base_height": 0,
-        "color": "blue",
+        "color": "grey",
         "label": "test string"
       },
       "geometry": {
