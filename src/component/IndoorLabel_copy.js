@@ -10,46 +10,42 @@ import indoorMapGeoJSON from "../assets/indoor_3d_map.json";
 import Page from "../common/Page";
 import BaseExamplePropTypes from "../common/BaseExamplePropTypes";
 
-
-function computeLabelPosition(points){
-  console.log("given markers",points)
-  if (points.length === 0) {
+function computeLabelPosition(givenMarkers){
+  if (givenMarkers.length === 0) {
     return [];
   }
+  var max0 = givenMarkers[0].coords[0];
+  var max1 = givenMarkers[0].coords[1];
+  var min0 = givenMarkers[0].coords[0];
+  var min1 = givenMarkers[0].coords[1];
+  for (let i = 1; i < givenMarkers.length; i++) {
 
-  // let max = givenMarkers[0].coords;
-  // let min = givenMarkers[0].coords;
-  // for (let i = 1; i < givenMarkers.length; i++) {
-  //   if (givenMarkers[i].coords[0] > max[0]) {
-  //     max[0] = givenMarkers[i].coords[0];
-  //   }
-  //   if (givenMarkers[i].coords[1] > max[1]) {
-  //     max[1] = givenMarkers[i].coords[1];
-  //   }
-  //   if (givenMarkers[i].coords[0] < min[0]) {
-  //     min[0] = givenMarkers[i].coords[0];
-  //   }
-  //   if (givenMarkers[i].coords[1] < min[1]) {
-  //     min[1] = givenMarkers[i].coords[1];
-  //   }
-  // }
+    if (givenMarkers[i].coords[0] > max0) {
 
-  // let position = [(max[0] + min[0]) / 2, (max[1] + min[1]) / 2];
+      max0 = givenMarkers[i].coords[0];
+    }
+    if (givenMarkers[i].coords[1] > max1) {
 
-  const position = points.reduce((acc, point) => {
-    acc[0] += point.coords[0];
-    acc[1] += point.coords[1];
-    return acc;
-  }, [0, 0]);
-  
-  position[0] /= points.length;
-  position[1] /= points.length;
-  
-  console.log('Center:', position);
+      max1 = givenMarkers[i].coords[1];
+    }
+    if (givenMarkers[i].coords[0] < min0) {
 
+      min0 = givenMarkers[i].coords[0];
+    }
+    if (givenMarkers[i].coords[1] < min1) {
+
+      min1 = givenMarkers[i].coords[1];
+    }
+  }
+
+
+
+  let position = [(max0 + min0) / 2, (max1 + min1) / 2];
 
   return {position};
 }
+
+
 
 
 
@@ -68,6 +64,7 @@ const IndoorBuilding = (props: BaseExampleProps) => {
   // const [markerCoordinates, setMarkerCoordinates] = useState([]);
 
   // let markers = [];
+  // const mapViewRef = useRef(null);
   let markerCoordinates = [];
   let markers = [];
 
@@ -97,6 +94,25 @@ const IndoorBuilding = (props: BaseExampleProps) => {
   const handleMapRenderComplete = useCallback(() => {
     setIsMapRendered(true);
   }, []);
+
+  const raise = (position,height) => {
+    const camera = mapViewRef.current.getCamera();
+    const center = camera.centerCoordinate;
+    const bearing = camera.heading;
+    const pitch = camera.pitch;
+    const zoom = camera.zoom;
+    const padding = mapViewRef.current.getPadding();
+    const anchor = mapViewRef.current.getAnchor();
+
+    // Example usage of retrieved camera parameters
+    console.log('Center:', center);
+    console.log('Bearing:', bearing);
+    console.log('Pitch:', pitch);
+    console.log('Zoom:', zoom);
+    console.log('Padding:', padding);
+    console.log('Anchor:', anchor);
+  };
+
 
   const handleRegionDidChange = async () => {
     setIsCameraMoving(false);
@@ -145,31 +161,31 @@ const IndoorBuilding = (props: BaseExampleProps) => {
     }
 
 
-    if (markerCoordinates.length !== 0 && markerCoordinates[0].latlons !== null) {
-        
-    // console.log(markerCoordinates[0].latlons);
-    const newMarkers = markerCoordinates[0].latlons.map((latlons) => {
-      return {
-        coords: latlons,
-        color: "purple",
-      };
-    });
-    console.log("this is the markers:");
-    console.log(newMarkers);
-    // if(newMarkers){
-    let resultLabel = computeLabelPosition(newMarkers); 
-    console.log("resultLabel",resultLabel)
-    //   if(resultLabel){
-    //     setMarkers(resultLabel);
-    //   }
-    // }
-    
-    markers = newMarkers;
-    //markers = [...newMarkers];
-    markers = [{coords: resultLabel.position, color: "purple"}];
-    console.log("markers2",markers);
-    
-    
+  if (markerCoordinates.length !== 0 && markerCoordinates[0].latlons !== null) {
+      
+  // console.log(markerCoordinates[0].latlons);
+  const newMarkers = markerCoordinates[0].latlons.map((latlons) => {
+    return {
+      coords: latlons,
+      color: "purple",
+    };
+  });
+  console.log("this is the markers:");
+  console.log(newMarkers);
+  // if(newMarkers){
+  let resultLabel = computeLabelPosition(newMarkers); 
+  console.log("resultLabel",resultLabel)
+  //   if(resultLabel){
+  //     setMarkers(resultLabel);
+  //   }
+  // }
+  
+  markers = newMarkers;
+  //markers = [...newMarkers];
+  markers = [{coords: resultLabel.position, color: "purple"}];
+  console.log("markers2",markers);
+  
+  // raise(resultLabel.position,0)
     
   }else{
     console.log("markerCoordinates.length = 0")
@@ -178,22 +194,9 @@ const IndoorBuilding = (props: BaseExampleProps) => {
   // }, [selectedGeoJSON]);
 
 
+  
 
-
-  const handleMapLoaded = () => {
-    const camera = mapViewRef.current.getCamera();
-    const cameraCoordinates = camera.centerCoordinate;
-    const targetCoordinates = [longitude, latitude]; // Replace with the coordinates of the target point
-
-    const distance = MapboxGL.MetersPerPixelAtLatitude(
-      cameraCoordinates[1],
-    ) * MapboxGL.MetersBetweenCoordinates(
-      cameraCoordinates,
-      targetCoordinates,
-    );
-
-    console.log('Distance:', distance);
-  };
+  
 
   const handleRegionChanging = async () => {
     setIsCameraMoving(true);
@@ -204,17 +207,7 @@ const IndoorBuilding = (props: BaseExampleProps) => {
     ]);
   };
 
-  useEffect(() => {
-    if (isMapRendered) {
-      const fetchData = async () => {
-        if (isMapRendered) {
-          console.log("Map and layers rendered completely");
-        }
-      };
 
-      fetchData();
-    }
-  }, [isMapRendered]);
 
 
   // useEffect(() => {
