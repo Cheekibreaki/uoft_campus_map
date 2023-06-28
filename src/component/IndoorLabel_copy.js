@@ -47,7 +47,10 @@ function computeLabelPosition(points){
   
   console.log('Center:', position);
 
-  return { position };
+
+  let position = [(max0 + min0) / 2, (max1 + min1) / 2];
+
+  return {position};
 }
 
 
@@ -163,8 +166,8 @@ const IndoorBuilding = (props: BaseExampleProps) => {
     //   }
     // }
     
-    // markers = newMarkers;
-    markers = [...newMarkers];
+    markers = newMarkers;
+    //markers = [...newMarkers];
     markers = [{coords: resultLabel.position, color: "purple"}];
     console.log("markers2",markers);
     
