@@ -48,8 +48,6 @@ function computeLabelPosition(points){
   console.log('Center:', position);
 
 
-  let position = [(max0 + min0) / 2, (max1 + min1) / 2];
-
   return {position};
 }
 
