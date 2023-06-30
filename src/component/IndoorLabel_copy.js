@@ -97,7 +97,7 @@ const IndoorBuilding = (props: BaseExampleProps) => {
   let camera = useRef();
   let markerCoordinates = [];
   let markers = [];
-
+  let raisedMarkers = [];
   const [selectedGeoJSON, setSelectedGeoJSON] = useState(null);
 
   const [allowOverlap, setAllowOverlap] = useState(false);
@@ -108,13 +108,13 @@ const IndoorBuilding = (props: BaseExampleProps) => {
 
   const onPress = async (e) => {
     const { screenPointX, screenPointY } = e.properties;
-    console.log("screenPointX, screenPointY", screenPointX, screenPointY);
+    // console.log("screenPointX, screenPointY", screenPointX, screenPointY);
     const featureCollection = await map.queryRenderedFeaturesAtPoint(
       [screenPointX, screenPointY],
       null,
       ["building3d"]
     );
-    console.log(featureCollection)
+    // console.log(featureCollection)
   };
 
 
@@ -125,27 +125,37 @@ const IndoorBuilding = (props: BaseExampleProps) => {
     setIsMapRendered(true);
   }, []);
 
-  const raise = async (position,height) => {
-
-
-    const center = await map.getCenter();
-    const zoom = await map.getZoom();
-    // Example usage of retrieved camera parameters
-    console.log('Center:', center);
-    console.log('Zoom:', zoom);
-
+  const raise = (position,height) => {
+    let copyPosition = position.slice();;
+    let heading = mapState.properties.heading;
+    let pitch = mapState.properties.pitch;
+    console.log("raise",heading,pitch);
+    let fixheight = 0.0006;// 8 meter
+    let distance = 1/Math.tan(90-pitch)*fixheight;
+    let projectionLat = Math.cos(heading)*distance;
+    let projectionLon = Math.sin(heading)*distance*(8/11);
+    if((heading >=0 && heading <= 90) || (heading >=180 && heading <=270) ){
+      copyPosition[0] = copyPosition[0]+ projectionLon;
+      copyPosition[1] = copyPosition[1]+ projectionLat;
+    }
+    else{
+      copyPosition[0] = copyPosition[0]- projectionLon;
+      copyPosition[1] = copyPosition[1]- projectionLat;
+    }
+    console.log("Position",copyPosition)
+    return [{coords: copyPosition, color: "purple"}];
   };
 
 
   const handleRegionDidChange = async () => {
     setIsCameraMoving(false);
-    console.log("Camera movement completed");
+     console.log("Camera movement completed");
     // Perform actions after camera movement is completed
     const featureCollection = await map.queryRenderedFeaturesInRect([], null, [
       "building3d",
     ]);
-    console.log("Feature collection completed");
-    console.log(featureCollection)
+    // console.log("Feature collection completed");
+    // console.log(featureCollection)
     if (featureCollection !== null && featureCollection.features !== null) {
       console.log("in it")
       if (featureCollection.features.length) {
@@ -155,7 +165,7 @@ const IndoorBuilding = (props: BaseExampleProps) => {
         console.log("no JSON found");
         setSelectedGeoJSON(null);
       }
-      console.log("setSelectedGeoJSON:",selectedGeoJSON)
+      // console.log("setSelectedGeoJSON:",selectedGeoJSON)
     }else{
       console.log("not found")
     }
@@ -180,35 +190,35 @@ const IndoorBuilding = (props: BaseExampleProps) => {
         
         return updatedCoordinates; // Return the updated state
       })();
-      console.log("markerCoordinates",markerCoordinates)
+      // console.log("markerCoordinates",markerCoordinates)
     }
 
 
   if (markerCoordinates.length !== 0 && markerCoordinates[0].latlons !== null) {
       
-  // console.log(markerCoordinates[0].latlons);
-  const newMarkers = markerCoordinates[0].latlons.map((latlons) => {
-    return {
-      coords: latlons,
-      color: "purple",
-    };
-  });
-  console.log("this is the markers:");
-  console.log(newMarkers);
-  // if(newMarkers){
-  let resultLabel = computeLabelPosition(newMarkers); 
-  console.log("resultLabel",resultLabel)
-  //   if(resultLabel){
-  //     setMarkers(resultLabel);
-  //   }
-  // }
-  
-  markers = newMarkers;
-  //markers = [...newMarkers];
-  markers = [{coords: resultLabel.position, color: "purple"}];
-  console.log("markers2",markers);
-  
-  raise(resultLabel.position,0)
+    // console.log(markerCoordinates[0].latlons);
+    const newMarkers = markerCoordinates[0].latlons.map((latlons) => {
+      return {
+        coords: latlons,
+        color: "purple",
+      };
+    });
+    // console.log("this is the markers:");
+    // console.log(newMarkers);
+    // if(newMarkers){
+    let centerLabel = computeLabelPosition(newMarkers); 
+    // console.log("centerLabel",centerLabel)
+    //   if(centerLabel){
+    //     setMarkers(centerLabel);
+    //   }
+    // }
+    
+    markers = newMarkers;
+    //markers = [...newMarkers];
+    markers = [{coords: centerLabel.position, color: "purple"}];
+    console.log("markers2",markers);
+    
+    raisedMarkers = raise(centerLabel.position,0)
     
   }else{
     console.log("markerCoordinates.length = 0")
@@ -247,9 +257,9 @@ const IndoorBuilding = (props: BaseExampleProps) => {
   //     console.log("this is the markers:");
   //     // console.log(newMarkers);
   //     // if(newMarkers){
-  //     //   let resultLabel = computeLabelPosition(newMarkers); 
-  //     //   if(resultLabel){
-  //     //     setMarkers(resultLabel);
+  //     //   let centerLabel = computeLabelPosition(newMarkers); 
+  //     //   if(centerLabel){
+  //     //     setMarkers(centerLabel);
   //     //   }
   //     // }
       
@@ -307,7 +317,42 @@ const IndoorBuilding = (props: BaseExampleProps) => {
             </MapboxGL.MarkerView>
           );
         })}
+        
+        {raisedMarkers.map((raisedMarker, i) => {
+          return (
+            <MapboxGL.MarkerView
+              key={`RaisedMarkerView-${i}-${raisedMarker.coords.join("-")}`}
+              coordinate={raisedMarker.coords}
+              allowOverlap={allowOverlap}
+              style={ "flex" }
+            >
+              <Pressable
+                style={[
+                  
+                  { backgroundColor: "black", padding: 4 * 1 },
+                ]}
+              >
+                
+              </Pressable>
+            </MapboxGL.MarkerView>
+          );
+        })}
 
+        <MapboxGL.MarkerView
+              key={"test"}
+              coordinate={[-87.61647979502106, 41.86612639153123]}
+              allowOverlap={allowOverlap}
+              style={ "flex" }
+            >
+              <Pressable
+                style={[
+                  
+                  { backgroundColor: "black", padding: 4 * 1 },
+                ]}
+              >
+                
+              </Pressable>
+            </MapboxGL.MarkerView>
 
         <MapboxGL.ShapeSource
           id="indoorBuildingSource"
