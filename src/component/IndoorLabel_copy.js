@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useLayoutEffect } from "react";
+import React, { useState, useEffect, useCallback, useLayoutEffect, useRef } from "react";
 import { View, StyleSheet, Pressable } from "react-native";
 import MapboxGL from "@rnmapbox/maps";
 import { Slider } from "@rneui/base";
@@ -49,6 +49,9 @@ function computeLabelPosition(givenMarkers){
 
 
 
+
+
+
 const layerStyles = {
   building: {
     fillExtrusionOpacity: 0.5,
@@ -59,12 +62,29 @@ const layerStyles = {
 };
 
 const IndoorBuilding = (props: BaseExampleProps) => {
-  
+
+
+
+  const [mapState, setMapState] = useState({
+    properties: {
+      center: [0, 0],
+      bounds: {
+        ne: [0, 0],
+        sw: [0, 0],
+      },
+      zoom: 0,
+      heading: 0,
+      pitch: 0,
+    },
+  });
+
+
   // const [markers, setMarkers] = useState([]);
   // const [markerCoordinates, setMarkerCoordinates] = useState([]);
 
   // let markers = [];
   // const mapViewRef = useRef(null);
+  let camera = useRef();
   let markerCoordinates = [];
   let markers = [];
 
@@ -95,22 +115,15 @@ const IndoorBuilding = (props: BaseExampleProps) => {
     setIsMapRendered(true);
   }, []);
 
-  const raise = (position,height) => {
-    const camera = mapViewRef.current.getCamera();
-    const center = camera.centerCoordinate;
-    const bearing = camera.heading;
-    const pitch = camera.pitch;
-    const zoom = camera.zoom;
-    const padding = mapViewRef.current.getPadding();
-    const anchor = mapViewRef.current.getAnchor();
+  const raise = async (position,height) => {
 
+
+    const center = await map.getCenter();
+    const zoom = await map.getZoom();
     // Example usage of retrieved camera parameters
     console.log('Center:', center);
-    console.log('Bearing:', bearing);
-    console.log('Pitch:', pitch);
     console.log('Zoom:', zoom);
-    console.log('Padding:', padding);
-    console.log('Anchor:', anchor);
+
   };
 
 
@@ -185,7 +198,7 @@ const IndoorBuilding = (props: BaseExampleProps) => {
   markers = [{coords: resultLabel.position, color: "purple"}];
   console.log("markers2",markers);
   
-  // raise(resultLabel.position,0)
+  raise(resultLabel.position,0)
     
   }else{
     console.log("markerCoordinates.length = 0")
@@ -249,7 +262,11 @@ const IndoorBuilding = (props: BaseExampleProps) => {
         onPress={onPress}
         style={sheet.matchParent}
         onLayout={handleMapRenderComplete}
-        onCameraChanged={handleRegionChanging}
+        onCameraChanged={(_state) => {
+          console.log("_state",_state)
+          setMapState(_state);
+          handleRegionChanging()
+        }}
         onMapIdle={handleRegionDidChange}
       >
         <Camera
@@ -257,6 +274,7 @@ const IndoorBuilding = (props: BaseExampleProps) => {
           pitch={40}
           heading={30}
           centerCoordinate={[-87.61694, 41.86625]}
+          ref={camera}
         />  
 
 
