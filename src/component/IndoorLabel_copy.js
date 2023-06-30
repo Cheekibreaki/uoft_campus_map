@@ -130,10 +130,10 @@ const IndoorBuilding = (props: BaseExampleProps) => {
     let heading = mapState.properties.heading;
     let pitch = mapState.properties.pitch;
     console.log("raise",heading,pitch);
-    let fixheight = 0.0006;// 8 meter
-    let distance = 1/Math.tan(90-pitch)*fixheight;
-    let projectionLat = Math.cos(heading)*distance;
-    let projectionLon = Math.sin(heading)*distance*(8/11);
+    let fixheight = 0.0007;// 8 meter
+    let distance = 1/Math.tan((90-pitch)*Math.PI/180)*fixheight;
+    let projectionLat = Math.cos(heading*Math.PI/180)*distance;
+    let projectionLon = Math.sin(heading*Math.PI/180)*distance*(8/11);
     if((heading >=0 && heading <= 90) || (heading >=180 && heading <=270) ){
       copyPosition[0] = copyPosition[0]+ projectionLon;
       copyPosition[1] = copyPosition[1]+ projectionLat;
