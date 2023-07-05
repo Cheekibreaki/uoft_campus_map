@@ -152,13 +152,34 @@ const IndoorBuilding = (props: BaseExampleProps) => {
 
     console.log("lon,lat",lon,lat)
     console.log("done")
-    let _position = [center[0]-lon,center[1]-lat]
-    return [{coords: _position, color: "purple"}];
+    let camera_projection_position = [center[0]-lon,center[1]-lat]
+    
+
+    return [{coords: camera_projection_position, color: "purple"}];
   }
+  
+
+
+
 
   const raise = (position,height) => {
     let copyPosition = findCameraProj();
-    return copyPosition
+    let zoomLevel = mapState.properties.zoom;
+    let heading = mapState.properties.heading;
+    let pitch = mapState.properties.pitch;
+    let center = mapState.properties.center;
+    let centerPitch = 90-pitch;
+
+    distanceBetweenCameraProjAndMarker = Math.abs(measure(copyPosition.coords[0],copyPosition.coords[1],position[0],position[1]));
+    CameraHeight = Math.sin(centerPitch*Math.PI/180)*2000000*Math.pow(2,-zoomLevel);
+    distanceBetweenRaisedMarkerAndMarker = height*distanceBetweenCameraProjAndMarker/(CameraHeight-height);
+    let projectionLat = Math.cos(heading*Math.PI/180)*distanceBetweenRaisedMarkerAndMarker*0.00012;
+    let projectionLon = Math.sin(heading*Math.PI/180)*distanceBetweenRaisedMarkerAndMarker0*0.000145;
+    position[0]= position[0]+ projectionLon;
+    position[1]= position[1]+ projectionLat;
+
+    return [{coords: position,color: "purple"}];
+    
     // let copyPosition = position.slice();;
     // let heading = mapState.properties.heading;
     // let pitch = mapState.properties.pitch;
