@@ -147,8 +147,8 @@ const IndoorBuilding = (props: BaseExampleProps) => {
     let pitch = mapState.properties.pitch;
     let center = mapState.properties.center;
     let centerPitch = 90-pitch;
-    let lon = Math.sin(heading*Math.PI/180)*Math.cos(centerPitch*Math.PI/180)*2000000*Math.pow(2,-zoomLevel)*0.00020;
-    let lat = Math.cos(heading*Math.PI/180)*Math.cos(centerPitch*Math.PI/180)*2000000*Math.pow(2,-zoomLevel)*0.000150;
+    let lon = Math.sin(heading*Math.PI/180)*Math.cos(centerPitch*Math.PI/180)*59959.436*Math.pow(2,-zoomLevel)*0.008;
+    let lat = Math.cos(heading*Math.PI/180)*Math.cos(centerPitch*Math.PI/180)*59959.436*Math.pow(2,-zoomLevel)*0.006;
 
     
 
@@ -159,6 +159,8 @@ const IndoorBuilding = (props: BaseExampleProps) => {
   }
   
   const raise = (position,height) => {
+    // let cameraProj = findCameraProj();
+    // return [cameraProj]
     let cameraProj = findCameraProj();
     let zoomLevel = mapState.properties.zoom;
     let heading = mapState.properties.heading;
@@ -331,7 +333,7 @@ const IndoorBuilding = (props: BaseExampleProps) => {
     markers = [{coords: centerLabel.position, color: "purple"}];
     // console.log("markers2",markers);
     
-    raisedMarkers = raise(centerLabel.position,3)
+    raisedMarkers = raise(centerLabel.position,2.7)
     
   }else{
     console.log("markerCoordinates.length = 0")
@@ -454,7 +456,7 @@ const IndoorBuilding = (props: BaseExampleProps) => {
 
         <MapboxGL.MarkerView
               key={"test"}
-              coordinate={[-87.61647979502106, 41.86612639153123]}
+              coordinate={[-87.61799329019718, 41.86621701255182]}
               allowOverlap={allowOverlap}
               style={ "flex" }
             >
