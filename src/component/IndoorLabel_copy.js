@@ -73,7 +73,22 @@ const layerStyles = {
   },
 };
 
-const IndoorBuilding = (props: BaseExampleProps) => {
+const IndoorBuilding = (props: BaseExampleProps) => { 
+
+
+
+
+  
+  const componentRef = useRef(null);
+  const measureComponent = () => {
+    componentRef.current.measure((x, y, width, height, pageX, pageY) => {
+      console.log('Component coordinates:');
+      console.log('x:', pageX); // X coordinate in screen pixels
+      console.log('y:', pageY); // Y coordinate in screen pixels
+      console.log('width:', width); // Width of the component
+      console.log('height:', height); // Height of the component
+    });
+  };
 
   const [mapState, setMapState] = useState({
     properties: {
@@ -95,6 +110,7 @@ const IndoorBuilding = (props: BaseExampleProps) => {
   // let markers = [];
   // const mapViewRef = useRef(null);
   let camera = useRef();
+  let map = useRef();
   let markerCoordinates = [];
   let markers = [];
   let raisedMarkers = [];
@@ -108,8 +124,8 @@ const IndoorBuilding = (props: BaseExampleProps) => {
 
   const onPress = async (e) => {
     const { screenPointX, screenPointY } = e.properties;
-    // console.log("screenPointX, screenPointY", screenPointX, screenPointY);
-    const featureCollection = await map.queryRenderedFeaturesAtPoint(
+    console.log("screenPointX, screenPointY", screenPointX, screenPointY);
+    const featureCollection = await map.current.queryRenderedFeaturesAtPoint(
       [screenPointX, screenPointY],
       null,
       ["building3d"]
@@ -125,25 +141,36 @@ const IndoorBuilding = (props: BaseExampleProps) => {
     setIsMapRendered(true);
   }, []);
 
-  const raise = (position,height) => {
-    let copyPosition = position.slice();;
+  const findCameraProj = () => {
+    let zoomLevel = mapState.properties.zoom;
     let heading = mapState.properties.heading;
     let pitch = mapState.properties.pitch;
-    console.log("raise",heading,pitch);
-    let fixheight = 0.0007;// 8 meter
-    let distance = 1/Math.tan((90-pitch)*Math.PI/180)*fixheight;
-    let projectionLat = Math.cos(heading*Math.PI/180)*distance;
-    let projectionLon = Math.sin(heading*Math.PI/180)*distance*(8/11);
-    if((heading >=0 && heading <= 90) || (heading >=180 && heading <=270) ){
-      copyPosition[0] = copyPosition[0]+ projectionLon;
-      copyPosition[1] = copyPosition[1]+ projectionLat;
-    }
-    else{
-      copyPosition[0] = copyPosition[0]- projectionLon;
-      copyPosition[1] = copyPosition[1]- projectionLat;
-    }
-    console.log("Position",copyPosition)
-    return [{coords: copyPosition, color: "purple"}];
+    let center = mapState.properties.center;
+    let centerPitch = 90-pitch;
+    let lon = Math.sin(heading*Math.PI/180)*Math.cos(centerPitch*Math.PI/180)*2000000*Math.pow(2,-zoomLevel)*0.000145;
+    let lat = Math.cos(heading*Math.PI/180)*Math.cos(centerPitch*Math.PI/180)*2000000*Math.pow(2,-zoomLevel)*0.00012;
+
+    console.log("lon,lat",lon,lat)
+    console.log("done")
+    let _position = [center[0]-lon,center[1]-lat]
+    return [{coords: _position, color: "purple"}];
+  }
+
+  const raise = (position,height) => {
+    let copyPosition = findCameraProj();
+    return copyPosition
+    // let copyPosition = position.slice();;
+    // let heading = mapState.properties.heading;
+    // let pitch = mapState.properties.pitch;
+    // console.log("raise",heading,pitch);
+    // let fixheight = 0.0008;// 8 meter
+    // let distance = 1/Math.tan((90-pitch)*Math.PI/180)*fixheight;
+    // let projectionLat = Math.cos(heading*Math.PI/180)*distance;
+    // let projectionLon = Math.sin(heading*Math.PI/180)*distance*(8/11);
+    // copyPosition[0] = copyPosition[0]+ projectionLon;
+    // copyPosition[1] = copyPosition[1]+ projectionLat
+    // console.log("Position",copyPosition)
+    // return [{coords: copyPosition, color: "purple"}];
   };
 
 
@@ -151,13 +178,12 @@ const IndoorBuilding = (props: BaseExampleProps) => {
     setIsCameraMoving(false);
      console.log("Camera movement completed");
     // Perform actions after camera movement is completed
-    const featureCollection = await map.queryRenderedFeaturesInRect([], null, [
+    const featureCollection = await map.current.queryRenderedFeaturesInRect([], null, [
       "building3d",
     ]);
     // console.log("Feature collection completed");
     // console.log(featureCollection)
     if (featureCollection !== null && featureCollection.features !== null) {
-      console.log("in it")
       if (featureCollection.features.length) {
         setSelectedGeoJSON(featureCollection);
         // console.log(selectedGeoJSON);
@@ -216,7 +242,7 @@ const IndoorBuilding = (props: BaseExampleProps) => {
     markers = newMarkers;
     //markers = [...newMarkers];
     markers = [{coords: centerLabel.position, color: "purple"}];
-    console.log("markers2",markers);
+    // console.log("markers2",markers);
     
     raisedMarkers = raise(centerLabel.position,0)
     
@@ -235,7 +261,7 @@ const IndoorBuilding = (props: BaseExampleProps) => {
     setIsCameraMoving(true);
     // console.log("moving");
 
-    const featureCollection = await map.queryRenderedFeaturesInRect([], null, [
+    const featureCollection = await map.current.queryRenderedFeaturesInRect([], null, [
       "building3d",
     ]);
   };
@@ -276,9 +302,10 @@ const IndoorBuilding = (props: BaseExampleProps) => {
 
 
   return (
+    // <View ref={componentRef} onLayout={measureComponent}>
     <Page {...props}>
       <MapView
-        ref={(ref) => (map = ref)}
+        ref={map}
         onPress={onPress}
         style={sheet.matchParent}
         onLayout={handleMapRenderComplete}
@@ -367,6 +394,7 @@ const IndoorBuilding = (props: BaseExampleProps) => {
 
       </MapView>
     </Page>
+    // </View>
   );
 };
 

@@ -94,7 +94,46 @@
         "type": "Polygon"
       },
       "id": "06e8fa0b3f851e3ae0e1da5fc17e111e"
-    }
+    },
+
+    // {
+    //   "type": "Feature",
+    //   "properties": {
+    //     "level": 1,
+    //     "name": "East Hallway",
+    //     "base_height": 0,
+    //     "height": 0,
+    //     "color": "indigo"
+    //   },
+    //   "geometry": {
+    //     "coordinates": [
+    //       [
+    //         [
+    //           -87.616704,
+    //           41.866141
+    //         ],
+    //         [
+    //           -87.616707,
+    //           41.866338
+    //         ],
+    //         [
+    //           -87.61572,
+    //           41.866355
+    //         ],
+    //         [
+    //           -87.61572,
+    //           41.866148
+    //         ],
+    //         [
+    //           -87.616704,
+    //           41.866141
+    //         ]
+    //       ]
+    //     ],
+    //     "type": "Polygon"
+    //   },
+    //   "id": "09ead44537d94ece576c7bc001c33e53"
+    // }
   ],
   "type": "FeatureCollection"
 }
