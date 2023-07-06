@@ -210,59 +210,6 @@ const IndoorBuilding = (props: BaseExampleProps) => {
   };
 
 
-
-  // const raise = (position,height) => {
-  //   let cameraProj = findCameraProj();
-  //   let zoomLevel = mapState.properties.zoom;
-  //   let heading = mapState.properties.heading;
-  //   let pitch = mapState.properties.pitch;
-  //   let center = mapState.properties.center;
-  //   console.log("center",center);
-  //   let centerPitch = 90-pitch;
-  //   let copyPosition = position.slice();
-  //   if(cameraProj){
-  //     console.log("copyPosition",cameraProj)
-  //     let distanceBetweenCameraProjAndMarker = Math.abs(measure(cameraProj.coords[0],cameraProj.coords[1],position[0],position[1]));
-  //     let CameraHeight = Math.sin(centerPitch*Math.PI/180)*2000000*Math.pow(2,-zoomLevel);
-  //     console.log("CameraHeight",CameraHeight);
-  //     if(CameraHeight>height){
-  //       let distanceBetweenRaisedMarkerAndMarker = height*distanceBetweenCameraProjAndMarker/(CameraHeight-height);
-  //       console.log("distance",distanceBetweenRaisedMarkerAndMarker);
-
-      
-
-  //       let cos = (position[0]-cameraProj.coords[0])/Math.pow(Math.pow(cameraProj.coords[0]-position[0],2)+Math.pow(cameraProj.coords[1]-position[1],2),1/2);
-  //       let sin = (position[1]-cameraProj.coords[1])/Math.pow(Math.pow(cameraProj.coords[0]-position[0],2)+Math.pow(cameraProj.coords[1]-position[1],2),1/2);
-  //       let projectionLat = sin*distanceBetweenRaisedMarkerAndMarker*0.000012*0.01;
-  //       console.log("projLat",projectionLat);
-  //       let projectionLon = cos*distanceBetweenRaisedMarkerAndMarker*0.0001*0.01;
-  //       console.log("projLon",projectionLon);
-  //       copyPosition[0]= copyPosition[0]+ projectionLon;
-  //       copyPosition[1]= copyPosition[1]+ projectionLat;
-  //       console.log("position",copyPosition)
-  //       return [{coords: copyPosition,color: "purple"}];
-  //     }
-      
-  //   }
-    
-  //   return [{coords: position,color: "purple"}];
-    
-    
-  //   // let copyPosition = position.slice();;
-  //   // let heading = mapState.properties.heading;
-  //   // let pitch = mapState.properties.pitch;
-  //   // console.log("raise",heading,pitch);
-  //   // let fixheight = 0.0008;// 8 meter
-  //   // let distance = 1/Math.tan((90-pitch)*Math.PI/180)*fixheight;
-  //   // let projectionLat = Math.cos(heading*Math.PI/180)*distance;
-  //   // let projectionLon = Math.sin(heading*Math.PI/180)*distance*(8/11);
-  //   // copyPosition[0] = copyPosition[0]+ projectionLon;
-  //   // copyPosition[1] = copyPosition[1]+ projectionLat
-  //   // console.log("Position",copyPosition)
-  //   // return [{coords: copyPosition, color: "purple"}];
-  // };
-
-
   const handleRegionDidChange = async () => {
     setIsCameraMoving(false);
      console.log("Camera movement completed");
