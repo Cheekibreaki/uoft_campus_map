@@ -8,8 +8,10 @@
 import Main from './src/container/Main'
 // import IndoorMap from './src/component/IndoorBuilding'
 import React, { useState } from 'react';
+import {Provider} from 'react-redux';
 import IndoorBuilding from './src/component/IndoorBuilding'
 import IndoorLabel from './src/component/IndoorLabel_copy'
+import MapBoxApp from './src/container/MapBoxApp'
 import type {Node} from 'react';
 import {
   SafeAreaView,
@@ -73,38 +75,11 @@ const App: () => Node = () => {
   };
 
   return (
-    // <SafeAreaView style={backgroundStyle}>
-    //   <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
-    //   <ScrollView
-    //     contentInsetAdjustmentBehavior="automatic"
-    //     style={backgroundStyle}>
-    //     <Header />
-    //     <View
-    //       style={{
-    //         backgroundColor: isDarkMode ? Colors.black : Colors.white,
-    //       }}>
-    //       <Section title="Step One">
-    //         Edit <Text style={styles.highlight}>App.js</Text> to change this
-    //         screen and then come back to see your edits.
-    //       </Section>
-    //       <Section title="See Your Changes">
-    //         <ReloadInstructions />
-    //       </Section>
-    //       <Section title="Debug">
-    //         <DebugInstructions />
-    //       </Section>
-    //       <Section title="Learn More">
-    //         Read the docs to discover what to do next:
-    //       </Section>
-    //       <LearnMoreLinks />
-    //     </View>
-    //   </ScrollView>
-    // </SafeAreaView>
     <>
-      <IndoorLabel label={label}/>
+      <Provider store ={store}>
+        <MapBoxApp label={label}/>
+      </Provider>
     </>
-   
-      
   );
 };
 
