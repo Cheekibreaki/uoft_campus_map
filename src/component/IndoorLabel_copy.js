@@ -147,8 +147,8 @@ const IndoorBuilding = (props: BaseExampleProps) => {
     let pitch = mapState.properties.pitch;
     let center = mapState.properties.center;
     let centerPitch = 90-pitch;
-    let lon = Math.sin(heading*Math.PI/180)*Math.cos(centerPitch*Math.PI/180)*59959.436*Math.pow(2,-zoomLevel)*0.008;
-    let lat = Math.cos(heading*Math.PI/180)*Math.cos(centerPitch*Math.PI/180)*59959.436*Math.pow(2,-zoomLevel)*0.006;
+    let lon = Math.sin(heading*Math.PI/180)*Math.cos(centerPitch*Math.PI/180)*59959.436*Math.pow(2,-zoomLevel)*0.0103;
+    let lat = Math.cos(heading*Math.PI/180)*Math.cos(centerPitch*Math.PI/180)*59959.436*Math.pow(2,-zoomLevel)*0.0072;
 
     
 
@@ -174,7 +174,7 @@ const IndoorBuilding = (props: BaseExampleProps) => {
       // let distanceBetweenCameraProjAndMarker = Math.abs(measure(cameraProj.coords[0],cameraProj.coords[1],position[0],position[1]));
       let vector  =[position[0]-cameraProj.coords[0],position[1]-cameraProj.coords[1]];
       const length = Math.sqrt(vector[0] ** 2 + vector[1] ** 2);
-      let CameraHeight = Math.sin(centerPitch*Math.PI/180)*2000000*Math.pow(2,-zoomLevel);
+      let CameraHeight = Math.sin(centerPitch*Math.PI/180)*59959.436*Math.pow(2,-zoomLevel)*39;
       console.log("CameraHeight",CameraHeight);
       if(CameraHeight>height){
         
@@ -333,7 +333,7 @@ const IndoorBuilding = (props: BaseExampleProps) => {
     markers = [{coords: centerLabel.position, color: "purple"}];
     // console.log("markers2",markers);
     
-    raisedMarkers = raise(centerLabel.position,2.7)
+    raisedMarkers = raise(centerLabel.position,1.4)
     
   }else{
     console.log("markerCoordinates.length = 0")
@@ -409,7 +409,7 @@ const IndoorBuilding = (props: BaseExampleProps) => {
           zoomLevel={16}
           pitch={40}
           heading={30}
-          centerCoordinate={[-87.61694, 41.86625]}
+          centerCoordinate={[-79.3973449417775, 43.65997911110146]}
           ref={camera}
         />  
 
@@ -454,21 +454,7 @@ const IndoorBuilding = (props: BaseExampleProps) => {
           );
         })}
 
-        <MapboxGL.MarkerView
-              key={"test"}
-              coordinate={[-87.61799329019718, 41.86621701255182]}
-              allowOverlap={allowOverlap}
-              style={ "flex" }
-            >
-              <Pressable
-                style={[
-                  
-                  { backgroundColor: "black", padding: 4 * 1 },
-                ]}
-              >
-                
-              </Pressable>
-            </MapboxGL.MarkerView>
+        
 
         <MapboxGL.ShapeSource
           id="indoorBuildingSource"
