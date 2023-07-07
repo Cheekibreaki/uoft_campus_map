@@ -9,8 +9,8 @@ import indoorMapGeoJSON from "../assets/indoor_3d_map.json";
 import Page from "../common/Page";
 import BaseExamplePropTypes from "../common/BaseExamplePropTypes";
 import {useSelector, useDispatch} from 'react-redux';
-import {getGeoJSON} from '../redux/actions/getGeoJspmAction';
-
+import {setGeoJSON} from "../redux/actions/setGeoJsonAction";
+import IndoorLabel from '../component/IndoorLabel'
 const MapBoxApp = (props: BaseExampleProps) => {
     const zoomLevel = 16;
     const pitch = 40;
@@ -44,9 +44,10 @@ const MapBoxApp = (props: BaseExampleProps) => {
     let camera = useRef();
     
     const dispatch = useDispatch();
-    
 
-    const [selectedGeoJSON, setSelectedGeoJSON] = useState(null);
+    const selectedGeoJSON = useSelector(state=>state.selectedGeoJSON);
+    console.log("selectedGeoJSON",selectedGeoJSON);
+    // const [selectedGeoJSON, setSelectedGeoJSON] = useState(null);
     const [allowOverlap, setAllowOverlap] = useState(false);
     const [isCameraMoving, setIsCameraMoving] = useState(false);
 
@@ -59,10 +60,12 @@ const MapBoxApp = (props: BaseExampleProps) => {
         ]);
 
         if (featureCollection && featureCollection.features && featureCollection.features.length) {
-            setSelectedGeoJSON(featureCollection);
+            // setSelectedGeoJSON(featureCollection);
+            dispatch(setGeoJSON(featureCollection));
         } else {
         console.log("no Indoor Building Layer found");
-        setSelectedGeoJSON(null);
+        //setSelectedGeoJSON(null);
+        dispatch(([]));
         }
     };
 
@@ -88,17 +91,17 @@ const MapBoxApp = (props: BaseExampleProps) => {
               centerCoordinate={centerCoordinate}
               ref={camera}
             />  
-
-
-        <MapboxGL.ShapeSource
-          id="indoorBuildingSource"
-          shape={indoorMapGeoJSON}
-        >
-          <MapboxGL.FillExtrusionLayer
-            id="IndoorBuilding3DLayer"
-            style={layerStyles.building}
-          />
-        </MapboxGL.ShapeSource>
+            {/* <IndoorLabel/ > */}
+        
+            <MapboxGL.ShapeSource
+            id="indoorBuildingSource"
+            shape={indoorMapGeoJSON}
+            >
+            <MapboxGL.FillExtrusionLayer
+                id="IndoorBuilding3DLayer"
+                style={layerStyles.building}
+            />
+            </MapboxGL.ShapeSource>
           </MapView>
         </Page>
         // </View>
