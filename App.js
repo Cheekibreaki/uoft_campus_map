@@ -9,7 +9,7 @@ import Main from './src/container/Main'
 // import IndoorMap from './src/component/IndoorBuilding'
 import React, { useState } from 'react';
 import {Provider} from 'react-redux';
-import {store} from './src/redux/store';
+import {Store} from './src/redux/store';
 import IndoorBuilding from './src/component/IndoorBuilding'
 import IndoorLabel from './src/component/IndoorLabel_copy'
 import MapBoxApp from './src/container/MapBoxApp'
@@ -77,7 +77,7 @@ const App: () => Node = () => {
 
   return (
     <>
-      <Provider store ={store}>
+      <Provider store ={Store}>
         <MapBoxApp label={label}/>
       </Provider>
     </>

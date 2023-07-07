@@ -45,7 +45,7 @@ const MapBoxApp = (props: BaseExampleProps) => {
     
     const dispatch = useDispatch();
 
-    const selectedGeoJSON = useSelector(state=>state.selectedGeoJSON);
+    const selectedGeoJSON = useSelector(store=>store.GeoJSONs.selectedGeoJSON);
     console.log("selectedGeoJSON",selectedGeoJSON);
     // const [selectedGeoJSON, setSelectedGeoJSON] = useState(null);
     const [allowOverlap, setAllowOverlap] = useState(false);
@@ -65,7 +65,7 @@ const MapBoxApp = (props: BaseExampleProps) => {
         } else {
         console.log("no Indoor Building Layer found");
         //setSelectedGeoJSON(null);
-        dispatch(([]));
+        dispatch(({}));
         }
     };
 
@@ -91,7 +91,7 @@ const MapBoxApp = (props: BaseExampleProps) => {
               centerCoordinate={centerCoordinate}
               ref={camera}
             />  
-            {/* <IndoorLabel/ > */}
+            <IndoorLabel/ >
         
             <MapboxGL.ShapeSource
             id="indoorBuildingSource"

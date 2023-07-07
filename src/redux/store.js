@@ -1,8 +1,11 @@
 import {createStore, combineReducers} from 'redux';
-import getGeoJSONReducer from './reducers/getGeoJsonReducer';
+import  GeoJsonReducer from './reducers/getGeoJsonReducer';
+import  MapStateReducer from './reducers/getMapstateAction';
 
 const rootReducer = combineReducers({
-    GeoJSONs: getGeoJSONReducer,
+    GeoJSONs:  GeoJsonReducer,
+    MapState:  MapStateReducer
+    
 });
 
-export const store = createStore(rootReducer);
+export const Store = createStore(rootReducer);

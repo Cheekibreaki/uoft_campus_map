@@ -1,15 +1,13 @@
-
 const initialState ={
-    selectedGeoJSON: {},
-
+    MapState: {},
 };
 
-function GeoJsonReducer (state = initialState,action) {
+function MapStateReducer (state = initialState,action) {
     switch (action.type) {
-        case 'SET_GEOJSON':
+        case 'SET_MAPSTATE':
             return {
                 ...state,
-                selectedGeoJSON: action.payload
+                mapState: action.payload
             };
         
         default:
@@ -23,4 +21,4 @@ function GeoJsonReducer (state = initialState,action) {
 
 
 
-export default GeoJsonReducer;
+export default MapStateReducer;
