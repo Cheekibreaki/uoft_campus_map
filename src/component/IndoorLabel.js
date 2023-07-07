@@ -54,10 +54,10 @@ function computeCenterLabelPosition(givenMarkers){
 
 
 const IndoorLabel = () => { 
-  
+  const mapState = useSelector(store=>store.MapState.mapState);
   const findCameraProj = () => {
     
-    const mapState = useSelector(store=>store.MapState.mapState);
+    
     let zoomLevel = mapState.properties.zoom;
     let heading = mapState.properties.heading;
     let pitch = mapState.properties.pitch;
@@ -78,7 +78,6 @@ const IndoorLabel = () => {
     // let cameraProj = findCameraProj();
     // return [cameraProj]
     let cameraProj = findCameraProj();
-    const mapState = useSelector(store=>store.MapState.mapState);
     let zoomLevel = mapState.properties.zoom;
     let heading = mapState.properties.heading;
     let pitch = mapState.properties.pitch;
@@ -144,7 +143,7 @@ const IndoorLabel = () => {
       
       return updatedCoordinates; // Return the updated state
     })();
-    // console.log("markerCoordinates",markerCoordinates)
+    console.log("markerCoordinates",markerCoordinates)
   }
 
 
@@ -173,53 +172,49 @@ const IndoorLabel = () => {
 
 
   return (
-    <>
+    // <View ref={componentRef} onLayout={measureComponent}>
+      <>
+        {markers.map((marker, i) => {
+          return (
+            <MapboxGL.MarkerView
+              key={`MarkerView-${i}-${marker.coords.join("-")}`}
+              coordinate={marker.coords}
+              allowOverlap={true}
+              style={ "flex" }
+            >
+              <Pressable
+                style={[
+                  
+                  { backgroundColor: "black", padding: 4 * 1 },
+                ]}
+              >
+                
+              </Pressable>
+            </MapboxGL.MarkerView>
+          );
+        })}
+        
+        {raisedMarkers.map((raisedMarker, i) => {
+          return (
+            <MapboxGL.MarkerView
+              key={`RaisedMarkerView-${i}-${raisedMarker.coords.join("-")}`}
+              coordinate={raisedMarker.coords}
+              allowOverlap={true}
+              style={ "flex" }
+            >
+              <Pressable
+                style={[
+                  
+                  { backgroundColor: "black", padding: 4 * 1 },
+                ]}
+              >
+                
+              </Pressable>
+            </MapboxGL.MarkerView>
+          );
+        })}
     </>
   );
-  // return (
-  //   // <View ref={componentRef} onLayout={measureComponent}>
-  //     <>
-  //       {markers.map((marker, i) => {
-  //         return (
-  //           <MapboxGL.MarkerView
-  //             key={`MarkerView-${i}-${marker.coords.join("-")}`}
-  //             coordinate={marker.coords}
-  //             allowOverlap={allowOverlap}
-  //             style={ "flex" }
-  //           >
-  //             <Pressable
-  //               style={[
-                  
-  //                 { backgroundColor: "black", padding: 4 * 1 },
-  //               ]}
-  //             >
-                
-  //             </Pressable>
-  //           </MapboxGL.MarkerView>
-  //         );
-  //       })}
-        
-  //       {raisedMarkers.map((raisedMarker, i) => {
-  //         return (
-  //           <MapboxGL.MarkerView
-  //             key={`RaisedMarkerView-${i}-${raisedMarker.coords.join("-")}`}
-  //             coordinate={raisedMarker.coords}
-  //             allowOverlap={allowOverlap}
-  //             style={ "flex" }
-  //           >
-  //             <Pressable
-  //               style={[
-                  
-  //                 { backgroundColor: "black", padding: 4 * 1 },
-  //               ]}
-  //             >
-                
-  //             </Pressable>
-  //           </MapboxGL.MarkerView>
-  //         );
-  //       })}
-  //   </>
-  // );
 };
 
 export default IndoorLabel;

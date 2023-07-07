@@ -95,7 +95,7 @@ const MapBoxApp = (props: BaseExampleProps) => {
               centerCoordinate={centerCoordinate}
               ref={camera}
             />  
-            <IndoorLabel/ >
+            <IndoorLabel/>
         
             <MapboxGL.ShapeSource
             id="indoorBuildingSource"
