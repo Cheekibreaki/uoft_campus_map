@@ -11,6 +11,7 @@ import Page from "../common/Page";
 import BaseExamplePropTypes from "../common/BaseExamplePropTypes";
 import {useSelector} from 'react-redux';
 import {setGeoJSON} from '../redux/actions/getGeoJsonAction';
+import {setMapState} from '../redux/actions/getMapstateAction';
 
 
 function computeCenterLabelPosition(givenMarkers){
@@ -55,6 +56,8 @@ function computeCenterLabelPosition(givenMarkers){
 const IndoorLabel = () => { 
   
   const findCameraProj = () => {
+    
+    const mapState = useSelector(store=>store.MapState.mapState);
     let zoomLevel = mapState.properties.zoom;
     let heading = mapState.properties.heading;
     let pitch = mapState.properties.pitch;
@@ -75,6 +78,7 @@ const IndoorLabel = () => {
     // let cameraProj = findCameraProj();
     // return [cameraProj]
     let cameraProj = findCameraProj();
+    const mapState = useSelector(store=>store.MapState.mapState);
     let zoomLevel = mapState.properties.zoom;
     let heading = mapState.properties.heading;
     let pitch = mapState.properties.pitch;
@@ -121,9 +125,10 @@ const IndoorLabel = () => {
   let markers = [];
   let raisedMarkers = [];
   const selectedGeoJSON = useSelector((store)=>store.GeoJSONs.selectedGeoJSON);
-  console.log("selectedGeoJson",selectedGeoJSON);
+  // console.log("selectedGeoJson",selectedGeoJSON);
 
-  if (selectedGeoJSON !== null && selectedGeoJSON.features !== null) {
+  if (Object.keys(selectedGeoJSON).length !== 0 && selectedGeoJSON !== null && selectedGeoJSON.features !== null && selectedGeoJSON.features !== {} ) {
+    console.log("selectedGeoJSON",selectedGeoJSON)
     const features = selectedGeoJSON.features;
     markerCoordinates = (() => {
     
@@ -167,51 +172,54 @@ const IndoorLabel = () => {
   }
 
 
-
   return (
-    // <View ref={componentRef} onLayout={measureComponent}>
-      <>
-        {markers.map((marker, i) => {
-          return (
-            <MapboxGL.MarkerView
-              key={`MarkerView-${i}-${marker.coords.join("-")}`}
-              coordinate={marker.coords}
-              allowOverlap={allowOverlap}
-              style={ "flex" }
-            >
-              <Pressable
-                style={[
-                  
-                  { backgroundColor: "black", padding: 4 * 1 },
-                ]}
-              >
-                
-              </Pressable>
-            </MapboxGL.MarkerView>
-          );
-        })}
-        
-        {raisedMarkers.map((raisedMarker, i) => {
-          return (
-            <MapboxGL.MarkerView
-              key={`RaisedMarkerView-${i}-${raisedMarker.coords.join("-")}`}
-              coordinate={raisedMarker.coords}
-              allowOverlap={allowOverlap}
-              style={ "flex" }
-            >
-              <Pressable
-                style={[
-                  
-                  { backgroundColor: "black", padding: 4 * 1 },
-                ]}
-              >
-                
-              </Pressable>
-            </MapboxGL.MarkerView>
-          );
-        })}
+    <>
     </>
   );
+  // return (
+  //   // <View ref={componentRef} onLayout={measureComponent}>
+  //     <>
+  //       {markers.map((marker, i) => {
+  //         return (
+  //           <MapboxGL.MarkerView
+  //             key={`MarkerView-${i}-${marker.coords.join("-")}`}
+  //             coordinate={marker.coords}
+  //             allowOverlap={allowOverlap}
+  //             style={ "flex" }
+  //           >
+  //             <Pressable
+  //               style={[
+                  
+  //                 { backgroundColor: "black", padding: 4 * 1 },
+  //               ]}
+  //             >
+                
+  //             </Pressable>
+  //           </MapboxGL.MarkerView>
+  //         );
+  //       })}
+        
+  //       {raisedMarkers.map((raisedMarker, i) => {
+  //         return (
+  //           <MapboxGL.MarkerView
+  //             key={`RaisedMarkerView-${i}-${raisedMarker.coords.join("-")}`}
+  //             coordinate={raisedMarker.coords}
+  //             allowOverlap={allowOverlap}
+  //             style={ "flex" }
+  //           >
+  //             <Pressable
+  //               style={[
+                  
+  //                 { backgroundColor: "black", padding: 4 * 1 },
+  //               ]}
+  //             >
+                
+  //             </Pressable>
+  //           </MapboxGL.MarkerView>
+  //         );
+  //       })}
+  //   </>
+  // );
 };
 
 export default IndoorLabel;

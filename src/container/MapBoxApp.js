@@ -10,6 +10,7 @@ import Page from "../common/Page";
 import BaseExamplePropTypes from "../common/BaseExamplePropTypes";
 import {useSelector, useDispatch} from 'react-redux';
 import {setGeoJSON} from "../redux/actions/setGeoJsonAction";
+import { setMapState } from "../redux/actions/setMapstateAction";
 import IndoorLabel from '../component/IndoorLabel'
 const MapBoxApp = (props: BaseExampleProps) => {
     const zoomLevel = 16;
@@ -27,18 +28,18 @@ const MapBoxApp = (props: BaseExampleProps) => {
     };
     
 
-    const [mapState, setMapState] = useState({
-        properties: {
-          center: [0, 0],
-          bounds: {
-            ne: [0, 0],
-            sw: [0, 0],
-          },
-          zoom: 0,
-          heading: 0,
-          pitch: 0,
-        },
-    });
+    // const [mapState, setMapState] = useState({
+    //     properties: {
+    //       center: [0, 0],
+    //       bounds: {
+    //         ne: [0, 0],
+    //         sw: [0, 0],
+    //       },
+    //       zoom: 0,
+    //       heading: 0,
+    //       pitch: 0,
+    //     },
+    // });
 
     let map = useRef();
     let camera = useRef();
@@ -46,7 +47,9 @@ const MapBoxApp = (props: BaseExampleProps) => {
     const dispatch = useDispatch();
 
     const selectedGeoJSON = useSelector(store=>store.GeoJSONs.selectedGeoJSON);
-    console.log("selectedGeoJSON",selectedGeoJSON);
+    // console.log("selectedGeoJSON",selectedGeoJSON);
+    const mapState = useSelector(store=>store.MapState.mapState);
+    console.log("mapState",mapState);
     // const [selectedGeoJSON, setSelectedGeoJSON] = useState(null);
     const [allowOverlap, setAllowOverlap] = useState(false);
     const [isCameraMoving, setIsCameraMoving] = useState(false);
@@ -79,7 +82,8 @@ const MapBoxApp = (props: BaseExampleProps) => {
             style={{ flex: 1 }}
             onCameraChanged={(_state) => {
               console.log("_state",_state)
-              setMapState(_state);
+              // setMapState(_state);
+              dispatch(setMapState(_state));
               queryLayerFeatures()
             }}
             // onMapIdle={handleRegionDidChange}
