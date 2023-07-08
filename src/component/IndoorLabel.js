@@ -63,8 +63,9 @@ const IndoorLabel = () => {
     let pitch = mapState.properties.pitch;
     let center = mapState.properties.center;
     let centerPitch = 90-pitch;
-    let lon = Math.sin(heading*Math.PI/180)*Math.cos(centerPitch*Math.PI/180)*59959.436*Math.pow(2,-zoomLevel)*0.0103;
-    let lat = Math.cos(heading*Math.PI/180)*Math.cos(centerPitch*Math.PI/180)*59959.436*Math.pow(2,-zoomLevel)*0.0072;
+    let midvalue = Math.cos(centerPitch*Math.PI/180)*59959.436*Math.pow(2,-zoomLevel);
+    let lon = Math.sin(heading*Math.PI/180)*midvalue*0.0103;
+    let lat = Math.cos(heading*Math.PI/180)*midvalue*0.0072;
 
     
 
@@ -109,12 +110,12 @@ const IndoorLabel = () => {
         copyPosition[0]= copyPosition[0]+ extendVector[0];
         copyPosition[1]= copyPosition[1]+ extendVector[1];
         console.log("position",copyPosition)
-        return [{coords: copyPosition,color: "purple"}];
+        return {coords: copyPosition,color: "purple"};
       }
       
     }
     
-    return [{coords: position,color: "purple"}];
+    return {coords: position,color: "purple"};
     
   };
 
@@ -147,25 +148,36 @@ const IndoorLabel = () => {
   }
 
 
-  if (markerCoordinates.length !== 0 && markerCoordinates[1].latlons !== null) {
-      
-    // console.log(markerCoordinates[0].latlons);
-    const newMarkers = markerCoordinates[1].latlons.map((latlons) => {
-      return {
-        coords: latlons,
-        color: "purple",
-      };
-    });
+  if (markerCoordinates.length !== 0) {
+    for (const markerCoordinate of markerCoordinates){
+      if (markerCoordinate.height !== 0){
+        const newMarker = markerCoordinate.latlons.map((latlons) => {
+          return {
+            coords: latlons,
+            color: "purple",
+          };
+        });
 
-    let centerLabel = computeCenterLabelPosition(newMarkers); 
+        let centerLabel = computeCenterLabelPosition(newMarker); 
+        
+        markers.push({coords: centerLabel.position, color: "purple"})
 
-    markers = newMarkers;
-    //markers = [...newMarkers];
-    markers = [{coords: centerLabel.position, color: "purple"}];
-    // console.log("markers2",markers);
-    
-    raisedMarkers = raise(centerLabel.position,1.4)
-    
+      }else{
+        const newMarker = markerCoordinate.latlons.map((latlons) => {
+          return {
+            coords: latlons,
+            color: "purple",
+          };
+        });
+
+        let centerLabel = computeCenterLabelPosition(newMarker); 
+        
+        // markers = [{coords: centerLabel.position, color: "purple"}];
+        // raisedMarkers = raise(centerLabel.position,1.4)
+        raisedMarkers.push(raise(centerLabel.position,1.4))
+      }
+    }
+    console.log("markers",markers)
   }else{
     console.log("markerCoordinates.length = 0")
   }
