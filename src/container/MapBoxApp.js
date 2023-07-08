@@ -12,6 +12,12 @@ import {useSelector, useDispatch} from 'react-redux';
 import {setGeoJSON} from "../redux/actions/setGeoJsonAction";
 import { setMapState } from "../redux/actions/setMapstateAction";
 import IndoorLabel from '../component/IndoorLabel'
+//Todo:
+//Flickering issue => state update related
+//Promise Rejection => queryRenderedFeaturesInRect @ onCameraChanged
+
+
+
 const MapBoxApp = (props: BaseExampleProps) => {
     const zoomLevel = 16;
     const pitch = 40;
@@ -84,9 +90,9 @@ const MapBoxApp = (props: BaseExampleProps) => {
               console.log("_state",_state)
               // setMapState(_state);
               dispatch(setMapState(_state));
-              queryLayerFeatures()
+              // queryLayerFeatures()
             }}
-            // onMapIdle={handleRegionDidChange}
+            onMapIdle={queryLayerFeatures}
           >
             <Camera
               zoomLevel={zoomLevel}
