@@ -159,7 +159,7 @@ const IndoorLabel = () => {
         });
 
         let centerLabel = computeCenterLabelPosition(newMarker); 
-        
+        console.log("centerLabel",centerLabel)
         markers.push({coords: centerLabel.position, color: "purple"})
 
       }else{
@@ -186,7 +186,7 @@ const IndoorLabel = () => {
   return (
     // <View ref={componentRef} onLayout={measureComponent}>
       <>
-        {markers.map((marker, i) => {
+        {/* {markers.map((marker, i) => {
           return (
             <MapboxGL.MarkerView
               key={`MarkerView-${i}-${marker.coords.join("-")}`}
@@ -204,7 +204,7 @@ const IndoorLabel = () => {
               </Pressable>
             </MapboxGL.MarkerView>
           );
-        })}
+        })} */}
         
         {raisedMarkers.map((raisedMarker, i) => {
           return (
