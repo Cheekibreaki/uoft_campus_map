@@ -23,23 +23,25 @@ function computeCenterLabelPosition(givenMarkers){
   var min0 = givenMarkers[0].coords[0];
   var min1 = givenMarkers[0].coords[1];
   for (let i = 1; i < givenMarkers.length; i++) {
-
-    if (givenMarkers[i].coords[0] > max0) {
+    if(givenMarkers[i]!= undefined){
+      if (givenMarkers[i].coords[0] > max0) {
 
       max0 = givenMarkers[i].coords[0];
-    }
-    if (givenMarkers[i].coords[1] > max1) {
+      }
+      if (givenMarkers[i].coords[1] > max1) {
 
-      max1 = givenMarkers[i].coords[1];
-    }
-    if (givenMarkers[i].coords[0] < min0) {
+        max1 = givenMarkers[i].coords[1];
+      }
+      if (givenMarkers[i].coords[0] < min0) {
 
-      min0 = givenMarkers[i].coords[0];
-    }
-    if (givenMarkers[i].coords[1] < min1) {
+        min0 = givenMarkers[i].coords[0];
+      }
+      if (givenMarkers[i].coords[1] < min1) {
 
-      min1 = givenMarkers[i].coords[1];
+        min1 = givenMarkers[i].coords[1];
+      }
     }
+    
   }
 
 
@@ -71,7 +73,7 @@ const IndoorLabel = () => {
 
     let camera_projection_position = [center[0]-lon,center[1]-lat]
     
-    console.log("camera_projection_position",camera_projection_position)
+    // console.log("camera_projection_position",camera_projection_position)
     return {coords: camera_projection_position, color: "purple"};
   }
   
@@ -83,20 +85,20 @@ const IndoorLabel = () => {
     let heading = mapState.properties.heading;
     let pitch = mapState.properties.pitch;
     let center = mapState.properties.center;
-    console.log("center",center);
+    // console.log("center",center);
     let centerPitch = 90-pitch;
     let copyPosition = position.slice();
     if(cameraProj){
-      console.log("copyPosition",cameraProj)
+      // console.log("copyPosition",cameraProj)
       // let distanceBetweenCameraProjAndMarker = Math.abs(measure(cameraProj.coords[0],cameraProj.coords[1],position[0],position[1]));
       let vector  =[position[0]-cameraProj.coords[0],position[1]-cameraProj.coords[1]];
       const length = Math.sqrt(vector[0] ** 2 + vector[1] ** 2);
       let CameraHeight = Math.sin(centerPitch*Math.PI/180)*59959.436*Math.pow(2,-zoomLevel)*39;
-      console.log("CameraHeight",CameraHeight);
+      // console.log("CameraHeight",CameraHeight);
       if(CameraHeight>height){
         
         let distanceBetweenRaisedMarkerAndMarker = height*length/(CameraHeight-height);
-        console.log("distance",distanceBetweenRaisedMarkerAndMarker);
+        // console.log("distance",distanceBetweenRaisedMarkerAndMarker);
 
         
         
@@ -109,7 +111,7 @@ const IndoorLabel = () => {
 
         copyPosition[0]= copyPosition[0]+ extendVector[0];
         copyPosition[1]= copyPosition[1]+ extendVector[1];
-        console.log("position",copyPosition)
+        // console.log("position",copyPosition)
         return {coords: copyPosition,color: "purple"};
       }
       
@@ -128,7 +130,7 @@ const IndoorLabel = () => {
   // console.log("selectedGeoJson",selectedGeoJSON);
 
   if (Object.keys(selectedGeoJSON).length !== 0 && selectedGeoJSON !== null && selectedGeoJSON.features !== null && selectedGeoJSON.features !== {} ) {
-    console.log("selectedGeoJSON",selectedGeoJSON)
+    // console.log("selectedGeoJSON",selectedGeoJSON)
     const features = selectedGeoJSON.features;
     markerCoordinates = (() => {
     
@@ -150,29 +152,37 @@ const IndoorLabel = () => {
 
   if (markerCoordinates.length !== 0) {
     for (const markerCoordinate of markerCoordinates){
-      if (markerCoordinate.height !== 0){
-        const newMarker = markerCoordinate.latlons.map((latlons) => {
-          return {
-            coords: latlons,
+      if (markerCoordinate.height == 0){
+
+        const newMarker = markerCoordinate.latlons.map((latlons,index,coordArray) => {
+          if(index%2==0){
+            return {
+            coords: [latlons,coordArray[index+1]],
             color: "purple",
           };
+          }
+          
         });
-
+        // console.log("centerLabel",newMarker)
         let centerLabel = computeCenterLabelPosition(newMarker); 
         console.log("centerLabel",centerLabel)
         markers.push({coords: centerLabel.position, color: "purple"})
 
       }else{
-        const newMarker = markerCoordinate.latlons.map((latlons) => {
-          return {
-            coords: latlons,
+        // console.log( markerCoordinate.latlons)
+        const newMarker = markerCoordinate.latlons.map((latlons,index,coordArray) => {
+          if(index%2==0){
+            return {
+            coords: [latlons,coordArray[index+1]],
             color: "purple",
           };
+          }
+          
         });
-
-        let centerLabel = computeCenterLabelPosition(newMarker); 
         
-        // markers = [{coords: centerLabel.position, color: "purple"}];
+        let centerLabel = computeCenterLabelPosition(newMarker); 
+        console.log("centerLabel",newMarker)
+        markers = [{coords: centerLabel.position, color: "purple"}];
         // raisedMarkers = raise(centerLabel.position,1.4)
         raisedMarkers.push(raise(centerLabel.position,1.4))
       }
@@ -186,7 +196,7 @@ const IndoorLabel = () => {
   return (
     // <View ref={componentRef} onLayout={measureComponent}>
       <>
-        {/* {markers.map((marker, i) => {
+        {markers.map((marker, i) => {
           return (
             <MapboxGL.MarkerView
               key={`MarkerView-${i}-${marker.coords.join("-")}`}
@@ -204,7 +214,7 @@ const IndoorLabel = () => {
               </Pressable>
             </MapboxGL.MarkerView>
           );
-        })} */}
+        })}
         
         {raisedMarkers.map((raisedMarker, i) => {
           return (
