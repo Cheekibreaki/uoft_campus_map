@@ -16,6 +16,7 @@ import IndoorLabel from '../component/IndoorLabel'
 //Flickering issue => state update related
 //Promise Rejection => queryRenderedFeaturesInRect @ onCameraChanged
 
+const style = JSON.stringify(require('../assets/map-style.json'));
 
 
 const MapBoxApp = (props: BaseExampleProps) => {
@@ -85,14 +86,15 @@ const MapBoxApp = (props: BaseExampleProps) => {
         <Page {...props}>
           <MapView
             ref={map}
+            styleURL={style}
             style={{ flex: 1 }}
             onCameraChanged={(_state) => {
               console.log("_state",_state)
               // setMapState(_state);
               dispatch(setMapState(_state));
-              // queryLayerFeatures()
+              queryLayerFeatures()
             }}
-            onMapIdle={queryLayerFeatures}
+            // onMapIdle={queryLayerFeatures}
           >
             <Camera
               zoomLevel={zoomLevel}

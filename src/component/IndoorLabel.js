@@ -14,6 +14,8 @@ import {setGeoJSON} from '../redux/actions/getGeoJsonAction';
 import {setMapState} from '../redux/actions/getMapstateAction';
 
 
+
+
 function computeCenterLabelPosition(givenMarkers){
   if (givenMarkers.length === 0) {
     return [];
@@ -222,7 +224,8 @@ const IndoorLabel = () => {
               key={`RaisedMarkerView-${i}-${raisedMarker.coords.join("-")}`}
               coordinate={raisedMarker.coords}
               allowOverlap={true}
-              style={ "flex" }
+              
+              // mapStyle
             >
               <Pressable
                 style={[
