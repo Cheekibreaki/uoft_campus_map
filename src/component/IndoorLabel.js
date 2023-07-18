@@ -12,7 +12,7 @@ import BaseExamplePropTypes from "../common/BaseExamplePropTypes";
 import {useSelector} from 'react-redux';
 import {setGeoJSON} from '../redux/actions/getGeoJsonAction';
 import {setMapState} from '../redux/actions/getMapstateAction';
-
+import { Button, Divider, Text } from '@rneui/base';
 
 
 
@@ -79,7 +79,7 @@ const IndoorLabel = () => {
     return {coords: camera_projection_position, color: "purple"};
   }
   
-  const raise = (position,height) => {
+  const raise = (position,height,roomID) => {
     // let cameraProj = findCameraProj();
     // return [cameraProj]
     let cameraProj = findCameraProj();
@@ -114,12 +114,12 @@ const IndoorLabel = () => {
         copyPosition[0]= copyPosition[0]+ extendVector[0];
         copyPosition[1]= copyPosition[1]+ extendVector[1];
         // console.log("position",copyPosition)
-        return {coords: copyPosition,color: "purple"};
+        return {coords: copyPosition,color: "purple",room:roomID};
       }
       
     }
     
-    return {coords: position,color: "purple"};
+    return {coords: position,color: "purple",room:roomID};
     
   };
 
@@ -142,54 +142,62 @@ const IndoorLabel = () => {
           latlons: feature.geometry.coordinates.flat(),
           base_height: feature.properties.base_height,
           height: feature.properties.height,
+          roomID:feature.properties.room
         };
         updatedCoordinates = updatedCoordinates.concat(geometry);
       }
       
       return updatedCoordinates; // Return the updated state
     })();
-    console.log("markerCoordinates",markerCoordinates)
+    // console.log("markerCoordinates",markerCoordinates)
   }
 
 
   if (markerCoordinates.length !== 0) {
     for (const markerCoordinate of markerCoordinates){
       if (markerCoordinate.height == 0){
-
+        const roomNUM = markerCoordinate.roomID
+        // console.log("room number is ",roomNUM);
+        // console.log("coordinate is ",markerCoordinate);
         const newMarker = markerCoordinate.latlons.map((latlons,index,coordArray) => {
           if(index%2==0){
             return {
             coords: [latlons,coordArray[index+1]],
             color: "purple",
+            
           };
           }
           
         });
-        // console.log("centerLabel",newMarker)
+        // console.log("newMarker is ",newMarker)
         let centerLabel = computeCenterLabelPosition(newMarker); 
-        console.log("centerLabel",centerLabel)
-        markers.push({coords: centerLabel.position, color: "purple"})
+        // console.log("markers is",centerLabel)
+        markers.push({coords: centerLabel.position, color: "purple", room: roomNUM})
+
 
       }else{
-        // console.log( markerCoordinate.latlons)
+        const roomNUM = markerCoordinate.roomID
+        // console.log("room number is ",roomNUM);
         const newMarker = markerCoordinate.latlons.map((latlons,index,coordArray) => {
           if(index%2==0){
             return {
             coords: [latlons,coordArray[index+1]],
             color: "purple",
+
           };
           }
           
         });
         
         let centerLabel = computeCenterLabelPosition(newMarker); 
-        console.log("centerLabel",newMarker)
-        markers = [{coords: centerLabel.position, color: "purple"}];
+        // console.log("centerLabel",newMarker)
+        // markers = [{coords: centerLabel.position, color: "purple",roomNUM}];
         // raisedMarkers = raise(centerLabel.position,1.4)
-        raisedMarkers.push(raise(centerLabel.position,1.4))
+        raisedMarkers.push(raise(centerLabel.position,1.4,roomNUM))
       }
     }
-    console.log("markers",markers)
+    // console.log("markers",markers)
+    // console.log("raisedMarker", raisedMarkers)
   }else{
     console.log("markerCoordinates.length = 0")
   }
@@ -209,9 +217,17 @@ const IndoorLabel = () => {
               <Pressable
                 style={[
                   
-                  { backgroundColor: "black", padding: 4 * 1 },
+                  // { backgroundColor: "black", padding: 4 * 1 },
+
                 ]}
               >
+                 <Text style={[{
+                    color: 'white',
+                    fontSize: 11,
+                    fontWeight: 'bold',
+                  }]}>
+                    {marker.room}
+                </Text>
                 
               </Pressable>
             </MapboxGL.MarkerView>
@@ -230,10 +246,17 @@ const IndoorLabel = () => {
               <Pressable
                 style={[
                   
-                  { backgroundColor: "black", padding: 4 * 1 },
+                  // { backgroundColor: "black", padding: 4 * 1 },
+
                 ]}
               >
-                
+                <Text style={[{
+                    color: 'black',
+                    fontSize: 11,
+                    fontWeight: 'bold',
+                  }]}>
+                    {raisedMarker.room}
+                </Text>
               </Pressable>
             </MapboxGL.MarkerView>
           );
