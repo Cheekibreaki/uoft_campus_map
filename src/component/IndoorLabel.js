@@ -152,46 +152,66 @@ const IndoorLabel = () => {
 
 
   if (markerCoordinates.length !== 0) {
+    roomList = []
+    
     for (const markerCoordinate of markerCoordinates){
       if (markerCoordinate.height == 0){
-        const roomNUM = markerCoordinate.roomID
-        // console.log("room number is ",roomNUM);
-        // console.log("coordinate is ",markerCoordinate);
-        const newMarker = markerCoordinate.latlons.map((latlons,index,coordArray) => {
-          if(index%2==0){
-            return {
-            coords: [latlons,coordArray[index+1]],
-            color: "purple",
+        const roomNUM = markerCoordinate.roomID;
+        if(!roomList.includes(roomNUM)){
+          if(roomNUM !== "S" && roomNUM !== "E"&& roomNUM !== "FW" && roomNUM !== "MW"){
+              roomList.push(roomNUM);
+          }           
+          // console.log("room number is ",roomNUM);
+          // console.log("coordinate is ",markerCoordinate);
+          const newMarker = markerCoordinate.latlons.map((latlons,index,coordArray) => {
+            if(index%2==0){
+              return {
+              coords: [latlons,coordArray[index+1]],
+              color: "purple",
+              
+            };
+            }
             
-          };
-          }
-          
-        });
+          });
+          let centerLabel = computeCenterLabelPosition(newMarker);
+
+          // console.log("markers is",centerLabel)
+          markers.push({coords: centerLabel.position, color: "purple", room: roomNUM})
+
+
+        }
+        
         // console.log("newMarker is ",newMarker)
-        let centerLabel = computeCenterLabelPosition(newMarker); 
-        // console.log("markers is",centerLabel)
-        markers.push({coords: centerLabel.position, color: "purple", room: roomNUM})
+        
 
 
       }else{
         const roomNUM = markerCoordinate.roomID
-        // console.log("room number is ",roomNUM);
-        const newMarker = markerCoordinate.latlons.map((latlons,index,coordArray) => {
-          if(index%2==0){
-            return {
-            coords: [latlons,coordArray[index+1]],
-            color: "purple",
-
-          };
-          }
-          
-        });
+        if(!roomList.includes(roomNUM)){
+          if(roomNUM !== "S" && roomNUM !== "E"&& roomNUM !== "FW" && roomNUM !== "MW"){
+            roomList.push(roomNUM);
+          }           
         
-        let centerLabel = computeCenterLabelPosition(newMarker); 
-        // console.log("centerLabel",newMarker)
-        // markers = [{coords: centerLabel.position, color: "purple",roomNUM}];
-        // raisedMarkers = raise(centerLabel.position,1.4)
-        raisedMarkers.push(raise(centerLabel.position,1.4,roomNUM))
+          // console.log("room number is ",roomNUM);
+          const newMarker = markerCoordinate.latlons.map((latlons,index,coordArray) => {
+            if(index%2==0){
+              return {
+              coords: [latlons,coordArray[index+1]],
+              color: "purple",
+
+            };
+            }
+            
+          });
+          let centerLabel = computeCenterLabelPosition(newMarker); 
+                  // console.log("centerLabel",newMarker)
+                  // markers = [{coords: centerLabel.position, color: "purple",roomNUM}];
+                  // raisedMarkers = raise(centerLabel.position,1.4)
+          raisedMarkers.push(raise(centerLabel.position,1.4,roomNUM))
+
+
+        }
+        
       }
     }
     // console.log("markers",markers)
