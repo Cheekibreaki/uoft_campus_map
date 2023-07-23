@@ -56,15 +56,20 @@ const MapBoxApp = (props: BaseExampleProps) => {
     const selectedGeoJSON = useSelector(store=>store.GeoJSONs.selectedGeoJSON);
     // console.log("selectedGeoJSON",selectedGeoJSON);
     const mapState = useSelector(store=>store.MapState.mapState);
-    console.log("mapState",mapState);
+    // console.log("mapState",mapState);
     // const [selectedGeoJSON, setSelectedGeoJSON] = useState(null);
     const [allowOverlap, setAllowOverlap] = useState(false);
     const [isCameraMoving, setIsCameraMoving] = useState(false);
+    const [mapInitialized, setMapInitialized] = useState(false);
 
+    const onMapInitialized = () => {
+      // This function is called when the map is fully initialized
+      setMapInitialized(true);
+    };
 
     const queryLayerFeatures = async () => {
         setIsCameraMoving(false);
-        console.log("Camera moving");
+        // console.log("Camera moving");
         const featureCollection = await map.current.queryRenderedFeaturesInRect([], null, [
           "IndoorBuilding3DLayer",
         ]);
@@ -73,28 +78,39 @@ const MapBoxApp = (props: BaseExampleProps) => {
             // setSelectedGeoJSON(featureCollection);
             dispatch(setGeoJSON(featureCollection));
         } else {
-        console.log("no Indoor Building Layer found");
+        // console.log("no Indoor Building Layer found");
         //setSelectedGeoJSON(null);
-        dispatch(({}));
+        dispatch(setGeoJSON({}));
         }
     };
 
-
+    const renderIndoorlabels = () => {
+      // Function to render IndoorLabel on the map
+      if (mapInitialized) {
+        return (
+          <IndoorLabel/> 
+        );
+      } else {
+        // If map is not initialized yet, return null or a loading indicator
+        return null;
+      }
+    };
 
     return (
         // <View ref={componentRef} onLayout={measureComponent}>
         <Page {...props}>
-          <MapView
+          <MapView 
             ref={map}
             styleURL={style}
             style={{ flex: 1 }}
             onCameraChanged={(_state) => {
-              console.log("_state",_state)
+              // console.log("_state",_state)
               // setMapState(_state);
               dispatch(setMapState(_state));
               queryLayerFeatures()
             }}
-            // onMapIdle={queryLayerFeatures}
+            // onDidFinishLoadingMap={onMapInitialized}
+            onMapIdle={onMapInitialized}
           >
             <Camera
               zoomLevel={zoomLevel}
@@ -103,7 +119,7 @@ const MapBoxApp = (props: BaseExampleProps) => {
               centerCoordinate={centerCoordinate}
               ref={camera}
             />  
-            <IndoorLabel/>
+            
         
             <MapboxGL.ShapeSource
             id="indoorBuildingSource"
@@ -114,6 +130,7 @@ const MapBoxApp = (props: BaseExampleProps) => {
                 style={layerStyles.building}
             />
             </MapboxGL.ShapeSource>
+            {renderIndoorlabels()}
           </MapView>
         </Page>
         // </View>
