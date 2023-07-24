@@ -128,160 +128,201 @@ const IndoorLabel = () => {
   let markers = [];
   let raisedMarkers = [];
   const selectedGeoJSON = useSelector((store)=>store.GeoJSONs.selectedGeoJSON);
+  
   // console.log("selectedGeoJson",selectedGeoJSON);
 
-  if (Object.keys(selectedGeoJSON).length !== 0 && selectedGeoJSON !== null && selectedGeoJSON.features !== null && selectedGeoJSON.features !== {} ) {
-    // console.log("selectedGeoJSON",selectedGeoJSON)
-    const features = selectedGeoJSON.features;
-    markerCoordinates = (() => {
-    
-      let updatedCoordinates = [];
-      for (const feature of features) {
-        const geometry = {
-          latlons: feature.geometry.coordinates.flat(),
-          base_height: feature.properties.base_height,
-          height: feature.properties.height,
-          roomID:feature.properties.room
-        };
-        updatedCoordinates = updatedCoordinates.concat(geometry);
-      }
+  
+
+  if (selectedGeoJSON!={}){
+        // console.log("selectedGeoJSON",selectedGeoJSON)
+        if(Object.keys(selectedGeoJSON).length !== 0 && selectedGeoJSON !== null && selectedGeoJSON.features !== null && selectedGeoJSON.features !== {}){
+          const features = selectedGeoJSON.features;
+          markerCoordinates = (() => {
+          
+            let updatedCoordinates = [];
+            for (const feature of features) {
+              const geometry = {
+                latlons: feature.geometry.coordinates.flat(),
+                base_height: feature.properties.base_height,
+                height: feature.properties.height,
+                roomID:feature.properties.room
+              };
+              updatedCoordinates = updatedCoordinates.concat(geometry);
+            }
+            
+            return updatedCoordinates; // Return the updated state
+          })();
+          console.log("markerCoordinates",markerCoordinates)
+        }
       
-      return updatedCoordinates; // Return the updated state
-    })();
-    // console.log("markerCoordinates",markerCoordinates)
-  }
-
-
-  if (markerCoordinates.length !== 0) {
-    roomList = []
-    
-    for (const markerCoordinate of markerCoordinates){
-      if (markerCoordinate.height == 0){
-        const roomNUM = markerCoordinate.roomID;
-        if(!roomList.includes(roomNUM)){
-          if(roomNUM !== "S" && roomNUM !== "E"&& roomNUM !== "FW" && roomNUM !== "MW"){
-              roomList.push(roomNUM);
-          }           
-          // console.log("room number is ",roomNUM);
-          // console.log("coordinate is ",markerCoordinate);
-          const newMarker = markerCoordinate.latlons.map((latlons,index,coordArray) => {
-            if(index%2==0){
-              return {
-              coords: [latlons,coordArray[index+1]],
-              color: "purple",
+        if (markerCoordinates.length !== 0) {
+        roomList = []
+        
+        for (const markerCoordinate of markerCoordinates){
+          if (markerCoordinate.height == 0){
+            const roomNUM = markerCoordinate.roomID;
+            if(!roomList.includes(roomNUM)){
+              if(roomNUM !== "S" && roomNUM !== "E"&& roomNUM !== "FW" && roomNUM !== "MW"){
+                  roomList.push(roomNUM);
+              }           
+              // console.log("room number is ",roomNUM);
+              // console.log("coordinate is ",markerCoordinate);
               
-            };
-            }
-            
-          });
-          let centerLabel = computeCenterLabelPosition(newMarker);
-
-          // console.log("markers is",centerLabel)
-          markers.push({coords: centerLabel.position, color: "purple", room: roomNUM})
-
-
-        }
-        
-        // console.log("newMarker is ",newMarker)
-        
-
-
-      }else{
-        const roomNUM = markerCoordinate.roomID
-        if(!roomList.includes(roomNUM)){
-          if(roomNUM !== "S" && roomNUM !== "E"&& roomNUM !== "FW" && roomNUM !== "MW"){
-            roomList.push(roomNUM);
-          }           
-        
-          // console.log("room number is ",roomNUM);
-          const newMarker = markerCoordinate.latlons.map((latlons,index,coordArray) => {
-            if(index%2==0){
-              return {
-              coords: [latlons,coordArray[index+1]],
-              color: "purple",
-
-            };
-            }
-            
-          });
-          let centerLabel = computeCenterLabelPosition(newMarker); 
-                  // console.log("centerLabel",newMarker)
-                  // markers = [{coords: centerLabel.position, color: "purple",roomNUM}];
-                  // raisedMarkers = raise(centerLabel.position,1.4)
-          raisedMarkers.push(raise(centerLabel.position,1.4,roomNUM))
-
-
-        }
-        
-      }
-    }
-    // console.log("markers",markers)
-    // console.log("raisedMarker", raisedMarkers)
-  }else{
-    console.log("markerCoordinates.length = 0")
-  }
-
-
-  return (
-    // <View ref={componentRef} onLayout={measureComponent}>
-      <>
-        {markers.map((marker, i) => {
-          return (
-            <MapboxGL.MarkerView
-              key={`MarkerView-${i}-${marker.coords.join("-")}`}
-              coordinate={marker.coords}
-              allowOverlap={true}
-              style={ "flex" }
-            >
-              <Pressable
-                style={[
+              // if(roomNUM == "contour"){
+              //   const newMarker = markerCoordinate.latlons.map((latlons) => {
+              
+              //     return {
+              //       coords: latlons,
+              //       color: "purple",
+      
+              //     };
                   
-                  // { backgroundColor: "black", padding: 4 * 1 },
+                  
+              //   });
+                  
+              //   let centerLabel = computeCenterLabelPosition(newMarker);
+              //   // console.log("markers is",centerLabel)
+              //   markers.push({coords: centerLabel.position, color: "purple", room: roomNUM});
+              // }else{
+                const newMarker = markerCoordinate.latlons.map((latlons,index,coordArray) => {
+                if(index%2==0){
+                    return {
+                    coords: [latlons,coordArray[index+1]],
+                    color: "purple",
 
-                ]}
-              >
-                 <Text style={[{
-                    color: 'white',
-                    fontSize: 11,
-                    fontWeight: 'bold',
-                  }]}>
-                    {marker.room}
-                </Text>
+                  };
+                  }
+                  
+                });
+
+                let centerLabel = computeCenterLabelPosition(newMarker);   
+                // console.log("markers is",centerLabel)
+                markers.push({coords: centerLabel.position, color: "purple", room: roomNUM})
+              // }
+
+            }
+          }else{
+            const roomNUM = markerCoordinate.roomID
+            if(!roomList.includes(roomNUM)){
+              if(roomNUM !== "S" && roomNUM !== "E"&& roomNUM !== "FW" && roomNUM !== "MW"){
+                roomList.push(roomNUM);
+              }           
+            
+              // console.log("room number is ",roomNUM);
+              // console.log("coordinate is",markerCoordinate.latlons)
+              // if(roomNUM == "contour"){
+              //   const newMarker = markerCoordinate.latlons.map((latlons) => {
+              
+              //     return {
+              //       coords: latlons,
+              //       color: "purple",
+      
+              //     };
+                  
+                  
+              //   });
+                  
+              //   let centerLabel = computeCenterLabelPosition(newMarker);       
+              //   raisedMarkers.push(raise(centerLabel.position,1.4,roomNUM))
+              // }else{
+                const newMarker = markerCoordinate.latlons.map((latlons,index,coordArray) => {
+                if(index%2==0){
+                    return {
+                    coords: [latlons,coordArray[index+1]],
+                    color: "purple",
+
+                  };
+                  }
+                  
+                });
                 
-              </Pressable>
-            </MapboxGL.MarkerView>
-          );
-        })}
-        
-        {raisedMarkers.map((raisedMarker, i) => {
-          return (
-            <MapboxGL.MarkerView
-              key={`RaisedMarkerView-${i}-${raisedMarker.coords.join("-")}`}
-              coordinate={raisedMarker.coords}
-              allowOverlap={true}
-              
-              // mapStyle
-            >
-              <Pressable
-                style={[
-                  
-                  // { backgroundColor: "black", padding: 4 * 1 },
+                let centerLabel = computeCenterLabelPosition(newMarker);       
+                raisedMarkers.push(raise(centerLabel.position,1.4,roomNUM))
+              // }
+             
 
-                ]}
+
+    
+    
+            }
+            
+          }
+        }
+         console.log("markers",markers)
+         console.log("raisedMarker", raisedMarkers)
+      }else{
+        console.log("markerCoordinates.length = 0")
+      }
+
+    return (
+      // <View ref={componentRef} onLayout={measureComponent}>
+        <>
+          {markers.map((marker, i) => {
+            return (
+              <MapboxGL.MarkerView
+                key={`MarkerView-${i}-${marker.coords.join("-")}`}
+                coordinate={marker.coords}
+                allowOverlap={true}
+                style={ "flex" }
               >
-                <Text style={[{
-                    color: 'black',
-                    fontSize: 11,
-                    fontWeight: 'bold',
-                  }]}>
-                    {raisedMarker.room}
-                </Text>
-              </Pressable>
-            </MapboxGL.MarkerView>
-          );
-        })}
-    </>
-  );
+                <Pressable
+                  style={[
+                    
+                    // { backgroundColor: "black", padding: 4 * 1 },
+
+                  ]}
+                >
+                   <Text style={[{
+                      color: 'white',
+                      fontSize: 11,
+                      fontWeight: 'bold',
+                    }]}>
+                      {marker.room}
+                  </Text>
+                  
+                </Pressable>
+              </MapboxGL.MarkerView>
+            );
+          })}
+          
+          {raisedMarkers.map((raisedMarker, i) => {
+            return (
+              <MapboxGL.MarkerView
+                key={`RaisedMarkerView-${i}-${raisedMarker.coords.join("-")}`}
+                coordinate={raisedMarker.coords}
+                allowOverlap={true}
+                
+                // mapStyle
+              >
+                <Pressable
+                  style={[
+                    
+                    // { backgroundColor: "black", padding: 4 * 1 },
+
+                  ]}
+                >
+                  <Text style={[{
+                      color: 'black',
+                      fontSize: 11,
+                      fontWeight: 'bold',
+                    }]}>
+                      {raisedMarker.room}
+                  </Text>
+                </Pressable>
+              </MapboxGL.MarkerView>
+            );
+          })}
+      
+      </>
+    );
+
+  }else{
+    return(
+      <>
+      </>
+    );
+  } 
+  
 };
 
 export default IndoorLabel;
