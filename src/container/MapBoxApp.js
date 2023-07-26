@@ -5,13 +5,15 @@ import { Slider } from "@rneui/base";
 import { Position } from "geojson";
 import { Camera, Logger, MapView, MarkerView } from '@rnmapbox/maps';
 import colors from "../styles/colors";
-import indoorMapGeoJSON from "../assets/geojson/BA_Indoor_1_contour.json";
+import indoorMapGeoJSON from "../assets/geojson/BA_Indoor_1.json";
 import Page from "../common/Page";
 import BaseExamplePropTypes from "../common/BaseExamplePropTypes";
 import {useSelector, useDispatch} from 'react-redux';
 import {setGeoJSON} from "../redux/actions/setGeoJsonAction";
 import { setMapState } from "../redux/actions/setMapstateAction";
 import IndoorLabel from '../component/IndoorLabel'
+import ButtonPanel from "../component/button";
+
 //Todo:
 //Flickering issue => state update related
 //Promise Rejection => queryRenderedFeaturesInRect @ onCameraChanged
@@ -89,12 +91,16 @@ const MapBoxApp = (props: BaseExampleProps) => {
       if (mapInitialized) {
         return (
           <IndoorLabel/> 
+          
         );
       } else {
         // If map is not initialized yet, return null or a loading indicator
         return null;
       }
     };
+
+    const filterFeature =  useSelector(store=>store.Filter.filter);
+    console.log(filterFeature);
 
     return (
         // <View ref={componentRef} onLayout={measureComponent}>
@@ -119,6 +125,9 @@ const MapBoxApp = (props: BaseExampleProps) => {
               centerCoordinate={centerCoordinate}
               ref={camera}
             />  
+            {/* <View>
+             
+            </View> */}
             
         
             <MapboxGL.ShapeSource
@@ -127,11 +136,20 @@ const MapBoxApp = (props: BaseExampleProps) => {
             >
             <MapboxGL.FillExtrusionLayer
                 id="IndoorBuilding3DLayer"
+                filter={useSelector(store=>store.Filter.filter)}
+                // filter={['all',['!=', 'room', 'contour'],['==', 'floor', 1]]}
                 style={layerStyles.building}
             />
+
             </MapboxGL.ShapeSource>
-            {renderIndoorlabels()}
+            
+            {renderIndoorlabels()}     
           </MapView>
+          <View>
+           <ButtonPanel/> 
+          </View>
+          
+
         </Page>
         // </View>
     );
