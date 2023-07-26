@@ -1,16 +1,17 @@
 import React, { useState, useEffect, useCallback, useLayoutEffect, useRef } from "react";
-import { View, StyleSheet, Pressable } from "react-native";
+import { View, StyleSheet, TouchableOpacity, Pressable } from "react-native";
 import MapboxGL from "@rnmapbox/maps";
 import { Slider } from "@rneui/base";
 import { Position } from "geojson";
 import { Camera, Logger, MapView, MarkerView } from '@rnmapbox/maps';
 import sheet from "../styles/sheet";
 import colors from "../styles/colors";
+import buttonStyles from "../styles/button";
 import Page from "../common/Page";
 import BaseExamplePropTypes from "../common/BaseExamplePropTypes";
 import {useSelector} from 'react-redux';
-import {setGeoJSON} from '../redux/actions/getGeoJsonAction';
-import {setMapState} from '../redux/actions/getMapstateAction';
+import {setGeoJSON} from '../redux/actions/getGeoJsonReducer';
+import {setMapState} from '../redux/actions/getMapstateReducer';
 import { Button, Divider, Text } from '@rneui/base';
 
 
@@ -152,7 +153,7 @@ const IndoorLabel = () => {
             
             return updatedCoordinates; // Return the updated state
           })();
-          console.log("markerCoordinates",markerCoordinates)
+          // console.log("markerCoordinates",markerCoordinates)
         }
       
         if (markerCoordinates.length !== 0) {
@@ -248,8 +249,8 @@ const IndoorLabel = () => {
             
           }
         }
-         console.log("markers",markers)
-         console.log("raisedMarker", raisedMarkers)
+        //  console.log("markers",markers)
+        //  console.log("raisedMarker", raisedMarkers)
       }else{
         console.log("markerCoordinates.length = 0")
       }
@@ -257,6 +258,7 @@ const IndoorLabel = () => {
     return (
       // <View ref={componentRef} onLayout={measureComponent}>
         <>
+          
           {markers.map((marker, i) => {
             return (
               <MapboxGL.MarkerView
