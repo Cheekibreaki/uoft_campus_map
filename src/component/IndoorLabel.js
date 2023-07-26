@@ -142,7 +142,7 @@ const IndoorLabel = () => {
             let updatedCoordinates = [];
             for (const feature of features) {
               const geometry = {
-                latlons: feature.geometry.coordinates.flat(),
+                latlons: feature.geometry.coordinates.flat(2),
                 base_height: feature.properties.base_height,
                 height: feature.properties.height,
                 roomID:feature.properties.room
