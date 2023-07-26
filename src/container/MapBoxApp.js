@@ -5,7 +5,7 @@ import { Slider } from "@rneui/base";
 import { Position } from "geojson";
 import { Camera, Logger, MapView, MarkerView } from '@rnmapbox/maps';
 import colors from "../styles/colors";
-import indoorMapGeoJSON from "../assets/geojson/all_building.json";
+import indoorMapGeoJSON from "../assets/geojson/BA_Indoor_1.json";
 import Page from "../common/Page";
 import BaseExamplePropTypes from "../common/BaseExamplePropTypes";
 import {useSelector, useDispatch} from 'react-redux';
@@ -28,12 +28,21 @@ const MapBoxApp = (props: BaseExampleProps) => {
     const centerCoordinate = [-79.3973449417775, 43.65997911110146]
 
     const layerStyles = {
-        building: {
-            fillExtrusionOpacity: 0.5,
-            fillExtrusionHeight: ["get", "height"],
-            fillExtrusionBase: ["get", "base_height"],
-            fillExtrusionColor: ["get", "color"],
-        },
+      Contour:{
+        fillExtrusionOpacity: 0.5,
+        fillExtrusionHeight: ["get", "height"],
+        fillExtrusionBase: ["get", "base_height"],
+        fillExtrusionColor: ["get", "color"],
+      },
+      
+
+      IndoorBuilding: {
+        fillExtrusionOpacity: 0.5,
+        fillExtrusionHeight: ["get", "height"],
+        fillExtrusionBase: ["get", "base_height"],
+        fillExtrusionColor: ["get", "color"],
+      },
+       
     };
     
 
@@ -134,12 +143,21 @@ const MapBoxApp = (props: BaseExampleProps) => {
             id="indoorBuildingSource"
             shape={indoorMapGeoJSON}
             >
+
+            <MapboxGL.FillExtrusionLayer
+                id="Contour3DLayer"
+                filter={useSelector(store=>store.Filter.filter)[0]}
+                style={layerStyles.Contour}
+            />
+            
             <MapboxGL.FillExtrusionLayer
                 id="IndoorBuilding3DLayer"
-                filter={useSelector(store=>store.Filter.filter)}
-                // filter={['all',['!=', 'room', 'contour'],['==', 'floor', 1]]}
-                style={layerStyles.building}
+                filter={useSelector(store=>store.Filter.filter)[1]}
+
+                style={layerStyles.IndoorBuilding}
             />
+
+         
 
             </MapboxGL.ShapeSource>
             
