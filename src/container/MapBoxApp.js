@@ -63,13 +63,15 @@ const MapBoxApp = (props: BaseExampleProps) => {
 
     const queryLayerFeatures = async () => {
         setIsCameraMoving(false);
-        // console.log("Camera moving");
+       
         const featureCollection = await map.current.queryRenderedFeaturesInRect([], null, [
-          "IndoorBuilding3DLayer",
+          // "false_name"
+          "BA_1_Contour","BA_1_Room","BA_2_Contour","BA_2_Room"
         ]);
 
         if (featureCollection && featureCollection.features && featureCollection.features.length) {
             // setSelectedGeoJSON(featureCollection);
+            console.log("featureCollection",featureCollection)
             dispatch(setGeoJSON(featureCollection));
         } else {
         // console.log("no Indoor Building Layer found");

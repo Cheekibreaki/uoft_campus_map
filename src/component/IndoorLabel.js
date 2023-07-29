@@ -135,7 +135,7 @@ const IndoorLabel = () => {
   
 
   if (selectedGeoJSON!={}){
-        // console.log("selectedGeoJSON",selectedGeoJSON)
+        console.log("selectedGeoJSON",selectedGeoJSON)
         if(Object.keys(selectedGeoJSON).length !== 0 && selectedGeoJSON !== null && selectedGeoJSON.features !== null && selectedGeoJSON.features !== {}){
           const features = selectedGeoJSON.features;
           markerCoordinates = (() => {
@@ -157,10 +157,10 @@ const IndoorLabel = () => {
         }
       
         if (markerCoordinates.length !== 0) {
-        roomList = []
+        let roomList = []
         
         for (const markerCoordinate of markerCoordinates){
-          if (markerCoordinate.height == 0){
+          if (markerCoordinate.height-1 == 0){
             const roomNUM = markerCoordinate.roomID;
             if(!roomList.includes(roomNUM)){
               if(roomNUM !== "S" && roomNUM !== "E"&& roomNUM !== "FW" && roomNUM !== "MW"){
@@ -204,6 +204,7 @@ const IndoorLabel = () => {
             }
           }else{
             const roomNUM = markerCoordinate.roomID
+
             if(!roomList.includes(roomNUM)){
               if(roomNUM !== "S" && roomNUM !== "E"&& roomNUM !== "FW" && roomNUM !== "MW"){
                 roomList.push(roomNUM);
@@ -236,9 +237,9 @@ const IndoorLabel = () => {
                   }
                   
                 });
-                
+                let height = markerCoordinate.height/21.42
                 let centerLabel = computeCenterLabelPosition(newMarker);       
-                raisedMarkers.push(raise(centerLabel.position,1.4,roomNUM))
+                raisedMarkers.push(raise(centerLabel.position,height,roomNUM))
               // }
              
 
