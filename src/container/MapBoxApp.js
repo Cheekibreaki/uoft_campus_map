@@ -13,6 +13,7 @@ import {setGeoJSON} from "../redux/actions/setGeoJsonAction";
 import { setMapState } from "../redux/actions/setMapstateAction";
 import IndoorLabel from '../component/IndoorLabel'
 import ButtonPanel from "../component/button";
+import GeojsonFiles from "../component/renderGeojsonFiles";
 
 //Todo:
 //Flickering issue => state update related
@@ -26,15 +27,6 @@ const MapBoxApp = (props: BaseExampleProps) => {
     const pitch = 40;
     const heading = 30;
     const centerCoordinate = [-79.3973449417775, 43.65997911110146]
-
-    const layerStyles = {
-        building: {
-            fillExtrusionOpacity: 0.5,
-            fillExtrusionHeight: ["get", "height"],
-            fillExtrusionBase: ["get", "base_height"],
-            fillExtrusionColor: ["get", "color"],
-        },
-    };
     
 
     // const [mapState, setMapState] = useState({
@@ -85,7 +77,11 @@ const MapBoxApp = (props: BaseExampleProps) => {
         dispatch(setGeoJSON({}));
         }
     };
-
+    const renderGeojsonFiles = () =>{
+      return (
+        <GeojsonFiles/>
+      );
+    }
     const renderIndoorlabels = () => {
       // Function to render IndoorLabel on the map
       if (mapInitialized) {
@@ -125,24 +121,8 @@ const MapBoxApp = (props: BaseExampleProps) => {
               centerCoordinate={centerCoordinate}
               ref={camera}
             />  
-            {/* <View>
-             
-            </View> */}
-            
-        
-            <MapboxGL.ShapeSource
-            id="indoorBuildingSource"
-            shape={indoorMapGeoJSON}
-            >
-            <MapboxGL.FillExtrusionLayer
-                id="IndoorBuilding3DLayer"
-                filter={useSelector(store=>store.Filter.filter)}
-                // filter={['all',['!=', 'room', 'contour'],['==', 'floor', 1]]}
-                style={layerStyles.building}
-            />
 
-            </MapboxGL.ShapeSource>
-            
+            {renderGeojsonFiles()}
             {renderIndoorlabels()}     
           </MapView>
           <View>
