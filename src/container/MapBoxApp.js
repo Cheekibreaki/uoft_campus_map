@@ -5,7 +5,7 @@ import { Slider } from "@rneui/base";
 import { Position } from "geojson";
 import { Camera, Logger, MapView, MarkerView } from '@rnmapbox/maps';
 import colors from "../styles/colors";
-import indoorMapGeoJSON from "../assets/geojson/all_building.json";
+import indoorMapGeoJSON from "../assets/geojson/BA_Indoor_1.json";
 import Page from "../common/Page";
 import BaseExamplePropTypes from "../common/BaseExamplePropTypes";
 import {useSelector, useDispatch} from 'react-redux';
