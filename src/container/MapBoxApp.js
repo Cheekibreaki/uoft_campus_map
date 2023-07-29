@@ -13,6 +13,7 @@ import {setGeoJSON} from "../redux/actions/setGeoJsonAction";
 import { setMapState } from "../redux/actions/setMapstateAction";
 import IndoorLabel from '../component/IndoorLabel'
 import ButtonPanel from "../component/button";
+import GeojsonFiles from "../component/renderGeojsonFiles";
 
 //Todo:
 //Flickering issue => state update related
@@ -26,24 +27,6 @@ const MapBoxApp = (props: BaseExampleProps) => {
     const pitch = 40;
     const heading = 30;
     const centerCoordinate = [-79.3973449417775, 43.65997911110146]
-
-    const layerStyles = {
-      Contour:{
-        fillExtrusionOpacity: 0.5,
-        fillExtrusionHeight: ["get", "height"],
-        fillExtrusionBase: ["get", "base_height"],
-        fillExtrusionColor: ["get", "color"],
-      },
-      
-
-      IndoorBuilding: {
-        fillExtrusionOpacity: 0.5,
-        fillExtrusionHeight: ["get", "height"],
-        fillExtrusionBase: ["get", "base_height"],
-        fillExtrusionColor: ["get", "color"],
-      },
-       
-    };
     
 
     // const [mapState, setMapState] = useState({
@@ -94,7 +77,11 @@ const MapBoxApp = (props: BaseExampleProps) => {
         dispatch(setGeoJSON({}));
         }
     };
-
+    const renderGeojsonFiles = () =>{
+      return (
+        <GeojsonFiles/>
+      );
+    }
     const renderIndoorlabels = () => {
       // Function to render IndoorLabel on the map
       if (mapInitialized) {
@@ -134,33 +121,8 @@ const MapBoxApp = (props: BaseExampleProps) => {
               centerCoordinate={centerCoordinate}
               ref={camera}
             />  
-            {/* <View>
-             
-            </View> */}
-            
-        
-            <MapboxGL.ShapeSource
-            id="indoorBuildingSource"
-            shape={indoorMapGeoJSON}
-            >
 
-            <MapboxGL.FillExtrusionLayer
-                id="Contour3DLayer"
-                filter={useSelector(store=>store.Filter.filter)[0]}
-                style={layerStyles.Contour}
-            />
-            
-            <MapboxGL.FillExtrusionLayer
-                id="IndoorBuilding3DLayer"
-                filter={useSelector(store=>store.Filter.filter)[1]}
-
-                style={layerStyles.IndoorBuilding}
-            />
-
-         
-
-            </MapboxGL.ShapeSource>
-            
+            {renderGeojsonFiles()}
             {renderIndoorlabels()}     
           </MapView>
           <View>
