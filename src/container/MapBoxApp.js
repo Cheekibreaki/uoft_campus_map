@@ -14,7 +14,7 @@ import { setMapState } from "../redux/actions/setMapstateAction";
 import IndoorLabel from '../component/IndoorLabel'
 import ButtonPanel from "../component/button";
 import GeojsonFiles from "../component/renderGeojsonFiles";
-
+import { setIsCameraMoving } from "../redux/actions/setIsCameraMovingAction";
 //Todo:
 //Flickering issue => state update related
 //Promise Rejection => queryRenderedFeaturesInRect @ onCameraChanged
@@ -54,7 +54,7 @@ const MapBoxApp = (props: BaseExampleProps) => {
     // console.log("mapState",mapState);
     // const [selectedGeoJSON, setSelectedGeoJSON] = useState(null);
     const [allowOverlap, setAllowOverlap] = useState(false);
-    const [isCameraMoving, setIsCameraMoving] = useState(false);
+    
     const [mapInitialized, setMapInitialized] = useState(false);
 
     const onMapInitialized = () => {
@@ -124,9 +124,13 @@ const MapBoxApp = (props: BaseExampleProps) => {
               // console.log("yes")
               dispatch(setMapState(_state));
               avoid_queryLayerFeatures()
+              dispatch(setIsCameraMoving(true))
+            }}
+            onMapIdle = {() => {
+              dispatch(setIsCameraMoving(false))
             }}
             // onDidFinishLoadingMap={onMapInitialized}
-            onMapIdle={onMapInitialized}
+            // onDidFinishLoadingMap={onMapInitialized}
           >
             <Camera
               zoomLevel={zoomLevel}
@@ -137,7 +141,7 @@ const MapBoxApp = (props: BaseExampleProps) => {
             />  
 
             {renderGeojsonFiles()}
-            {renderIndoorlabels()}     
+            <IndoorLabel/> 
           </MapView>
           <View>
            <ButtonPanel/> 

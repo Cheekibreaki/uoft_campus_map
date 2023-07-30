@@ -1,5 +1,5 @@
 const initialState ={
-    filter:[['==', 'room', 'contour'],['>','floor',9]],
+    filter:[9,['==', 'room', 'contour'],['>','floor',9]],
 
 };
 

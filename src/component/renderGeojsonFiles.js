@@ -5,8 +5,8 @@ import buildingStyles from "../styles/building";
 import {useSelector, useDispatch} from 'react-redux';
 import MapboxGL from "@rnmapbox/maps";
 
-// const BA_1_Room = require("../assets/geojson/BA_Indoor_1_room.json");
-// const BA_1_Contour = require("../assets/geojson/BA_Indoor_1_contour.json");
+const BA_1_Room = require("../assets/geojson/BA_Indoor_1_room.json");
+const BA_1_Contour = require("../assets/geojson/BA_Indoor_1_contour.json");
 const BA_2_Room = require("../assets/geojson/BA_Indoor_2_room.json");
 const BA_2_Contour = require("../assets/geojson/BA_Indoor_2_contour.json");
 
@@ -22,7 +22,7 @@ const renderGeojsonFiles = () => {
 
     <>
     
-    {/* <MapboxGL.ShapeSource
+    <MapboxGL.ShapeSource
       id="BA_1_Contour"
       shape={BA_1_Contour}
       >
@@ -44,7 +44,7 @@ const renderGeojsonFiles = () => {
           // filter={useSelector(store=>store.Filter.filter)[0]}
           style={buildingStyles.IndoorBuilding}
       />
-    </MapboxGL.ShapeSource> */}
+    </MapboxGL.ShapeSource>
 
     <MapboxGL.ShapeSource
       id="BA_2_Contour"

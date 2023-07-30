@@ -12,7 +12,7 @@ const ButtonPanel = () => {
 
     const handleButtonPress = (floorNumber) => {
         console.log(floorNumber);
-         dispatch(setFilter([['all',['==', 'room', 'contour'],['!=', 'floor', floorNumber]],['all',['!=', 'room', 'contour'],['==', 'floor', floorNumber]]])); 
+         dispatch(setFilter([floorNumber,['all',['==', 'room', 'contour'],['!=', 'floor', floorNumber]],['all',['!=', 'room', 'contour'],['==', 'floor', floorNumber]]])); 
     };
 
 
