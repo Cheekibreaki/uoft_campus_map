@@ -67,7 +67,7 @@ const IndoorLabel = () => {
     let pitch = mapState.properties.pitch;
     let center = mapState.properties.center;
     let centerPitch = 90-pitch;
-    let midvalue = Math.cos(centerPitch*Math.PI/180)*59959.436*Math.pow(2,-zoomLevel);
+    let midvalue = Math.cos(centerPitch*Math.PI/180)*59959*Math.pow(2,-zoomLevel);
     let lon = Math.sin(heading*Math.PI/180)*midvalue*0.0103;
     let lat = Math.cos(heading*Math.PI/180)*midvalue*0.0072;
 
@@ -135,7 +135,7 @@ const IndoorLabel = () => {
   
 
   if (selectedGeoJSON!={}){
-        console.log("selectedGeoJSON",selectedGeoJSON)
+        // console.log("selectedGeoJSON",selectedGeoJSON)
         if(Object.keys(selectedGeoJSON).length !== 0 && selectedGeoJSON !== null && selectedGeoJSON.features !== null && selectedGeoJSON.features !== {}){
           const features = selectedGeoJSON.features;
           markerCoordinates = (() => {

@@ -5,7 +5,7 @@ import { Slider } from "@rneui/base";
 import { Position } from "geojson";
 import { Camera, Logger, MapView, MarkerView } from '@rnmapbox/maps';
 import colors from "../styles/colors";
-import indoorMapGeoJSON from "../assets/geojson/BA_Indoor_1_room.json";
+import BA_2_Room from "../assets/geojson/BA_Indoor_2_room.json";
 import Page from "../common/Page";
 import BaseExamplePropTypes from "../common/BaseExamplePropTypes";
 import {useSelector, useDispatch} from 'react-redux';
@@ -41,7 +41,8 @@ const MapBoxApp = (props: BaseExampleProps) => {
     //       pitch: 0,
     //     },
     // });
-
+    let counter = 0
+    
     let map = useRef();
     let camera = useRef();
     
@@ -71,7 +72,7 @@ const MapBoxApp = (props: BaseExampleProps) => {
 
         if (featureCollection && featureCollection.features && featureCollection.features.length) {
             // setSelectedGeoJSON(featureCollection);
-            console.log("featureCollection",featureCollection)
+
             dispatch(setGeoJSON(featureCollection));
         } else {
         // console.log("no Indoor Building Layer found");
@@ -79,6 +80,13 @@ const MapBoxApp = (props: BaseExampleProps) => {
         dispatch(setGeoJSON({}));
         }
     };
+
+    const avoid_queryLayerFeatures = async () => {
+      dispatch(setGeoJSON(BA_2_Room))
+    }
+
+
+
     const renderGeojsonFiles = () =>{
       return (
         <GeojsonFiles/>
@@ -98,8 +106,6 @@ const MapBoxApp = (props: BaseExampleProps) => {
     };
 
     const filterFeature =  useSelector(store=>store.Filter.filter);
-    console.log(filterFeature);
-
     return (
         // <View ref={componentRef} onLayout={measureComponent}>
         <Page {...props}>
@@ -107,11 +113,17 @@ const MapBoxApp = (props: BaseExampleProps) => {
             ref={map}
             styleURL={style}
             style={{ flex: 1 }}
+            onWillStartRenderingFrame = {()=>{
+              console.log("asda")
+            }}
             onCameraChanged={(_state) => {
+              
               // console.log("_state",_state)
               // setMapState(_state);
+              counter++
+              // console.log("yes")
               dispatch(setMapState(_state));
-              queryLayerFeatures()
+              avoid_queryLayerFeatures()
             }}
             // onDidFinishLoadingMap={onMapInitialized}
             onMapIdle={onMapInitialized}
