@@ -113,7 +113,7 @@ const MapBoxApp = (props: BaseExampleProps) => {
             ref={map}
             styleURL={style}
             style={{ flex: 1 }}
-            onWillStartRenderingFrame = {()=>{
+            onWillStartRenderingFrame = {(_state)=>{
               console.log("asda")
             }}
             onCameraChanged={(_state) => {
