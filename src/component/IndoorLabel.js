@@ -237,7 +237,7 @@ const IndoorLabel = () => {
 
     // Clean up the interval when the component unmounts or isActive becomes false
     return () => {
-      clearInterval(intervalId);
+      
     };
 
   }, [mapState]);
