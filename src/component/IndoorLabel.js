@@ -79,7 +79,7 @@ const IndoorLabel = () => {
     // console.log("camera_projection_position",camera_projection_position)
     return {coords: camera_projection_position, color: "purple"};
   }
-  
+
   const raise = (position,height,roomID) => {
     // let cameraProj = findCameraProj();
     // return [cameraProj]
@@ -229,9 +229,10 @@ const IndoorLabel = () => {
   useEffect(() => {
     console.log("isCameraMoving",isCameraMoving);
     let intervalId;
-    if (isCameraMoving) {
+    if (mapState) {
       // Start the interval when isActive is true
-      intervalId = setInterval(updateLabel, 200); // Call the function every 1000 milliseconds (1 second)
+      updateLabel()
+      // intervalId = setInterval(updateLabel, 200); // Call the function every 1000 milliseconds (1 second)
     }
 
     // Clean up the interval when the component unmounts or isActive becomes false
@@ -239,7 +240,7 @@ const IndoorLabel = () => {
       clearInterval(intervalId);
     };
 
-  }, [isCameraMoving]);
+  }, [mapState]);
 
 
   
