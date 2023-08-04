@@ -14,8 +14,10 @@ const BA_2_Contour = require("../assets/geojson/BA_Indoor_2_contour.json");
 
 const renderGeojsonFiles = () => {
 
-  filterForContour = useSelector(store=>store.Filter.filter)[0]
-  filterForIndoorbuilding = useSelector(store=>store.Filter.filter)[1]
+
+
+  let filterForIndoorRoom= useSelector(store=>store.Filter.filter)[2]
+  console.log(filterForIndoorRoom)
 
 
   return (
@@ -29,7 +31,7 @@ const renderGeojsonFiles = () => {
 
       <MapboxGL.FillExtrusionLayer
           id="BA_1_Contour"
-          // filter={useSelector(store=>store.Filter.filter)[0]}
+          filter={useSelector(store=>store.Filter.filter)[1]}
           style={buildingStyles.Contour}
       />
     </MapboxGL.ShapeSource>
@@ -41,7 +43,7 @@ const renderGeojsonFiles = () => {
 
       <MapboxGL.FillExtrusionLayer
           id="BA_1_Room"
-          // filter={useSelector(store=>store.Filter.filter)[0]}
+          filter={filterForIndoorRoom}
           style={buildingStyles.IndoorBuilding}
       />
     </MapboxGL.ShapeSource>
@@ -53,7 +55,7 @@ const renderGeojsonFiles = () => {
 
       <MapboxGL.FillExtrusionLayer
           id="BA_2_Contour"
-          // filter={useSelector(store=>store.Filter.filter)[0]}
+          filter={useSelector(store=>store.Filter.filter)[1]}
           style={buildingStyles.Contour}
       />
     </MapboxGL.ShapeSource>
@@ -65,7 +67,7 @@ const renderGeojsonFiles = () => {
 
       <MapboxGL.FillExtrusionLayer
           id="BA_2_Room"
-          // filter={useSelector(store=>store.Filter.filter)[0]}
+          filter={filterForIndoorRoom}
           style={buildingStyles.IndoorBuilding}
       />
     </MapboxGL.ShapeSource>

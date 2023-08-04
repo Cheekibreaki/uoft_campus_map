@@ -6,6 +6,7 @@ import { Position } from "geojson";
 import { Camera, Logger, MapView, MarkerView } from '@rnmapbox/maps';
 import colors from "../styles/colors";
 import BA_2_Room from "../assets/geojson/BA_Indoor_2_room.json";
+import BA_1_Room from "../assets/geojson/BA_Indoor_1_room.json";
 import Page from "../common/Page";
 import BaseExamplePropTypes from "../common/BaseExamplePropTypes";
 import {useSelector, useDispatch} from 'react-redux';
@@ -81,8 +82,15 @@ const MapBoxApp = (props: BaseExampleProps) => {
         }
     };
 
-    const avoid_queryLayerFeatures = async () => {
-      dispatch(setGeoJSON(BA_2_Room))
+    const avoid_queryLayerFeatures =  async() => {
+      let floorNumber = useSelector(store=>store.Filter.filter)[0]
+      console.log("floorNumber is ",floorNumber);
+      // switch (floorNumber){
+      //   case 1:
+      //     dispatch(setGeoJSON(BA_1_Room));
+      //   case 2:
+      //     dispatch(setGeoJSON(BA_2_Room));
+      // }
     }
 
 
@@ -92,11 +100,13 @@ const MapBoxApp = (props: BaseExampleProps) => {
         <GeojsonFiles/>
       );
     }
-    const renderIndoorlabels = () => {
+    const renderButtonPanel = () => {
       // Function to render IndoorLabel on the map
       if (mapInitialized) {
         return (
-          <IndoorLabel/> 
+          < View>
+            <ButtonPanel/> 
+          </View>
           
         );
       } else {
@@ -105,7 +115,7 @@ const MapBoxApp = (props: BaseExampleProps) => {
       }
     };
 
-    const filterFeature =  useSelector(store=>store.Filter.filter);
+    // const filterFeature =  useSelector(store=>store.Filter.filter);
     return (
         // <View ref={componentRef} onLayout={measureComponent}>
         <Page {...props}>
@@ -123,14 +133,16 @@ const MapBoxApp = (props: BaseExampleProps) => {
               counter++
               // console.log("yes")
               dispatch(setMapState(_state));
-              avoid_queryLayerFeatures()
+              queryLayerFeatures()
               dispatch(setIsCameraMoving(true))
             }}
             onMapIdle = {() => {
+              onMapInitialized()
               dispatch(setIsCameraMoving(false))
+             
             }}
             // onDidFinishLoadingMap={onMapInitialized}
-            // onDidFinishLoadingMap={onMapInitialized}
+            onDidFinishLoadingMap={onMapInitialized}
           >
             <Camera
               zoomLevel={zoomLevel}
@@ -143,9 +155,7 @@ const MapBoxApp = (props: BaseExampleProps) => {
             {renderGeojsonFiles()}
             <IndoorLabel/> 
           </MapView>
-          <View>
-           <ButtonPanel/> 
-          </View>
+          {renderButtonPanel()}
           
 
         </Page>
