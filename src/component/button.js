@@ -3,7 +3,7 @@ import React, { useState, useEffect, useCallback, useLayoutEffect, useRef } from
 import { View,Text, StyleSheet, TouchableOpacity, Pressable } from "react-native";
 import {useSelector, useDispatch} from 'react-redux';
 import {setFilter} from '../redux/actions/setFilterAction';
-
+import {setGeoJSON} from "../redux/actions/setGeoJsonAction";
 
 function computeCenterLabelPosition(buildingName,points){
 
@@ -113,6 +113,7 @@ const ButtonPanel = () => {
     const handleButtonPress = (floorNumber) => {
         console.log(floorNumber);
         dispatch(setFilter([floorNumber,[],['==', 'floor', floorNumber.toString()]])); 
+        dispatch(setGeoJSON({}))
     };
 
     return (

@@ -220,6 +220,7 @@ const IndoorLabel = () => {
       // console.log("markers",markers);
     }else{
       console.log("markerCoordinates.length = 0")
+      setALLMarkers([]);
     }
   }
 
@@ -231,6 +232,7 @@ const IndoorLabel = () => {
     let intervalId;
     if (mapState) {
       // Start the interval when isActive is true
+      console.log("update the label");
       updateLabel()
       // intervalId = setInterval(updateLabel, 200); // Call the function every 1000 milliseconds (1 second)
     }
@@ -240,7 +242,7 @@ const IndoorLabel = () => {
       
     };
 
-  }, [mapState]);
+  }, [mapState,selectedGeoJSON]);
 
 
   
