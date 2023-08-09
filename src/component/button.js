@@ -1,9 +1,12 @@
 import buttonStyles from "../styles/button";
+import {ButtonGroup} from '@rneui/themed'
 import React, { useState, useEffect, useCallback, useLayoutEffect, useRef } from "react";
 import { View,Text, StyleSheet, TouchableOpacity, Pressable } from "react-native";
 import {useSelector, useDispatch} from 'react-redux';
 import {setFilter} from '../redux/actions/setFilterAction';
 import {setGeoJSON} from "../redux/actions/setGeoJsonAction";
+
+
 
 function computeCenterLabelPosition(buildingName,points){
 
@@ -103,7 +106,7 @@ const ButtonPanel = () => {
       if(buildingForButton !=="noBuilding"){       
         if(buildingForButton === "BA_Indoor_1_contour"){
           floorNumbers = ['B', 1, 2, 3, 4, 5, 6, 7, 8];
-          floorNumbers = floorNumbers.reverse()
+          // floorNumbers = floorNumbers.reverse()
         }        
       }
   
@@ -118,17 +121,31 @@ const ButtonPanel = () => {
 
     return (
       <View style={buttonStyles.buttonPanelContainer}>
-        {floorNumbers.map((floorNumber) => (
-          <TouchableOpacity 
-          key={floorNumber} 
-          style={buttonStyles.button}
-          onPress={()=>handleButtonPress(floorNumber)}
-          >
-            <Text style={buttonStyles.buttonText}>{floorNumber}</Text>
-            
-          </TouchableOpacity>
-        ))}
+      <ButtonGroup
+      buttons={floorNumbers.reverse()}
+      selectedIndex={floorNumbers.length -1 - useSelector(store=>store.Filter.filter)[0]}
+      onPress={(value) => {
+        console.log("floorNumber is ", value);
+
+        handleButtonPress(floorNumbers.length -1 -value);
+      }}
+      containerStyle={{ marginBottom: 20,width:30 }}
+      vertical = {true}
+      />
       </View>
+
+      // <View style={buttonStyles.buttonPanelContainer}>
+      //   {floorNumbers.map((floorNumber) => (
+      //     <TouchableOpacity 
+      //     key={floorNumber} 
+      //     style={buttonStyles.button}
+      //     onPress={()=>handleButtonPress(floorNumber)}
+      //     >
+      //       <Text style={buttonStyles.buttonText}>{floorNumber}</Text>
+            
+      //     </TouchableOpacity>
+      //   ))}
+      // </View>
     );
   };
 

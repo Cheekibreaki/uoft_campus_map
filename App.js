@@ -14,6 +14,7 @@ import IndoorBuilding from './src/component/IndoorBuilding'
 import IndoorLabel from './src/component/IndoorLabel_copy'
 import MapBoxApp from './src/container/MapBoxApp'
 import type {Node} from 'react';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 import {
   SafeAreaView,
   ScrollView,
@@ -76,11 +77,11 @@ const App: () => Node = () => {
   };
 
   return (
-    <>
+    <SafeAreaProvider>
       <Provider store ={Store}>
         <MapBoxApp label={label}/>
       </Provider>
-    </>
+    </SafeAreaProvider>
   );
 };
 
