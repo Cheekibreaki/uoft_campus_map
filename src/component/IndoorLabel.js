@@ -130,6 +130,7 @@ const IndoorLabel = () => {
   let markers = [];
   let raisedMarkers = [];
   const selectedGeoJSON = useSelector((store)=>store.GeoJSONs.selectedGeoJSON);
+  const floorNumber = useSelector(store=>store.Filter.filter)[0]
   const isCameraMoving = useSelector((store)=>store.IsCameraMoving.isCameraMoving);
   const [AllMarkers, setALLMarkers] = useState([]);
   // console.log("selectedGeoJson",selectedGeoJSON);
@@ -137,8 +138,8 @@ const IndoorLabel = () => {
   const updateLabel = () =>{
 
     console.log("updating")
-
-      if(Object.keys(selectedGeoJSON).length !== 0 && selectedGeoJSON !== null && selectedGeoJSON.features !== null && selectedGeoJSON.features !== {}){
+    
+      if( selectedGeoJSON !== null && Object.keys(selectedGeoJSON).length !== 0 && selectedGeoJSON.features !== null && selectedGeoJSON.features !== {}){
         const features = selectedGeoJSON.features;
         markerCoordinates = (() => {
         
@@ -242,7 +243,7 @@ const IndoorLabel = () => {
       
     };
 
-  }, [mapState,selectedGeoJSON]);
+  }, [mapState,selectedGeoJSON,floorNumber]);
 
 
   
@@ -391,7 +392,7 @@ const IndoorLabel = () => {
             <MapboxGL.MarkerView
               key={`RaisedMarkerView-${i}-${AllMarker.coords.join("-")}`}
               coordinate={AllMarker.coords}
-              allowOverlap={true}
+              allowOverlap={false}
 
             >
               <Pressable
@@ -400,7 +401,7 @@ const IndoorLabel = () => {
                 ]}
               >
                 <Text style={[{
-                    color: 'black',
+                    color: 'grey',
                     fontSize: 11,
                     fontWeight: 'bold',
                   }]}>

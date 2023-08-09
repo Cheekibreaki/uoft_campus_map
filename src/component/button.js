@@ -5,7 +5,8 @@ import { View,Text, StyleSheet, TouchableOpacity, Pressable } from "react-native
 import {useSelector, useDispatch} from 'react-redux';
 import {setFilter} from '../redux/actions/setFilterAction';
 import {setGeoJSON} from "../redux/actions/setGeoJsonAction";
-
+import BA_2_Room from "../assets/geojson/BA_Indoor_2_room.json";
+import BA_1_Room from "../assets/geojson/BA_Indoor_1_room.json";
 
 
 function computeCenterLabelPosition(buildingName,points){
@@ -115,8 +116,19 @@ const ButtonPanel = () => {
 
     const handleButtonPress = (floorNumber) => {
         console.log(floorNumber);
+        
+        switch (floorNumber){
+          case 1:
+            dispatch(setGeoJSON(BA_1_Room));
+            break
+          case 2:
+            dispatch(setGeoJSON(BA_2_Room));
+            break
+          default:
+  
+            }
         dispatch(setFilter([floorNumber,[],['==', 'floor', floorNumber.toString()]])); 
-        dispatch(setGeoJSON({}))
+        // dispatch(setGeoJSON({}))
     };
 
     return (

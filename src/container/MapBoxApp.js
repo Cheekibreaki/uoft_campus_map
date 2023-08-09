@@ -29,6 +29,7 @@ const MapBoxApp = (props: BaseExampleProps) => {
     const heading = 30;
     const centerCoordinate = [-79.3973449417775, 43.65997911110146]
     
+    
 
     // const [mapState, setMapState] = useState({
     //     properties: {
@@ -52,6 +53,7 @@ const MapBoxApp = (props: BaseExampleProps) => {
     const selectedGeoJSON = useSelector(store=>store.GeoJSONs.selectedGeoJSON);
     // console.log("selectedGeoJSON",selectedGeoJSON);
     const mapState = useSelector(store=>store.MapState.mapState);
+    
     // console.log("mapState",mapState);
     // const [selectedGeoJSON, setSelectedGeoJSON] = useState(null);
     const [allowOverlap, setAllowOverlap] = useState(false);
@@ -83,8 +85,10 @@ const MapBoxApp = (props: BaseExampleProps) => {
     };
     let floorNumber = useSelector(store=>store.Filter.filter)[0]
     const avoid_queryLayerFeatures =  async() => {
-      
-      console.log("floorNumber is ",floorNumber);
+      const zoomlevel = mapState.properties.zoom;
+      console.log(zoomlevel)
+      console.log("zoomlevel is ",floorNumber);
+      if(zoomlevel >= 16.5){
       switch (floorNumber){
         case 1:
           dispatch(setGeoJSON(BA_1_Room));
@@ -95,6 +99,10 @@ const MapBoxApp = (props: BaseExampleProps) => {
         default:
 
           }
+      }else{
+        dispatch(setGeoJSON({}));
+        return;
+      }
     }
      
 
