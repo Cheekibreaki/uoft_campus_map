@@ -81,17 +81,22 @@ const MapBoxApp = (props: BaseExampleProps) => {
         dispatch(setGeoJSON({}));
         }
     };
-
+    let floorNumber = useSelector(store=>store.Filter.filter)[0]
     const avoid_queryLayerFeatures =  async() => {
-      let floorNumber = useSelector(store=>store.Filter.filter)[0]
+      
       console.log("floorNumber is ",floorNumber);
-      // switch (floorNumber){
-      //   case 1:
-      //     dispatch(setGeoJSON(BA_1_Room));
-      //   case 2:
-      //     dispatch(setGeoJSON(BA_2_Room));
-      // }
+      switch (floorNumber){
+        case 1:
+          dispatch(setGeoJSON(BA_1_Room));
+          break
+        case 2:
+          dispatch(setGeoJSON(BA_2_Room));
+          break
+        default:
+
+          }
     }
+     
 
 
 
@@ -133,7 +138,8 @@ const MapBoxApp = (props: BaseExampleProps) => {
               counter++
               // console.log("yes")
               dispatch(setMapState(_state));
-              queryLayerFeatures()
+              // queryLayerFeatures()
+              avoid_queryLayerFeatures()
               dispatch(setIsCameraMoving(true))
             }}
             onMapIdle = {() => {
