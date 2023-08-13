@@ -16,6 +16,7 @@ import IndoorLabel from '../component/IndoorLabel'
 import ButtonPanel from "../component/button";
 import GeojsonFiles from "../component/renderGeojsonFiles";
 import { setIsCameraMoving } from "../redux/actions/setIsCameraMovingAction";
+import { setGeoJSONInScreen } from "../redux/actions/setFeatureInScreen";
 //Todo:
 //Flickering issue => state update related
 //Promise Rejection => queryRenderedFeaturesInRect @ onCameraChanged
@@ -76,11 +77,11 @@ const MapBoxApp = (props: BaseExampleProps) => {
         if (featureCollection && featureCollection.features && featureCollection.features.length) {
             // setSelectedGeoJSON(featureCollection);
 
-            dispatch(setGeoJSON(featureCollection));
+            dispatch(setGeoJSONInScreen(featureCollection));
         } else {
         // console.log("no Indoor Building Layer found");
         //setSelectedGeoJSON(null);
-        dispatch(setGeoJSON({}));
+        dispatch(setGeoJSONInScreen({}));
         }
     };
     let floorNumber = useSelector(store=>store.Filter.filter)[0]
@@ -146,7 +147,7 @@ const MapBoxApp = (props: BaseExampleProps) => {
               counter++
               // console.log("yes")
               dispatch(setMapState(_state));
-              // queryLayerFeatures()
+              queryLayerFeatures()
               avoid_queryLayerFeatures()
               dispatch(setIsCameraMoving(true))
             }}
