@@ -29,20 +29,7 @@ const MapBoxApp = (props: BaseExampleProps) => {
     const heading = 30;
     const centerCoordinate = [-79.3973449417775, 43.65997911110146]
     
-    
-
-    // const [mapState, setMapState] = useState({
-    //     properties: {
-    //       center: [0, 0],
-    //       bounds: {
-    //         ne: [0, 0],
-    //         sw: [0, 0],
-    //       },
-    //       zoom: 0,
-    //       heading: 0,
-    //       pitch: 0,
-    //     },
-    // });
+  
     let counter = 0
     
     let map = useRef();
@@ -131,13 +118,13 @@ const MapBoxApp = (props: BaseExampleProps) => {
     // const filterFeature =  useSelector(store=>store.Filter.filter);
     return (
         // <View ref={componentRef} onLayout={measureComponent}>
-        <Page {...props}>
+        <>
           <MapView 
             ref={map}
             styleURL={style}
             style={{ flex: 1 }}
             onWillStartRenderingFrame = {(_state)=>{
-              console.log("asda")
+              
             }}
             onCameraChanged={(_state) => {
               
@@ -172,7 +159,7 @@ const MapBoxApp = (props: BaseExampleProps) => {
           {renderButtonPanel()}
           
 
-        </Page>
+        </>
         // </View>
     );
 

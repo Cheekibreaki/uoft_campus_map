@@ -68,7 +68,7 @@ const App: () => Node = () => {
   //   };
     
   // };
-  const [label, setLabel] = useState('test');
+  // const [label, setLabel] = useState('test');
 
   const isDarkMode = useColorScheme() === 'dark';
 
@@ -79,7 +79,7 @@ const App: () => Node = () => {
   return (
     <SafeAreaProvider>
       <Provider store ={Store}>
-        <MapBoxApp label={label}/>
+        <MapBoxApp/>
       </Provider>
     </SafeAreaProvider>
   );

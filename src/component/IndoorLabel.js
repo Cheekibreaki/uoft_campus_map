@@ -13,7 +13,7 @@ import {useSelector} from 'react-redux';
 import {setGeoJSON} from '../redux/actions/getGeoJsonReducer';
 import {setMapState} from '../redux/actions/getMapstateReducer';
 import { Button, Divider, Text } from '@rneui/base';
-
+import Icon from 'react-native-vector-icons/FontAwesome6';
 
 
 function computeCenterLabelPosition(givenMarkers){
@@ -77,62 +77,53 @@ const IndoorLabel = () => {
     let camera_projection_position = [center[0]-lon,center[1]-lat]
     
     // console.log("camera_projection_position",camera_projection_position)
-    return {coords: camera_projection_position, color: "purple"};
+    return {coords: camera_projection_position, color: ""};
   }
 
   const raise = (position,height,roomID) => {
-    // let cameraProj = findCameraProj();
-    // return [cameraProj]
     let cameraProj = findCameraProj();
     let zoomLevel = mapState.properties.zoom;
     let heading = mapState.properties.heading;
     let pitch = mapState.properties.pitch;
     let center = mapState.properties.center;
-    // console.log("center",center);
     let centerPitch = 90-pitch;
     let copyPosition = position.slice();
     if(cameraProj){
-      // console.log("copyPosition",cameraProj)
-      // let distanceBetweenCameraProjAndMarker = Math.abs(measure(cameraProj.coords[0],cameraProj.coords[1],position[0],position[1]));
       let vector  =[position[0]-cameraProj.coords[0],position[1]-cameraProj.coords[1]];
       const length = Math.sqrt(vector[0] ** 2 + vector[1] ** 2);
       let CameraHeight = Math.sin(centerPitch*Math.PI/180)*59959.436*Math.pow(2,-zoomLevel)*39;
       // console.log("CameraHeight",CameraHeight);
-      if(CameraHeight>height){
-        
+      if(CameraHeight>height){        
         let distanceBetweenRaisedMarkerAndMarker = height*length/(CameraHeight-height);
-        // console.log("distance",distanceBetweenRaisedMarkerAndMarker);
-
-        
-        
         const extendVector = [
           vector[0] / length * distanceBetweenRaisedMarkerAndMarker,
           vector[1] / length * distanceBetweenRaisedMarkerAndMarker
         ];
-        
-        
-
         copyPosition[0]= copyPosition[0]+ extendVector[0];
         copyPosition[1]= copyPosition[1]+ extendVector[1];
         // console.log("position",copyPosition)
-        return {coords: copyPosition,color: "purple",room:roomID};
+        return {coords: copyPosition,color: "",id:roomID};
       }
       
     }
     
-    return {coords: position,color: "purple",room:roomID};
+    return {coords: position,color: "",id:roomID};
     
   };
 
   
 
   let markerCoordinates = [];
-  let markers = [];
-  let raisedMarkers = [];
+  let textMarkers = [];
+  let iconMarkers = [];
+  let textRaisedMarkers = [];
+  let iconRaisedMarkers = [];
   const selectedGeoJSON = useSelector((store)=>store.GeoJSONs.selectedGeoJSON);
   const floorNumber = useSelector(store=>store.Filter.filter)[0]
   const isCameraMoving = useSelector((store)=>store.IsCameraMoving.isCameraMoving);
-  const [AllMarkers, setALLMarkers] = useState([]);
+  const [TextMarkers, setTextMarkers] = useState([]);
+  const [IconMarkers, setIconMarkers] = useState([]);
+  // const [TextMarkers, setTextMarkers] = useState([]);
   // console.log("selectedGeoJson",selectedGeoJSON);
 
   const updateLabel = () =>{
@@ -161,20 +152,17 @@ const IndoorLabel = () => {
     
       if (markerCoordinates.length !== 0) {
       let roomList = []
-      
+      let labelIndex = 0;
       for (const markerCoordinate of markerCoordinates){
         if (markerCoordinate.height-1 == 0){
           const roomNUM = markerCoordinate.roomID;
-          if(!roomList.includes(roomNUM)){
-            if(roomNUM !== "S" && roomNUM !== "E"&& roomNUM !== "FW" && roomNUM !== "MW"){
-                roomList.push(roomNUM);
-            }           
+          if(!roomList.includes(roomNUM)){       
 
               const newMarker = markerCoordinate.latlons.map((latlons,index,coordArray) => {
               if(index%2==0){
                   return {
                   coords: [latlons,coordArray[index+1]],
-                  color: "purple",
+                  color: "",
 
                 };
                 }
@@ -183,46 +171,114 @@ const IndoorLabel = () => {
 
               let centerLabel = computeCenterLabelPosition(newMarker);   
               // console.log("markers is",centerLabel)
-              markers.push({coords: centerLabel.position, color: "purple", room: roomNUM})
+              // textMarkers.push({coords: centerLabel.position, color: "", room: roomNUM})
             // }
+            
+            if(roomNUM !== "S" && roomNUM !== "E"&& roomNUM !== "FW" && roomNUM !== "MW"){
+              roomList.push(roomNUM);
+              textMarkers.push({coords: centerLabel.position, color: "", id: roomNUM})
+            }else{
+              labelIndex=labelIndex+1;
+              switch (roomNUM) {
+                case 'S':
+                  iconMarkers.push({id:"stairs"+labelIndex,coordinates: centerLabel.position,  icon: <Icon name="stairs" size={30} color="grey" />})
+                  break;
+                case 'E':
+                  iconMarkers.push({id:"stairs"+labelIndex,coordinates: centerLabel.position,  icon: <Icon name="stairs" size={30} color="grey" />})
 
+                  break;
+                case 'FW':
+                  iconMarkers.push({id:"stairs"+labelIndex,coordinates: centerLabel.position,  icon: <Icon name="stairs" size={30} color="grey" />})
+
+                  break;
+                case 'MW':
+                  iconMarkers.push({id:"stairs"+labelIndex,coordinates: centerLabel.position, icon: <Icon name="stairs" size={30} color="grey" />})
+
+                  break;
+                default:
+                  console.log('Invalid room entered.');
+                }
+              
+            }
+            
+            
+            
+          
           }
         }else{
           const roomNUM = markerCoordinate.roomID
 
           if(!roomList.includes(roomNUM)){
+                       
+            const newMarker = markerCoordinate.latlons.map((latlons,index,coordArray) => {
+            if(index%2==0){
+                return {
+                coords: [latlons,coordArray[index+1]],
+                color: "",
+
+              };
+              }
+              
+            });
+            let height = markerCoordinate.height/21.42
+            let centerLabel = computeCenterLabelPosition(newMarker);  
+            
             if(roomNUM !== "S" && roomNUM !== "E"&& roomNUM !== "FW" && roomNUM !== "MW"){
               roomList.push(roomNUM);
-            }           
-              const newMarker = markerCoordinate.latlons.map((latlons,index,coordArray) => {
-              if(index%2==0){
-                  return {
-                  coords: [latlons,coordArray[index+1]],
-                  color: "purple",
+              textRaisedMarkers.push(raise(centerLabel.position,height,roomNUM))
+            }else{
+              // switch (roomNUM) {
+              //   case 'S':
+              //     iconRaisedMarkers.push(raise(centerLabel.position,height,"stairs"))
+              //     break;
+              //   case 'E':
+              //     iconRaisedMarkers.push(raise(centerLabel.position,height,"elevator"))
+              //     break;
+              //   case 'FW':
+              //     iconRaisedMarkers.push(raise(centerLabel.position,height,"female"))
+              //     break;
+              //   case 'MW':
+              //     iconRaisedMarkers.push(raise(centerLabel.position,height,"male"))
+              //     break;
+              //   default:
+              //     console.log('Invalid room entered.');
+              //   }
+              
+            }
 
-                };
-                }
-                
-              });
-              let height = markerCoordinate.height/21.42
-              let centerLabel = computeCenterLabelPosition(newMarker);       
-              raisedMarkers.push(raise(centerLabel.position,height,roomNUM))
+            
 
           }
           
         }
       }
-      // console.log(markers);
-      // console.log(raisedMarkers);
-      // console.log("raisedMarkers",raisedMarkers);
-      setALLMarkers(markers.concat(raisedMarkers));
-      // console.log("AllMarkers",AllMarkers);
-      // console.log("AllMarkers[0]",AllMarkers[0].coords);
-      // console.log("markers",markers);
+
+      setTextMarkers(textMarkers.concat(textRaisedMarkers));
+
+      const geoJSONMarkers = iconMarkers.map(marker => ({
+        type: 'Feature',
+        properties: {
+          id: marker.id,
+          iconComponent: <Icon size={30} color="grey" name="stairs" />,
+        },
+        geometry: {
+          type: 'Point',
+          coordinates: marker.coordinates,
+        },
+      }));
+
+      setIconMarkers(geoJSONMarkers);
+      // setIconMarkers(iconMarkers.concat(iconRaisedMarkers));
+
     }else{
       console.log("markerCoordinates.length = 0")
-      setALLMarkers([]);
+      setTextMarkers([]);
+      setIconMarkers([]);
     }
+    console.log(IconMarkers)
+    
+
+
   }
 
 
@@ -245,172 +301,47 @@ const IndoorLabel = () => {
 
   }, [mapState,selectedGeoJSON,floorNumber]);
 
+  // const icon = Icon.getImageSourceSync('rocket', 40, 'blue');
 
-  
-    //   // console.log("selectedGeoJSON",selectedGeoJSON)
-    //   if(Object.keys(selectedGeoJSON).length !== 0 && selectedGeoJSON !== null && selectedGeoJSON.features !== null && selectedGeoJSON.features !== {}){
-    //     const features = selectedGeoJSON.features;
-    //     markerCoordinates = (() => {
-        
-    //       let updatedCoordinates = [];
-    //       for (const feature of features) {
-    //         const geometry = {
-    //           latlons: feature.geometry.coordinates.flat(2),
-    //           base_height: feature.properties.base_height,
-    //           height: feature.properties.height,
-    //           roomID:feature.properties.room
-    //         };
-    //         updatedCoordinates = updatedCoordinates.concat(geometry);
-    //       }
-          
-    //       return updatedCoordinates; // Return the updated state
-    //     })();
-    //     // console.log("markerCoordinates",markerCoordinates)
-    //   }
-    
-    //   if (markerCoordinates.length !== 0) {
-    //   let roomList = []
-      
-    //   for (const markerCoordinate of markerCoordinates){
-    //     if (markerCoordinate.height-1 == 0){
-    //       const roomNUM = markerCoordinate.roomID;
-    //       if(!roomList.includes(roomNUM)){
-    //         if(roomNUM !== "S" && roomNUM !== "E"&& roomNUM !== "FW" && roomNUM !== "MW"){
-    //             roomList.push(roomNUM);
-    //         }           
 
-    //           const newMarker = markerCoordinate.latlons.map((latlons,index,coordArray) => {
-    //           if(index%2==0){
-    //               return {
-    //               coords: [latlons,coordArray[index+1]],
-    //               color: "purple",
-
-    //             };
-    //             }
-                
-    //           });
-
-    //           let centerLabel = computeCenterLabelPosition(newMarker);   
-    //           // console.log("markers is",centerLabel)
-    //           markers.push({coords: centerLabel.position, color: "purple", room: roomNUM})
-    //         // }
-
-    //       }
-    //     }else{
-    //       const roomNUM = markerCoordinate.roomID
-
-    //       if(!roomList.includes(roomNUM)){
-    //         if(roomNUM !== "S" && roomNUM !== "E"&& roomNUM !== "FW" && roomNUM !== "MW"){
-    //           roomList.push(roomNUM);
-    //         }           
-    //           const newMarker = markerCoordinate.latlons.map((latlons,index,coordArray) => {
-    //           if(index%2==0){
-    //               return {
-    //               coords: [latlons,coordArray[index+1]],
-    //               color: "purple",
-
-    //             };
-    //             }
-                
-    //           });
-    //           let height = markerCoordinate.height/21.42
-    //           let centerLabel = computeCenterLabelPosition(newMarker);       
-    //           raisedMarkers.push(raise(centerLabel.position,height,roomNUM))
-
-    //       }
-          
-    //     }
-    //   }
-
-    // }else{
-    //   console.log("markerCoordinates.length = 0")
-    // }
-
-  // return (
-  //   // <View ref={componentRef} onLayout={measureComponent}>
-  //     <>
-        
-  //       {markers.map((marker, i) => {
-  //         return (
-  //           <MapboxGL.MarkerView
-  //             key={`MarkerView-${i}-${marker.coords.join("-")}`}
-  //             coordinate={marker.coords}
-  //             allowOverlap={true}
-  //             style={ "flex" }
-  //           >
-  //             <Pressable
-  //               style={[
-                  
-  //                 // { backgroundColor: "black", padding: 4 * 1 },
-
-  //               ]}
-  //             >
-  //                 <Text style={[{
-  //                   color: 'white',
-  //                   fontSize: 11,
-  //                   fontWeight: 'bold',
-  //                 }]}>
-  //                   {marker.room}
-  //               </Text>
-                
-  //             </Pressable>
-  //           </MapboxGL.MarkerView>
-  //         );
-  //       })}
-        
-  //       {raisedMarkers.map((raisedMarker, i) => {
-  //         return (
-  //           <MapboxGL.MarkerView
-  //             key={`RaisedMarkerView-${i}-${raisedMarker.coords.join("-")}`}
-  //             coordinate={raisedMarker.coords}
-  //             allowOverlap={true}
-
-  //           >
-  //             <Pressable
-  //               style={[
-
-  //               ]}
-  //             >
-  //               <Text style={[{
-  //                   color: 'black',
-  //                   fontSize: 11,
-  //                   fontWeight: 'bold',
-  //                 }]}>
-  //                   {raisedMarker.room}
-  //               </Text>
-  //             </Pressable>
-  //           </MapboxGL.MarkerView>
-  //         );
-  //       })}
-  
-  //   </>
-  // );
   return (
     <>
-    {AllMarkers.map((AllMarker, i) => {
+    {TextMarkers.map((AllMarker, i) => {
           return (
             <MapboxGL.MarkerView
               key={`RaisedMarkerView-${i}-${AllMarker.coords.join("-")}`}
               coordinate={AllMarker.coords}
               allowOverlap={false}
-
             >
-              <Pressable
-                style={[
 
-                ]}
-              >
                 <Text style={[{
                     color: 'grey',
                     fontSize: 11,
                     fontWeight: 'bold',
                   }]}>
-                    {AllMarker.room}
+                    {AllMarker.id}
                 </Text>
-              </Pressable>
+              
             </MapboxGL.MarkerView>
           );
         })}
+    
+
+        
+      <MapboxGL.ShapeSource id="symbolSource" shape={IconMarkers}>
+      <MapboxGL.SymbolLayer
+          id="symbolLayer"
+          style={(feature) => ({
+            iconImage: MapboxGL.Image.fromComponent(feature.properties.icon),
+            iconSize: 0.5,
+          })}
+        />
+      </MapboxGL.ShapeSource>
+
+        
+        
+
+
     </>
   );
 
