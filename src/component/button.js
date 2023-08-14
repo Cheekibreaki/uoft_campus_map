@@ -9,6 +9,7 @@ import BA_2_Room from "../assets/geojson/BA_Indoor_2_room.json";
 import BA_1_Room from "../assets/geojson/BA_Indoor_1_room.json";
 
 
+
 function computeCenterLabelPosition(buildingName,points){
 
   if (points.length === 0) {
@@ -60,21 +61,39 @@ function computeDistance(building, camera) {
 }
 
 
-function getBuildingWithinBound(centerOfBuildings,cameraCenter,cameraBounds){
+function getBuildingWithinBound(centerOfBuildings,cameraCenter,cameraBounds,featuresInScreen){
   let minimumDistance = Number.MAX_SAFE_INTEGER;
   let buildingName = "noBuilding";
   if(centerOfBuildings.length===0){
     return buildingName;
   }
   
-  
+  let FeatureNames = [];
+
+  if(featuresInScreen !== null && Object.keys(featuresInScreen).length !== 0 && featuresInScreen.features !== null && featuresInScreen.features !== {}){
+    const features = featuresInScreen.features;
+
+    FeatureNames = (() => {
+        
+      let buildingNames = [];
+      for (const feature of features) {
+        if(!buildingNames.includes(feature.properties.layer_name.split("_")[0])){
+          buildingNames.push(feature.properties.layer_name.split("_")[0]);
+        }
+        
+      }
+      console.log(buildingNames);
+      return buildingNames; // Return the updated state
+    })();
+  }
+
 
   for(let i=0; i<centerOfBuildings.length;i++){
     if(    centerOfBuildings[i].center[0] > cameraBounds.sw[0] 
         && centerOfBuildings[i].center[0] < cameraBounds.ne[0]
         && centerOfBuildings[i].center[1] > cameraBounds.sw[1]   
         && centerOfBuildings[i].center[1] < cameraBounds.ne[1]
-        ){
+        || FeatureNames.includes(centerOfBuildings[i].name.split("_")[0]) ){
           let distance = computeDistance(centerOfBuildings[i],cameraCenter);
           if(distance < minimumDistance){
             minimumDistance = distance;
@@ -90,6 +109,7 @@ const BA_1_Contour = require("../assets/geojson/BA_Indoor_1_contour.json");
 
 let centerOfBuildings = [];
 
+//add the building here 
 centerOfBuildings.push(computeCenterLabelPosition(BA_1_Contour.features[0].properties.layer_name,BA_1_Contour.features[0].geometry.coordinates[0]));
 // console.log("the centerOfBuilding is ",centerOfBuildings);
 
@@ -99,10 +119,13 @@ const ButtonPanel = () => {
 
     let cameraCenter = useSelector(store=>store.MapState.mapState).properties.center;
     let cameraBounds = useSelector(store=>store.MapState.mapState).properties.bounds;
+    let featuresInScreen = useSelector(store=>store.FeatureInScreen.GeoJSONInScreen);
+    
     let floorNumbers = [];
 
     if(cameraCenter!=[0,0]){
-      let buildingForButton = getBuildingWithinBound(centerOfBuildings,cameraCenter,cameraBounds);
+      
+      let buildingForButton = getBuildingWithinBound(centerOfBuildings,cameraCenter,cameraBounds,featuresInScreen);
 
       if(buildingForButton !=="noBuilding"){       
         if(buildingForButton === "BA_Indoor_1_contour"){
