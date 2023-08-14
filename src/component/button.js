@@ -72,7 +72,7 @@ function getBuildingWithinBound(centerOfBuildings,cameraCenter,cameraBounds,feat
 
   if(featuresInScreen !== null && Object.keys(featuresInScreen).length !== 0 && featuresInScreen.features !== null && featuresInScreen.features !== {}){
     const features = featuresInScreen.features;
-
+    // console.log("featureInScreen is not empty")
     FeatureNames = (() => {
         
       let buildingNames = [];
@@ -82,18 +82,21 @@ function getBuildingWithinBound(centerOfBuildings,cameraCenter,cameraBounds,feat
         }
         
       }
-      console.log(buildingNames);
+      // console.log(buildingNames);
       return buildingNames; // Return the updated state
     })();
   }
 
-
+  // console.log("it has name ", FeatureNames)
+  // console.log("before loop, building name is ", buildingName)
+  // console.log("includes is ", FeatureNames.includes(centerOfBuildings[0].name.split("_")[0]))
   for(let i=0; i<centerOfBuildings.length;i++){
-    if(    centerOfBuildings[i].center[0] > cameraBounds.sw[0] 
+    if( (  centerOfBuildings[i].center[0] > cameraBounds.sw[0] 
         && centerOfBuildings[i].center[0] < cameraBounds.ne[0]
         && centerOfBuildings[i].center[1] > cameraBounds.sw[1]   
-        && centerOfBuildings[i].center[1] < cameraBounds.ne[1]
-        || FeatureNames.includes(centerOfBuildings[i].name.split("_")[0]) ){
+        && centerOfBuildings[i].center[1] < cameraBounds.ne[1])
+        || FeatureNames.includes(centerOfBuildings[i].name.split("_")[0]) === true
+      ){
           let distance = computeDistance(centerOfBuildings[i],cameraCenter);
           if(distance < minimumDistance){
             minimumDistance = distance;
@@ -101,6 +104,7 @@ function getBuildingWithinBound(centerOfBuildings,cameraCenter,cameraBounds,feat
           }
     }
   }
+  
   return buildingName;
   
 }
@@ -120,7 +124,7 @@ const ButtonPanel = () => {
     let cameraCenter = useSelector(store=>store.MapState.mapState).properties.center;
     let cameraBounds = useSelector(store=>store.MapState.mapState).properties.bounds;
     let featuresInScreen = useSelector(store=>store.FeatureInScreen.GeoJSONInScreen);
-    
+    // console.log("features in the screen are ", featuresInScreen)
     let floorNumbers = [];
 
     if(cameraCenter!=[0,0]){
