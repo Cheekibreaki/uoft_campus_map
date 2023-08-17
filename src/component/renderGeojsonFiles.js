@@ -17,7 +17,7 @@ const renderGeojsonFiles = () => {
 
 
   let filterForIndoorRoom= useSelector(store=>store.Filter.filter)[2]
-  console.log(filterForIndoorRoom)
+  // console.log(filterForIndoorRoom)
 
 
   return (

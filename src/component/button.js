@@ -72,7 +72,7 @@ function getBuildingWithinBound(centerOfBuildings,cameraCenter,cameraBounds,feat
 
   if(featuresInScreen !== null && Object.keys(featuresInScreen).length !== 0 && featuresInScreen.features !== null && featuresInScreen.features !== {}){
     const features = featuresInScreen.features;
-
+    console.log("featureInScreen is not empty")
     FeatureNames = (() => {
         
       let buildingNames = [];
@@ -85,22 +85,57 @@ function getBuildingWithinBound(centerOfBuildings,cameraCenter,cameraBounds,feat
       console.log(buildingNames);
       return buildingNames; // Return the updated state
     })();
+
+    // for(let i=0; i<centerOfBuildings.length;i++){
+    //   if( (  centerOfBuildings[i].center[0] > cameraBounds.sw[0] 
+    //       && centerOfBuildings[i].center[0] < cameraBounds.ne[0]
+    //       && centerOfBuildings[i].center[1] > cameraBounds.sw[1]   
+    //       && centerOfBuildings[i].center[1] < cameraBounds.ne[1])
+    //       || FeatureNames.includes(centerOfBuildings[i].name.split("_")[0]) === true
+    //     ){
+    //         let distance = computeDistance(centerOfBuildings[i],cameraCenter);
+    //         if(distance < minimumDistance){
+    //           minimumDistance = distance;
+    //           buildingName = centerOfBuildings[i].name;
+    //         }
+    //   }
+    // }
+  
   }
+  // console.log("center building LON: ",centerOfBuildings[0].center[0] )
+  // console.log("center building LAT: ",centerOfBuildings[0].center[1] )
+  // console.log("camera bound buttom Left LON: ",cameraBounds.sw[0] ) 
+  // console.log("camera bound buttom Left LAT: ",cameraBounds.sw[1] )
+  // console.log("camera bound upper Right LON: ",cameraBounds.ne[0] )
+  // console.log("camera bound upper Right LAT: ",cameraBounds.ne[1] )
 
+  // console.log("camera bound    out of upper: ",centerOfBuildings[0].center[0] > cameraBounds.sw[0] ) 
+  // console.log("camera bound    out of botton: ",centerOfBuildings[0].center[0] < cameraBounds.ne[0] )
+  // console.log("camera bound    out of right: ",centerOfBuildings[0].center[1] > cameraBounds.sw[1] )
+  // console.log("camera bound    out of left: ",centerOfBuildings[0].center[1] < cameraBounds.ne[1] )
 
-  for(let i=0; i<centerOfBuildings.length;i++){
-    if(    centerOfBuildings[i].center[0] > cameraBounds.sw[0] 
-        && centerOfBuildings[i].center[0] < cameraBounds.ne[0]
-        && centerOfBuildings[i].center[1] > cameraBounds.sw[1]   
-        && centerOfBuildings[i].center[1] < cameraBounds.ne[1]
-        || FeatureNames.includes(centerOfBuildings[i].name.split("_")[0]) ){
+    for(let i=0; i<centerOfBuildings.length;i++){
+    if(  ( centerOfBuildings[i].center[0] > cameraBounds.sw[0] 
+            && centerOfBuildings[i].center[0] < cameraBounds.ne[0]
+            && centerOfBuildings[i].center[1] > cameraBounds.sw[1]   
+            && centerOfBuildings[i].center[1] < cameraBounds.ne[1])
+        || FeatureNames.includes(centerOfBuildings[i].name.split("_")[0]) === true
+      ){  
+          // console.log("is within the bound")
           let distance = computeDistance(centerOfBuildings[i],cameraCenter);
           if(distance < minimumDistance){
             minimumDistance = distance;
             buildingName = centerOfBuildings[i].name;
           }
     }
+  
+
+  // console.log("it has name ", FeatureNames)
+  // console.log("before loop, building name is ", buildingName)
+  // console.log("includes is ", FeatureNames.includes(centerOfBuildings[0].name.split("_")[0]))
+  
   }
+  console.log("buildingName is ",buildingName)
   return buildingName;
   
 }
@@ -116,11 +151,13 @@ centerOfBuildings.push(computeCenterLabelPosition(BA_1_Contour.features[0].prope
 
 
 const ButtonPanel = () => {
+    if(useSelector(store=>store.MapState.mapState).properties!==undefined){
 
+    
     let cameraCenter = useSelector(store=>store.MapState.mapState).properties.center;
     let cameraBounds = useSelector(store=>store.MapState.mapState).properties.bounds;
     let featuresInScreen = useSelector(store=>store.FeatureInScreen.GeoJSONInScreen);
-    
+    // console.log("features in the screen are ", featuresInScreen)
     let floorNumbers = [];
 
     if(cameraCenter!=[0,0]){
@@ -182,6 +219,7 @@ const ButtonPanel = () => {
       //   ))}
       // </View>
     );
+    }
   };
 
   export default ButtonPanel;

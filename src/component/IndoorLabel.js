@@ -15,10 +15,17 @@ import colors from "../styles/colors";
 import buttonStyles from "../styles/button";
 import Page from "../common/Page";
 import BaseExamplePropTypes from "../common/BaseExamplePropTypes";
-import { useSelector } from "react-redux";
-import { setGeoJSON } from "../redux/actions/getGeoJsonReducer";
-import { setMapState } from "../redux/actions/getMapstateReducer";
-import { Button, Divider, Text } from "@rneui/base";
+import {useSelector, useDispatch} from 'react-redux';
+import {setGeoJSON} from '../redux/actions/getGeoJsonReducer';
+import {setMapState} from '../redux/actions/getMapstateReducer';
+import { setSelectRoom } from "../redux/actions/setSelectedRoom";
+import { Button, Divider, Text } from '@rneui/base';
+import Icon from 'react-native-vector-icons/FontAwesome6';
+
+import stairs_img from "../assets/Label_Asset/stairs.png";
+import elevator_img from "../assets/Label_Asset/elevator.png";
+import man_img from "../assets/Label_Asset/man.png";
+import woman_img from "../assets/Label_Asset/woman.png";
 
 import stairs_img from "../assets/Label_Asset/stairs.png";
 import elevator_img from "../assets/Label_Asset/elevator.png";
@@ -126,50 +133,68 @@ const IndoorLabel = () => {
   );
   const [TextMarkers, setTextMarkers] = useState([]);
   const [IconMarkers, setIconMarkers] = useState([]);
+  // const [selectedMarker, setSelectedMarker] = useState(null);
+  // const [markerPosition, setMarkerPosition] = useState({ x: 0, y: 0 });
+
+  const handleMarkerPress = (marker) => {
+    const coordinate = marker.coords;
+    // setSelectedMarker(marker);
+    // setMarkerPosition({ x:coordinate[0], y:coordinate[1] });
+    dispatch(setSelectRoom(marker));
+  }
   // const [TextMarkers, setTextMarkers] = useState([]);
   // console.log("selectedGeoJson",selectedGeoJSON);
 
   const updateLabel = () => {
     console.log("selectedGeoJSON", selectedGeoJSON);
 
-    if (
-      selectedGeoJSON !== null &&
-      Object.keys(selectedGeoJSON).length !== 0 &&
-      selectedGeoJSON.features !== null &&
-      selectedGeoJSON.features !== {}
-    ) {
-      const features = selectedGeoJSON.features;
-      markerCoordinates = (() => {
-        let updatedCoordinates = [];
-        for (const feature of features) {
-          const geometry = {
-            latlons: feature.geometry.coordinates.flat(2),
-            base_height: feature.properties.base_height,
-            height: feature.properties.height,
-            roomID: feature.properties.room,
-          };
-          updatedCoordinates = updatedCoordinates.concat(geometry);
-        }
+    console.log("updating")
+    let buildingName = selectedGeoJSON.name;
 
-        return updatedCoordinates; // Return the updated state
-      })();
-      // console.log("markerCoordinates",markerCoordinates)
+    if(buildingName.split("_").includes("BA")){
+      buildingName = "Bahen Centre for Information Technology"
     }
 
-    if (markerCoordinates.length !== 0) {
-      let roomList = [];
+      if( selectedGeoJSON !== null && Object.keys(selectedGeoJSON).length !== 0 && selectedGeoJSON.features !== null && selectedGeoJSON.features !== {}){
+
+        const features = selectedGeoJSON.features;
+        markerCoordinates = (() => {
+        
+          let updatedCoordinates = [];
+          for (const feature of features) {
+            const geometry = {
+              latlons: feature.geometry.coordinates.flat(2),
+              base_height: feature.properties.base_height,
+              height: feature.properties.height,
+              roomID:feature.properties.room
+            };
+            updatedCoordinates = updatedCoordinates.concat(geometry);
+          }
+          
+          return updatedCoordinates; // Return the updated state
+        })();
+        // console.log("markerCoordinates",markerCoordinates)
+      }
+    
+      if (markerCoordinates.length !== 0) {
+      let roomList = []
       let labelIndex = 0;
       for (const markerCoordinate of markerCoordinates) {
         if (markerCoordinate.height - 1 == 0) {
           const roomNUM = markerCoordinate.roomID;
-          if (!roomList.includes(roomNUM)) {
-            const newMarker = markerCoordinate.latlons.map(
-              (latlons, index, coordArray) => {
-                if (index % 2 == 0) {
+
+          if(!roomList.includes(roomNUM)){       
+
+              const newMarker = markerCoordinate.latlons.map((latlons,index,coordArray) => {
+              if(index%2==0){
                   return {
-                    coords: [latlons, coordArray[index + 1]],
-                    color: "",
-                  };
+                  coords: [latlons,coordArray[index+1]],
+                  title:"",
+                  building:buildingName,
+                  info:"",
+                  color: "",
+
+                };
                 }
               }
             );
@@ -186,6 +211,7 @@ const IndoorLabel = () => {
                 coords: centerLabel.position,
                 color: "",
                 id: roomNUM,
+                building:buildingName
               });
             } else {
               labelIndex = labelIndex + 1;
@@ -251,6 +277,7 @@ const IndoorLabel = () => {
                 coords: raise(centerLabel.position, height),
                 color: "",
                 id: roomNUM,
+                building:buildingName
               });
             } else {
               switch (roomNUM) {
@@ -291,6 +318,7 @@ const IndoorLabel = () => {
       }
 
       setTextMarkers(textMarkers.concat(textRaisedMarkers));
+      // console.log(textMarkers)
 
       const geoJSONMarkers = {
         features: iconMarkers.map((marker) => ({
@@ -337,17 +365,20 @@ const IndoorLabel = () => {
             coordinate={AllMarker.coords}
             allowOverlap={false}
           >
-            <Text
-              style={[
-                {
-                  color: "grey",
-                  fontSize: 11,
-                  fontWeight: "bold",
-                },
-              ]}
-            >
-              {AllMarker.id}
-            </Text>
+            <TouchableOpacity
+              onPress={() => handleMarkerPress(AllMarker)}
+              >
+
+              
+                <Text style={[{
+                    color: 'grey',
+                    fontSize: 11,
+                    fontWeight: 'bold',
+                  }]}>
+                    {AllMarker.id}
+                </Text>
+
+              </TouchableOpacity>  
           </MapboxGL.MarkerView>
         );
       })}
