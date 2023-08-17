@@ -76,7 +76,7 @@ const MapBoxApp = (props: BaseExampleProps) => {
       const zoomlevel = mapState.properties.zoom;
       console.log(zoomlevel)
       console.log("zoomlevel is ",floorNumber);
-      if(zoomlevel >= 16.5){
+      if(zoomlevel >= 17){
       switch (floorNumber){
         case 1:
           dispatch(setGeoJSON(BA_1_Room));

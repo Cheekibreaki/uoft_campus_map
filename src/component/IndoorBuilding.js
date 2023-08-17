@@ -73,7 +73,7 @@ const IndoorBuilding = (props: BaseExampleProps) => {
         style={sheet.matchParent}
       >
         <MapboxGL.Camera
-          zoomLevel={16}
+          zoomLevel={13}
           pitch={40}
           heading={30}
           centerCoordinate={[-87.61694, 41.86625]}
