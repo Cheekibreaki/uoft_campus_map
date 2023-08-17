@@ -124,38 +124,38 @@ const MapBoxApp = (props: BaseExampleProps) => {
     const renderSelcetedMarker = () => {
       // Function to render IndoorLabel on the map
       if (selectedMarker !== null && Object.keys(selectedMarker).length !== 0) {
-        
-       
-        
-        
-        return (
           
-          <MapboxGL.MarkerView
-          
-          coordinate={selectedMarker.coords}
-         
-        > 
+        return (  
+        //   <MapboxGL.MarkerView 
+        //   coordinate={selectedMarker.coords}
+        // > 
      
-          <View 
-          style={{ 
-            borderColor: 'black',
-            borderWidth: 1.0,
-            width: 60,   
-            backgroundColor: 'white',
-            borderRadius: 5,
-            shadowColor: '#000',
-            shadowOffset: {
-              width: 0,
-              height: 2,}
-            }}>
-          <Text>{selectedMarker.id}</Text>  
-          </View>
+        //   <View 
+        //   style={{ 
+        //     borderColor: 'black',
+        //     borderWidth: 1.0,
+        //     width: 60,   
+        //     backgroundColor: 'white',
+        //     borderRadius: 5,
+        //     shadowColor: '#000',
+        //     shadowOffset: {
+        //       width: 0,
+        //       height: 2,}
+        //     }}>
+        //   <Text>{selectedMarker.id}</Text> 
+        //   <Text>hello</Text> 
+        //   </View>
            
-        </MapboxGL.MarkerView>
+        // </MapboxGL.MarkerView>
         // <MapboxGL.MarkerView coordinate={selectedMarker.coords}>
         //     <AnnotationContent title={'this is a marker view'} />
         // </MapboxGL.MarkerView>  
-          
+        <View style={{ position: 'absolute', bottom: 20, left: 20, width: '80%' }}>
+          <View style={{ backgroundColor: 'white', padding: 10, borderRadius: 5 }}>
+            <Text>{selectedMarker.id}</Text>
+            <Text>{selectedMarker.building}</Text>
+          </View>
+        </View>
         );
       } else {
         // If map is not initialized yet, return null or a loading indicator
@@ -204,11 +204,11 @@ const MapBoxApp = (props: BaseExampleProps) => {
 
             {renderGeojsonFiles()}
             <IndoorLabel/> 
-            {renderSelcetedMarker()}
+            
           
           </MapView>
           {renderButtonPanel()}
-          
+          {renderSelcetedMarker()}
 
         </>
         // </View>

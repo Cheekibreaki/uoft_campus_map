@@ -109,7 +109,7 @@ const IndoorLabel = () => {
       
     }
     
-    return {coords: position,color: "",id:roomID, title:"",info:""};
+    return {coords: position,color: "",id:roomID, title:"",info:"",building:buildingName};
     
   };
 
@@ -125,13 +125,13 @@ const IndoorLabel = () => {
   const isCameraMoving = useSelector((store)=>store.IsCameraMoving.isCameraMoving);
   const [TextMarkers, setTextMarkers] = useState([]);
   const [IconMarkers, setIconMarkers] = useState([]);
-  const [selectedMarker, setSelectedMarker] = useState(null);
-  const [markerPosition, setMarkerPosition] = useState({ x: 0, y: 0 });
+  // const [selectedMarker, setSelectedMarker] = useState(null);
+  // const [markerPosition, setMarkerPosition] = useState({ x: 0, y: 0 });
 
   const handleMarkerPress = (marker) => {
     const coordinate = marker.coords;
-    setSelectedMarker(marker);
-    setMarkerPosition({ x:coordinate[0], y:coordinate[1] });
+    // setSelectedMarker(marker);
+    // setMarkerPosition({ x:coordinate[0], y:coordinate[1] });
     dispatch(setSelectRoom(marker));
   }
   // const [TextMarkers, setTextMarkers] = useState([]);
@@ -140,8 +140,14 @@ const IndoorLabel = () => {
   const updateLabel = () =>{
 
     console.log("updating")
-    
+    let buildingName = selectedGeoJSON.name;
+
+    if(buildingName.split("_").includes("BA")){
+      buildingName = "Bahen Centre for Information Technology"
+    }
+
       if( selectedGeoJSON !== null && Object.keys(selectedGeoJSON).length !== 0 && selectedGeoJSON.features !== null && selectedGeoJSON.features !== {}){
+
         const features = selectedGeoJSON.features;
         markerCoordinates = (() => {
         
@@ -167,6 +173,7 @@ const IndoorLabel = () => {
       for (const markerCoordinate of markerCoordinates){
         if (markerCoordinate.height-1 == 0){
           const roomNUM = markerCoordinate.roomID;
+
           if(!roomList.includes(roomNUM)){       
 
               const newMarker = markerCoordinate.latlons.map((latlons,index,coordArray) => {
@@ -174,6 +181,7 @@ const IndoorLabel = () => {
                   return {
                   coords: [latlons,coordArray[index+1]],
                   title:"",
+                  building:buildingName,
                   info:"",
                   color: "",
 
@@ -189,7 +197,7 @@ const IndoorLabel = () => {
             
             if(roomNUM !== "S" && roomNUM !== "E"&& roomNUM !== "FW" && roomNUM !== "MW"){
               roomList.push(roomNUM);
-              textMarkers.push({coords: centerLabel.position, color: "", id: roomNUM,title: "",info: ""})
+              textMarkers.push({coords: centerLabel.position, color: "", id: roomNUM,title: "",info: "",building:buildingName})
             }else{
               labelIndex=labelIndex+1;
               switch (roomNUM) {
@@ -228,6 +236,7 @@ const IndoorLabel = () => {
                 return {
                 coords: [latlons,coordArray[index+1]],
                 title:"",
+                building:buildingName,
                 info:"",
                 color: "",
 
