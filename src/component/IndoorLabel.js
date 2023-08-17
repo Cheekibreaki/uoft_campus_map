@@ -9,11 +9,13 @@ import colors from "../styles/colors";
 import buttonStyles from "../styles/button";
 import Page from "../common/Page";
 import BaseExamplePropTypes from "../common/BaseExamplePropTypes";
-import {useSelector} from 'react-redux';
+import {useSelector, useDispatch} from 'react-redux';
 import {setGeoJSON} from '../redux/actions/getGeoJsonReducer';
 import {setMapState} from '../redux/actions/getMapstateReducer';
+import { setSelectRoom } from "../redux/actions/setSelectedRoom";
 import { Button, Divider, Text } from '@rneui/base';
 import Icon from 'react-native-vector-icons/FontAwesome6';
+
 
 
 function computeCenterLabelPosition(givenMarkers){
@@ -107,12 +109,12 @@ const IndoorLabel = () => {
       
     }
     
-    return {coords: position,color: "",id:roomID};
+    return {coords: position,color: "",id:roomID, title:"",info:""};
     
   };
 
   
-
+  const dispatch = useDispatch();
   let markerCoordinates = [];
   let textMarkers = [];
   let iconMarkers = [];
@@ -123,6 +125,15 @@ const IndoorLabel = () => {
   const isCameraMoving = useSelector((store)=>store.IsCameraMoving.isCameraMoving);
   const [TextMarkers, setTextMarkers] = useState([]);
   const [IconMarkers, setIconMarkers] = useState([]);
+  const [selectedMarker, setSelectedMarker] = useState(null);
+  const [markerPosition, setMarkerPosition] = useState({ x: 0, y: 0 });
+
+  const handleMarkerPress = (marker) => {
+    const coordinate = marker.coords;
+    setSelectedMarker(marker);
+    setMarkerPosition({ x:coordinate[0], y:coordinate[1] });
+    dispatch(setSelectRoom(marker));
+  }
   // const [TextMarkers, setTextMarkers] = useState([]);
   // console.log("selectedGeoJson",selectedGeoJSON);
 
@@ -162,6 +173,8 @@ const IndoorLabel = () => {
               if(index%2==0){
                   return {
                   coords: [latlons,coordArray[index+1]],
+                  title:"",
+                  info:"",
                   color: "",
 
                 };
@@ -176,7 +189,7 @@ const IndoorLabel = () => {
             
             if(roomNUM !== "S" && roomNUM !== "E"&& roomNUM !== "FW" && roomNUM !== "MW"){
               roomList.push(roomNUM);
-              textMarkers.push({coords: centerLabel.position, color: "", id: roomNUM})
+              textMarkers.push({coords: centerLabel.position, color: "", id: roomNUM,title: "",info: ""})
             }else{
               labelIndex=labelIndex+1;
               switch (roomNUM) {
@@ -214,6 +227,8 @@ const IndoorLabel = () => {
             if(index%2==0){
                 return {
                 coords: [latlons,coordArray[index+1]],
+                title:"",
+                info:"",
                 color: "",
 
               };
@@ -254,6 +269,7 @@ const IndoorLabel = () => {
       }
 
       setTextMarkers(textMarkers.concat(textRaisedMarkers));
+      // console.log(textMarkers)
 
       const geoJSONMarkers = iconMarkers.map(marker => ({
         type: 'Feature',
@@ -275,7 +291,7 @@ const IndoorLabel = () => {
       setTextMarkers([]);
       setIconMarkers([]);
     }
-    console.log(IconMarkers)
+    // console.log(IconMarkers)
     
 
 
@@ -312,8 +328,17 @@ const IndoorLabel = () => {
               key={`RaisedMarkerView-${i}-${AllMarker.coords.join("-")}`}
               coordinate={AllMarker.coords}
               allowOverlap={false}
-            >
 
+            > 
+              {/* <View style={{ borderColor: 'black', borderWidth: 1.0, width: 60 }}>
+              <Text>"this is my life"</Text>  
+              </View> */}
+              
+              <TouchableOpacity
+              onPress={() => handleMarkerPress(AllMarker)}
+              >
+
+              
                 <Text style={[{
                     color: 'grey',
                     fontSize: 11,
@@ -321,14 +346,19 @@ const IndoorLabel = () => {
                   }]}>
                     {AllMarker.id}
                 </Text>
-              
+
+              </TouchableOpacity>  
             </MapboxGL.MarkerView>
+            
+
           );
-        })}
+        }
+        )
+        }
     
 
         
-      <MapboxGL.ShapeSource id="symbolSource" shape={IconMarkers}>
+      {/* <MapboxGL.ShapeSource id="symbolSource" shape={IconMarkers}>
       <MapboxGL.SymbolLayer
           id="symbolLayer"
           style={(feature) => ({
@@ -336,7 +366,7 @@ const IndoorLabel = () => {
             iconSize: 0.5,
           })}
         />
-      </MapboxGL.ShapeSource>
+      </MapboxGL.ShapeSource> */}
 
         
         

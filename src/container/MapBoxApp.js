@@ -1,9 +1,10 @@
 import React, { useState, useEffect, useCallback, useLayoutEffect, useRef } from "react";
 import { View, StyleSheet, Pressable } from "react-native";
 import MapboxGL from "@rnmapbox/maps";
-import { Slider } from "@rneui/base";
+import { Slider ,Text} from "@rneui/base";
+
 import { Position } from "geojson";
-import { Camera, Logger, MapView, MarkerView } from '@rnmapbox/maps';
+import { Camera, Logger, MapView, MarkerView,Popup} from '@rnmapbox/maps';
 import colors from "../styles/colors";
 import BA_2_Room from "../assets/geojson/BA_Indoor_2_room.json";
 import BA_1_Room from "../assets/geojson/BA_Indoor_1_room.json";
@@ -48,6 +49,10 @@ const MapBoxApp = (props: BaseExampleProps) => {
     
     const [mapInitialized, setMapInitialized] = useState(false);
 
+    let selectedMarker = useSelector(store=>store.SelectRoom.selectRoom);
+    console.log("selectedMarker is ", selectedMarker)
+    
+
     const onMapInitialized = () => {
       // This function is called when the map is fully initialized
       setMapInitialized(true);
@@ -74,8 +79,8 @@ const MapBoxApp = (props: BaseExampleProps) => {
     let floorNumber = useSelector(store=>store.Filter.filter)[0]
     const avoid_queryLayerFeatures =  async() => {
       const zoomlevel = mapState.properties.zoom;
-      console.log(zoomlevel)
-      console.log("zoomlevel is ",floorNumber);
+      // console.log(zoomlevel)
+      // console.log("zoomlevel is ",floorNumber);
       if(zoomlevel >= 16.5){
       switch (floorNumber){
         case 1:
@@ -116,6 +121,48 @@ const MapBoxApp = (props: BaseExampleProps) => {
       }
     };
 
+    const renderSelcetedMarker = () => {
+      // Function to render IndoorLabel on the map
+      if (selectedMarker !== null && Object.keys(selectedMarker).length !== 0) {
+        
+       
+        
+        
+        return (
+          
+          <MapboxGL.MarkerView
+          
+          coordinate={selectedMarker.coords}
+         
+        > 
+     
+          <View 
+          style={{ 
+            borderColor: 'black',
+            borderWidth: 1.0,
+            width: 60,   
+            backgroundColor: 'white',
+            borderRadius: 5,
+            shadowColor: '#000',
+            shadowOffset: {
+              width: 0,
+              height: 2,}
+            }}>
+          <Text>{selectedMarker.id}</Text>  
+          </View>
+           
+        </MapboxGL.MarkerView>
+        // <MapboxGL.MarkerView coordinate={selectedMarker.coords}>
+        //     <AnnotationContent title={'this is a marker view'} />
+        // </MapboxGL.MarkerView>  
+          
+        );
+      } else {
+        // If map is not initialized yet, return null or a loading indicator
+        return null;
+      }
+    };
+
     // const filterFeature =  useSelector(store=>store.Filter.filter);
     return (
         // <View ref={componentRef} onLayout={measureComponent}>
@@ -138,9 +185,10 @@ const MapBoxApp = (props: BaseExampleProps) => {
               avoid_queryLayerFeatures()
               dispatch(setIsCameraMoving(true))
             }}
-            onMapIdle = {() => {
+            onMapIdle = {(_state) => {
               onMapInitialized()
-              dispatch(setIsCameraMoving(false))
+              dispatch(setIsCameraMoving(false));
+              dispatch(setMapState(_state));
              
             }}
             // onDidFinishLoadingMap={onMapInitialized}
@@ -156,6 +204,8 @@ const MapBoxApp = (props: BaseExampleProps) => {
 
             {renderGeojsonFiles()}
             <IndoorLabel/> 
+            {renderSelcetedMarker()}
+          
           </MapView>
           {renderButtonPanel()}
           
