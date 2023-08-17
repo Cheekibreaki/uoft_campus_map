@@ -82,7 +82,8 @@ const IndoorLabel = () => {
     return {coords: camera_projection_position, color: ""};
   }
 
-  const raise = (position,height,roomID) => {
+  const raise = (position,height,roomID,buildingName) => {
+    
     let cameraProj = findCameraProj();
     let zoomLevel = mapState.properties.zoom;
     let heading = mapState.properties.heading;
@@ -104,7 +105,7 @@ const IndoorLabel = () => {
         copyPosition[0]= copyPosition[0]+ extendVector[0];
         copyPosition[1]= copyPosition[1]+ extendVector[1];
         // console.log("position",copyPosition)
-        return {coords: copyPosition,color: "",id:roomID};
+        return {coords: copyPosition,color: "",id:roomID, title:"",info:"",building:buildingName};
       }
       
     }
@@ -249,7 +250,8 @@ const IndoorLabel = () => {
             
             if(roomNUM !== "S" && roomNUM !== "E"&& roomNUM !== "FW" && roomNUM !== "MW"){
               roomList.push(roomNUM);
-              textRaisedMarkers.push(raise(centerLabel.position,height,roomNUM))
+              
+              textRaisedMarkers.push(raise(centerLabel.position,height,roomNUM,buildingName))
             }else{
               // switch (roomNUM) {
               //   case 'S':
