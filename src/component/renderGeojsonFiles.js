@@ -9,7 +9,8 @@ const BA_1_Room = require("../assets/geojson/BA_Indoor_1_room.json");
 const BA_1_Contour = require("../assets/geojson/BA_Indoor_1_contour.json");
 const BA_2_Room = require("../assets/geojson/BA_Indoor_2_room.json");
 const BA_2_Contour = require("../assets/geojson/BA_Indoor_2_contour.json");
-
+const BA_3_Room = require("../assets/geojson/BA_Indoor_3_room.json");
+const BA_3_Contour = require("../assets/geojson/BA_Indoor_3_contour.json");
 
 
 const renderGeojsonFiles = () => {
@@ -71,6 +72,33 @@ const renderGeojsonFiles = () => {
           style={buildingStyles.IndoorBuilding}
       />
     </MapboxGL.ShapeSource>
+
+    <MapboxGL.ShapeSource
+      id="BA_3_Contour"
+      shape={BA_3_Contour}
+      >
+
+      <MapboxGL.FillExtrusionLayer
+          id="BA_3_Contour"
+          filter={useSelector(store=>store.Filter.filter)[1]}
+          style={buildingStyles.Contour}
+      />
+    </MapboxGL.ShapeSource>
+
+
+
+    <MapboxGL.ShapeSource
+      id="BA_3_Room"
+      shape={BA_3_Room}
+      >
+
+      <MapboxGL.FillExtrusionLayer
+          id="BA_3_Room"
+          filter={filterForIndoorRoom}
+          style={buildingStyles.IndoorBuilding}
+      />
+    </MapboxGL.ShapeSource>
+
 
 
     </>

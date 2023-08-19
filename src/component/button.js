@@ -5,6 +5,7 @@ import { View,Text, StyleSheet, TouchableOpacity, Pressable } from "react-native
 import {useSelector, useDispatch} from 'react-redux';
 import {setFilter} from '../redux/actions/setFilterAction';
 import {setGeoJSON} from "../redux/actions/setGeoJsonAction";
+import BA_3_Room from "../assets/geojson/BA_Indoor_3_room.json";
 import BA_2_Room from "../assets/geojson/BA_Indoor_2_room.json";
 import BA_1_Room from "../assets/geojson/BA_Indoor_1_room.json";
 
@@ -146,6 +147,9 @@ const ButtonPanel = () => {
             break
           case 2:
             dispatch(setGeoJSON(BA_2_Room));
+            break
+          case 3:
+            dispatch(setGeoJSON(BA_3_Room));
             break
           default:
   

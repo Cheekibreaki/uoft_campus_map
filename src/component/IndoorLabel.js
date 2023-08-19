@@ -67,7 +67,7 @@ const IndoorLabel = () => {
     let midvalue =
       Math.cos((centerPitch * Math.PI) / 180) * 59959 * Math.pow(2, -zoomLevel);
     let lon = Math.sin((heading * Math.PI) / 180) * midvalue * 0.0103;
-    let lat = Math.cos((heading * Math.PI) / 180) * midvalue * 0.0072;
+    let lat = Math.cos((heading * Math.PI) / 180) * midvalue * 0.0075;
 
     let camera_projection_position = [center[0] - lon, center[1] - lat];
 
@@ -91,9 +91,8 @@ const IndoorLabel = () => {
       const length = Math.sqrt(vector[0] ** 2 + vector[1] ** 2);
       let CameraHeight =
         Math.sin((centerPitch * Math.PI) / 180) *
-        59959.436 *
-        Math.pow(2, -zoomLevel) *
-        39;
+        2338418 *
+        Math.pow(2, -zoomLevel);
       // console.log("CameraHeight",CameraHeight);
       if (CameraHeight > height) {
         let distanceBetweenRaisedMarkerAndMarker =

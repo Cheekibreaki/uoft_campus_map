@@ -5,8 +5,6 @@ import { Slider } from "@rneui/base";
 import { Position } from "geojson";
 import { Camera, Logger, MapView, MarkerView } from '@rnmapbox/maps';
 import colors from "../styles/colors";
-import BA_2_Room from "../assets/geojson/BA_Indoor_2_room.json";
-import BA_1_Room from "../assets/geojson/BA_Indoor_1_room.json";
 import Page from "../common/Page";
 import BaseExamplePropTypes from "../common/BaseExamplePropTypes";
 import {useSelector, useDispatch} from 'react-redux';
@@ -17,6 +15,14 @@ import ButtonPanel from "../component/button";
 import GeojsonFiles from "../component/renderGeojsonFiles";
 import { setIsCameraMoving } from "../redux/actions/setIsCameraMovingAction";
 import { setGeoJSONInScreen } from "../redux/actions/setFeatureInScreen";
+
+
+
+import BA_1_Room from "../assets/geojson/BA_Indoor_1_room.json";
+import BA_2_Room from "../assets/geojson/BA_Indoor_2_room.json";
+import BA_3_Room from "../assets/geojson/BA_Indoor_3_room.json";
+
+
 //Todo:
 //Flickering issue => state update related
 //Promise Rejection => queryRenderedFeaturesInRect @ onCameraChanged
@@ -84,6 +90,9 @@ const MapBoxApp = (props: BaseExampleProps) => {
         case 2:
           dispatch(setGeoJSON(BA_2_Room));
           break
+        case 3:
+          dispatch(setGeoJSON(BA_3_Room));
+          break
         default:
 
           }
@@ -134,7 +143,7 @@ const MapBoxApp = (props: BaseExampleProps) => {
               counter++
               // console.log("yes")
               dispatch(setMapState(_state));
-              queryLayerFeatures()
+              // queryLayerFeatures()
               avoid_queryLayerFeatures()
               dispatch(setIsCameraMoving(true))
             }}
