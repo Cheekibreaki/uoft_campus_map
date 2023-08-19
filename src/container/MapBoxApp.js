@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback, useLayoutEffect, useRef } from "react";
 import { View, StyleSheet, Pressable } from "react-native";
 import MapboxGL from "@rnmapbox/maps";
-import { Slider } from "@rneui/base";
+import { Slider, Text} from "@rneui/base";
 import { Position } from "geojson";
 import { Camera, Logger, MapView, MarkerView } from '@rnmapbox/maps';
 import colors from "../styles/colors";
@@ -53,6 +53,8 @@ const MapBoxApp = (props: BaseExampleProps) => {
     const [allowOverlap, setAllowOverlap] = useState(false);
     
     const [mapInitialized, setMapInitialized] = useState(false);
+
+    let selectedMarker = useSelector(store=>store.SelectRoom.selectRoom);
 
     const onMapInitialized = () => {
       // This function is called when the map is fully initialized
@@ -125,6 +127,46 @@ const MapBoxApp = (props: BaseExampleProps) => {
       }
     };
 
+    const renderSelcetedMarker = () => {
+      // Function to render IndoorLabel on the map
+      if (selectedMarker !== null && Object.keys(selectedMarker).length !== 0) {
+          
+        return (  
+        //   <MapboxGL.MarkerView 
+        //   coordinate={selectedMarker.coords}
+        // > 
+     
+        //   <View 
+        //   style={{ 
+        //     borderColor: 'black',
+        //     borderWidth: 1.0,
+        //     width: 60,   
+        //     backgroundColor: 'white',
+        //     borderRadius: 5,
+        //     shadowColor: '#000',
+        //     shadowOffset: {
+        //       width: 0,
+        //       height: 2,}
+        //     }}>
+        //   <Text>{selectedMarker.id}</Text> 
+        //   <Text>hello</Text> 
+        //   </View>
+           
+        // </MapboxGL.MarkerView>
+        
+        <View style={{ position: 'absolute', bottom: 20, left: 20, width: '80%' }}>
+          <View style={{ backgroundColor: 'white', padding: 10, borderRadius: 5 }}>
+            <Text>{selectedMarker.id}</Text>
+            <Text>{selectedMarker.building}</Text>
+          </View>
+        </View>
+        );
+      } else {
+        // If map is not initialized yet, return null or a loading indicator
+        return null;
+      }
+    };
+
     // const filterFeature =  useSelector(store=>store.Filter.filter);
     return (
         // <View ref={componentRef} onLayout={measureComponent}>
@@ -167,6 +209,7 @@ const MapBoxApp = (props: BaseExampleProps) => {
             <IndoorLabel/> 
           </MapView>
           {renderButtonPanel()}
+          {renderSelcetedMarker()}
           
 
         </>

@@ -15,11 +15,11 @@ import colors from "../styles/colors";
 import buttonStyles from "../styles/button";
 import Page from "../common/Page";
 import BaseExamplePropTypes from "../common/BaseExamplePropTypes";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { setGeoJSON } from "../redux/actions/getGeoJsonReducer";
 import { setMapState } from "../redux/actions/getMapstateReducer";
+import { setSelectRoom } from "../redux/actions/setSelectedRoom";
 import { Button, Divider, Text } from "@rneui/base";
-
 import stairs_img from "../assets/Label_Asset/stairs.png";
 import elevator_img from "../assets/Label_Asset/elevator.png";
 import man_img from "../assets/Label_Asset/man.png";
@@ -111,6 +111,7 @@ const IndoorLabel = () => {
     return position;
   };
 
+  const dispatch = useDispatch();
   let markerCoordinates = [];
   let textMarkers = [];
   let iconMarkers = [];
@@ -128,8 +129,22 @@ const IndoorLabel = () => {
   // const [TextMarkers, setTextMarkers] = useState([]);
   // console.log("selectedGeoJson",selectedGeoJSON);
 
+  const handleMarkerPress = (marker) => {
+    const coordinate = marker.coords;
+    // setSelectedMarker(marker);
+    // setMarkerPosition({ x:coordinate[0], y:coordinate[1] });
+    dispatch(setSelectRoom(marker));
+  }
+
   const updateLabel = () => {
     console.log("selectedGeoJSON", selectedGeoJSON);
+    let buildingName = selectedGeoJSON.name;
+    if (buildingName !== null && buildingName !== undefined) {
+      if(buildingName.split("_").includes("BA")){
+      buildingName = "Bahen Centre for Information Technology"
+    }
+    }
+    
 
     if (
       selectedGeoJSON !== null &&
@@ -168,6 +183,7 @@ const IndoorLabel = () => {
                   return {
                     coords: [latlons, coordArray[index + 1]],
                     color: "",
+                    building: buildingName
                   };
                 }
               }
@@ -185,6 +201,7 @@ const IndoorLabel = () => {
                 coords: centerLabel.position,
                 color: "",
                 id: roomNUM,
+                building:buildingName
               });
             } else {
               labelIndex = labelIndex + 1;
@@ -232,6 +249,7 @@ const IndoorLabel = () => {
                   return {
                     coords: [latlons, coordArray[index + 1]],
                     color: "",
+                    buidling: buildingName
                   };
                 }
               }
@@ -250,6 +268,7 @@ const IndoorLabel = () => {
                 coords: raise(centerLabel.position, height),
                 color: "",
                 id: roomNUM,
+                building: buildingName
               });
             } else {
               switch (roomNUM) {
@@ -336,17 +355,20 @@ const IndoorLabel = () => {
             coordinate={AllMarker.coords}
             allowOverlap={false}
           >
-            <Text
-              style={[
-                {
-                  color: "grey",
-                  fontSize: 11,
-                  fontWeight: "bold",
-                },
-              ]}
-            >
-              {AllMarker.id}
-            </Text>
+             <TouchableOpacity
+              onPress={() => handleMarkerPress(AllMarker)}
+              >
+
+              
+                <Text style={[{
+                    color: 'grey',
+                    fontSize: 11,
+                    fontWeight: 'bold',
+                  }]}>
+                    {AllMarker.id}
+                </Text>
+
+              </TouchableOpacity>
           </MapboxGL.MarkerView>
         );
       })}
