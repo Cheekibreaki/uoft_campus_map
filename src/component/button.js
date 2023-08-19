@@ -139,7 +139,7 @@ const ButtonPanel = () => {
     const dispatch = useDispatch();
 
     const handleButtonPress = (floorNumber) => {
-        console.log(floorNumber);
+        console.log("floorNumber is ",floorNumber);
         
         switch (floorNumber){
           case 1:
@@ -154,7 +154,7 @@ const ButtonPanel = () => {
           default:
   
             }
-        dispatch(setFilter([floorNumber,[],['==', 'floor', floorNumber.toString()]])); 
+        dispatch(setFilter([floorNumber,['<=','floor',floorNumber.toString()],['==', 'floor', floorNumber.toString()]])); 
         // dispatch(setGeoJSON({}))
     };
 
@@ -164,7 +164,7 @@ const ButtonPanel = () => {
       buttons={floorNumbers.reverse()}
       selectedIndex={floorNumbers.length -1 - useSelector(store=>store.Filter.filter)[0]}
       onPress={(value) => {
-        console.log("floorNumber is ", value);
+        // console.log("floorNumber is ", value);
 
         handleButtonPress(floorNumbers.length -1 -value);
       }}
