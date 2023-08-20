@@ -1,5 +1,5 @@
 const initialState ={
-    filter:[1,[],['==','floor',"1"]],
+    filter:[1,["<=",'floor',"1"],['==','floor',"1"]],
 
 };
 
