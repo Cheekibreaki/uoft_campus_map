@@ -5,7 +5,6 @@
  * @format
  * @flow strict-local
  */
-import Main from './src/container/Main'
 // import IndoorMap from './src/component/IndoorBuilding'
 import React, { useState } from 'react';
 import {Provider} from 'react-redux';
@@ -14,6 +13,7 @@ import IndoorBuilding from './src/component/IndoorBuilding'
 import IndoorLabel from './src/component/IndoorLabel_copy'
 import MapBoxApp from './src/container/MapBoxApp'
 import type {Node} from 'react';
+import Realm from "realm";
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import {
   SafeAreaView,

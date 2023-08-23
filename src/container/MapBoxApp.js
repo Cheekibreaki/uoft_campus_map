@@ -16,7 +16,7 @@ import GeojsonFiles from "../component/renderGeojsonFiles";
 import { setIsCameraMoving } from "../redux/actions/setIsCameraMovingAction";
 import { setGeoJSONInScreen } from "../redux/actions/setFeatureInScreen";
 
-
+MapboxGL.setAccessToken("pk.eyJ1IjoiamlwaW5nbGkiLCJhIjoiY2xoanYzaGZ1MGxsNjNxbzMxNTdjMHkyOSJ9.81Fnu3ho6z2u8bhS2yRJNA");
 
 import BA_1_Room from "../assets/geojson/BA_Indoor_1_room.json";
 import BA_2_Room from "../assets/geojson/BA_Indoor_2_room.json";
