@@ -15,12 +15,21 @@ import ButtonPanel from "../component/button";
 import GeojsonFiles from "../component/renderGeojsonFiles";
 import { setIsCameraMoving } from "../redux/actions/setIsCameraMovingAction";
 import { setGeoJSONInScreen } from "../redux/actions/setFeatureInScreen";
-
+import { setSelectRoom } from "../redux/actions/setSelectedRoom";
 MapboxGL.setAccessToken("pk.eyJ1IjoiamlwaW5nbGkiLCJhIjoiY2xoanYzaGZ1MGxsNjNxbzMxNTdjMHkyOSJ9.81Fnu3ho6z2u8bhS2yRJNA");
 
 import BA_1_Room from "../assets/geojson/BA_Indoor_1_room.json";
 import BA_2_Room from "../assets/geojson/BA_Indoor_2_room.json";
 import BA_3_Room from "../assets/geojson/BA_Indoor_3_room.json";
+
+import {
+  BA_1_ContourLayerID,
+  BA_1_RoomLayerID,
+  BA_2_ContourLayerID,
+  BA_2_RoomLayerID,
+  BA_3_ContourLayerID,
+  BA_3_RoomLayerID,
+} from "../component/renderGeojsonFiles";
 
 
 //Todo:
@@ -28,6 +37,47 @@ import BA_3_Room from "../assets/geojson/BA_Indoor_3_room.json";
 //Promise Rejection => queryRenderedFeaturesInRect @ onCameraChanged
 
 const style = JSON.stringify(require('../assets/map-style.json'));
+
+function computePointWithinRoom(givenRoom,cursorCoordinate) {
+  if (givenRoom.length === 0) {
+    return false;
+  }
+  var max0 = givenRoom[0][0];
+  var max1 = givenRoom[0][1];
+  var min0 = givenRoom[0][0];
+  var min1 = givenRoom[0][1];
+  for (let i = 1; i < givenRoom.length; i++) {
+    
+    if (givenRoom[i] != undefined) {
+      if (givenRoom[i][0] > max0) {
+        max0 = givenRoom[i][0];
+      }
+      if (givenRoom[i][1] > max1) {
+        max1 = givenRoom[i][1];
+      }
+      if (givenRoom[i][0] < min0) {
+        min0 = givenRoom[i][0];
+      }
+      if (givenRoom[i][1] < min1) {
+        min1 = givenRoom[i][1];
+      }
+    }
+  }
+  // console.log("cursorCoordiante is ", cursorCoordinate)
+  // console.log(`[${min0},${min1}]  [${max0},${max1}]`)
+  if(cursorCoordinate.coordinates[0]<max0 &&
+     cursorCoordinate.coordinates[1]<max1 &&
+     cursorCoordinate.coordinates[0]>min0 &&
+     cursorCoordinate.coordinates[1]>min1
+    ){
+      
+      return true;
+      
+  }
+ 
+  return false;
+}
+
 
 
 const MapBoxApp = (props: BaseExampleProps) => {
@@ -55,11 +105,63 @@ const MapBoxApp = (props: BaseExampleProps) => {
     const [mapInitialized, setMapInitialized] = useState(false);
 
     let selectedMarker = useSelector(store=>store.SelectRoom.selectRoom);
+    let floorNumber = useSelector(store=>store.Filter.filter)[0]
 
     const onMapInitialized = () => {
       // This function is called when the map is fully initialized
       setMapInitialized(true);
     };
+
+  const onPress = async (e) => {
+    
+    const { screenPointX, screenPointY } = e.properties;
+    const cursorCoordinate = e.geometry;
+    // console.log("the point's coordinate is ", cursorCoordinate.coordinates)
+    // console.log("screenPointX, screenPointY", screenPointX, screenPointY)
+    const featureCollection = await map.current.queryRenderedFeaturesAtPoint(
+      [screenPointX, screenPointY],
+      null,
+      []
+    );
+    if (featureCollection && featureCollection.features && featureCollection.features.length) {
+      // console.log(featureCollection)
+      
+      
+      for (const feature of featureCollection.features) {
+
+        // console.log("roomID is", feature)
+        const geometry = feature.geometry;
+        const roomID = feature.properties.room;
+        
+        // console.log(geometry.coordinates)
+        const isWithinRoom = computePointWithinRoom(geometry.coordinates[0],cursorCoordinate)
+        // console.log("is within the room",isWithinRoom)
+        if (isWithinRoom === true) {
+
+          let buildingName = selectedGeoJSON.name;
+          if (buildingName !== null && buildingName !== undefined) {
+            if(buildingName.split("_").includes("BA")){
+            buildingName = "Bahen Centre for Information Technology"
+          }
+          }
+
+          // console.log(selectedGeoJSON.features);
+          dispatch(setSelectRoom({
+            id: roomID,
+            building: buildingName
+          }));
+          break;
+        }
+      }
+
+      
+
+    } else {
+      
+    }
+  };
+
+
 
     const queryLayerFeatures = async () => {
         setIsCameraMoving(false);
@@ -79,7 +181,7 @@ const MapBoxApp = (props: BaseExampleProps) => {
         dispatch(setGeoJSONInScreen({}));
         }
     };
-    let floorNumber = useSelector(store=>store.Filter.filter)[0]
+    
     const avoid_queryLayerFeatures =  async() => {
       const zoomlevel = mapState.properties.zoom;
       console.log(zoomlevel)
@@ -173,6 +275,7 @@ const MapBoxApp = (props: BaseExampleProps) => {
         <>
           <MapView 
             ref={map}
+            onPress={onPress}
             styleURL={style}
             style={{ flex: 1 }}
             onWillStartRenderingFrame = {(_state)=>{
