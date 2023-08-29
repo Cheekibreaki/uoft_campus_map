@@ -1,9 +1,9 @@
 const fs = require('fs');
 const realm = require('realm');
 
-// Read the GeoJSON file
-const geojsonFilePath = '../geojson/BA_Indoor_1_room.json';
-const geojson = JSON.parse(fs.readFileSync(geojsonFilePath, 'utf8'));
+// // Read the GeoJSON file
+// const geojsonFilePath = '../geojson/BA_Indoor_1_room.json';
+// const geojson = JSON.parse(fs.readFileSync(geojsonFilePath, 'utf8'));
 // console.log(geojson.features[0].geometry.coordinates)
 
 // Define Realm schema (same as before)
@@ -27,7 +27,7 @@ Feature.schema = {
   primaryKey: '_id',
   properties:{
     _id: 'objectId',
-    building_id: { type: 'string', required: true}, 
+    room: { type: 'string', required: true}, 
     feature_building: { type: 'Building', required: true},
     feature_type: { type: 'string', required: true },
     feature_layer_name: { type: 'string', required: true },

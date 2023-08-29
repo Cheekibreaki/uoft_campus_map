@@ -21,6 +21,7 @@ MapboxGL.setAccessToken("pk.eyJ1IjoiamlwaW5nbGkiLCJhIjoiY2xoanYzaGZ1MGxsNjNxbzMx
 import BA_1_Room from "../assets/geojson/BA_Indoor_1_room.json";
 import BA_2_Room from "../assets/geojson/BA_Indoor_2_room.json";
 import BA_3_Room from "../assets/geojson/BA_Indoor_3_room.json";
+import getGeoJSON from "../assets/dataBase/getGeoJSONFromRealm";
 
 import {
   BA_1_ContourLayerID,
@@ -111,6 +112,14 @@ const MapBoxApp = (props: BaseExampleProps) => {
       // This function is called when the map is fully initialized
       setMapInitialized(true);
     };
+
+    useEffect(() => {
+      // This function will be called only once when the component is mounted
+      // You can place your initialization code here
+      console.log('App initialized');
+      
+      getGeoJSON();
+    }, []);
 
   const onPress = async (e) => {
     
