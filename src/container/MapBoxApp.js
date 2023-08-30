@@ -22,6 +22,7 @@ import BA_1_Room from "../assets/geojson/BA_Indoor_1_room.json";
 import BA_2_Room from "../assets/geojson/BA_Indoor_2_room.json";
 import BA_3_Room from "../assets/geojson/BA_Indoor_3_room.json";
 import getGeoJSON from "../assets/dataBase/getGeoJSONFromRealm";
+import SearchBar from "../component/searchBar";
 
 import {
   BA_1_ContourLayerID,
@@ -229,6 +230,21 @@ const MapBoxApp = (props: BaseExampleProps) => {
         return (
           < View>
             <ButtonPanel/> 
+            
+          </View>
+          
+        );
+      } else {
+        // If map is not initialized yet, return null or a loading indicator
+        return null;
+      }
+    };
+    const renderSearchBar = () => {
+      // Function to render IndoorLabel on the map
+      if (mapInitialized) {
+        return (
+          < View>
+            <SearchBar/>   
           </View>
           
         );
@@ -320,6 +336,7 @@ const MapBoxApp = (props: BaseExampleProps) => {
             {renderGeojsonFiles()}
             <IndoorLabel/> 
           </MapView>
+          <SearchBar/>
           {renderButtonPanel()}
           {renderSelcetedMarker()}
           

@@ -1,4 +1,3 @@
-const fs = require('fs');
 const realm = require('realm');
 
 // // Read the GeoJSON file
