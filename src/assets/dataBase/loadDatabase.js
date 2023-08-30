@@ -86,6 +86,7 @@ function main() {
           _id: new Realm.BSON.ObjectId(),
           feature_id: room_name,
           feature_building: existingBuilding[0],
+          feature_building_id: layer_name_arr[0],
           feature_type: feature_type,
           feature_layer_name: feature_layer_name,
           building_floor: building_floor,

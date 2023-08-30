@@ -16,11 +16,11 @@ Building.schema = {
       building_name: { type: 'string', indexed: true, unique: true,required: true },//Bahen Centre for Information Technology
       building_floor_indicies: { type: 'string', required: true },//B12345678
       building_default_floor: { type: 'string', required: false},//1
-      building_room_num: { type: 'int', required: false},//0
-      building_stairs_num: { type: 'int', required: false},//0
-      building_elevator_num: { type: 'int', required: false},//0
-      building_f_washroom_num: { type: 'int', required: false},//0
-      building_m_washroom_num: { type: 'int', required: false},//0
+      // building_room_num: { type: 'int', required: false},//0
+      // building_stairs_num: { type: 'int', required: false},//0
+      // building_elevator_num: { type: 'int', required: false},//0
+      // building_f_washroom_num: { type: 'int', required: false},//0s
+      // building_m_washroom_num: { type: 'int', required: false},//0
   },
 };
 
@@ -33,6 +33,7 @@ Feature.schema = {
     _id: 'objectId',
     feature_id: { type: 'string', required: true, indexed: true }, //E1 2001
     feature_building: { type: 'Building', required: true},// Reference to BA
+    feature_building_id : { type: 'string', indexed: true, required: true },//BA
     feature_type: { type: 'string', required: true }, //room or contour
     feature_layer_name: { type: 'string', required: true }, //BA_Indoor_2_room
     building_floor: { type: 'string', required: true },

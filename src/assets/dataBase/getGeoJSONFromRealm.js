@@ -1,7 +1,7 @@
 const Realm = require('realm');
 const Building = require('./database.js').Building;
 const Feature = require('./database.js').Feature;
-// const Geometry = require('./database.js').Geometry;
+const Geometry = require('./database.js').Geometry;
 import fs from 'react-native-fs';
 
 
@@ -13,7 +13,7 @@ const getGeoJSON = () => {
     fs.copyFileAssets('firstFloor.realm',fs.DocumentDirectoryPath+'/firstFloor.realm')
     .then(()=>{
       realm = new Realm({
-        schema: [Building], 
+        schema: [Building,Feature,Geometry], 
         path: fs.DocumentDirectoryPath+'/firstFloor.realm', 
       });
       try {
@@ -22,78 +22,79 @@ const getGeoJSON = () => {
   
         const buildings = realm.objects('Building');
         console.log(buildings)
-        // const feature = realm.objects('Feature');       
+        const feature = realm.objects('Feature');
+        console.log(feature)       
 
-        // buildings.forEach(building => {
-        //   const buildingName = building.building_name
-        //   const buildingID = building.building_id
-        //   buildingFloorIndeices = building.building_floor_indiceies
+        buildings.forEach(building => {
+          const buildingName = building.building_name
+          const buildingID = building.building_id
+          const buildingFloorIndeices = building.building_floor_indicies
 
-        //   for(i =0; i <buildingFloorIndeices.length;i++){
-        //     let features = feature.filter(`buillding_id == "${buildingID}" AND building_floor == "${buildingFloorIndeices[i]}"`)
-        //     if(features.length!==0){
-        //       const contour =  features.filter('feature_type == "contour"')
-        //       const rooms = features.filter('feature_type == "room"')
-        //       const GeoJSONContour = {
-        //         "type":"featureCollection",
-        //         "name":buildingName,
-        //         "features":[{
-        //           "type": "Feature",
-        //           "properties":{
-        //             "room": "",
-        //             "floor":contour.building_floor,
-        //             "color": contour.feature_color,
+          for(i =0; i <buildingFloorIndeices.length;i++){
+            let features = feature.filtered(`feature_building_id == "${buildingID}" AND building_floor == "${buildingFloorIndeices[i]}"`)
+            if(features.length!==0){
+              const contour =  features.filtered('feature_type == "contour"')
+              const rooms = features.filtered('feature_type == "room"')
+              // const GeoJSONContour = {
+              //   "type":"featureCollection",
+              //   "name":buildingName,
+              //   "features":[{
+              //     "type": "Feature",
+              //     "properties":{
+              //       "room": "",
+              //       "floor":contour.building_floor,
+              //       "color": contour.feature_color,
                   
-        //           "layer_name": contour.feature_layer_name,
-        //           "height": contour.feature_height,
-        //           "base_height": contour.feature_base_height
-        //           },
-        //           "geometry": {
-        //             "type": contour.feature_geometry.geometry_type,
-        //             "coordiantes": contour.feature_geometry.geometry_coordinates
-        //           }
-        //           }
-        //         ],
-        //         "floor_indicies": buildingFloorIndeices,
-        //         "default_floor": building.building_default_floor
-        //       }
-        //       AllGeoJSONs.set(contour.feature_layer_name,GeoJSONContour)
+              //     "layer_name": contour.feature_layer_name,
+              //     "height": contour.feature_height,
+              //     "base_height": contour.feature_base_height
+              //     },
+              //     "geometry": {
+              //       "type": contour.feature_geometry.geometry_type,
+              //       "coordiantes": contour.feature_geometry.geometry_coordinates
+              //     }
+              //     }
+              //   ],
+              //   "floor_indicies": buildingFloorIndeices,
+              //   "default_floor": building.building_default_floor
+              // }
+              // AllGeoJSONs.set(contour.feature_layer_name,GeoJSONContour)
 
-        //       const GeoJSONRoom = {
-        //         "type":"featureCollection",
-        //         "name":buildingName,
-        //         "features":rooms.map(room=>{
-        //           return {
-        //           "type": "Feature",
-        //           "properties":{
-        //             "room": "",
-        //             "floor":room.building_floor,
-        //             "color": room.feature_color,
+              const GeoJSONRoom = {
+                "type":"featureCollection",
+                "name":buildingName,
+                "features":rooms.map(room=>{
+                  return {
+                  "type": "Feature",
+                  "properties":{
+                    "room": room.feature_id,
+                    "floor":room.building_floor,
+                    "color": room.feature_color,
                   
-        //           "layer_name": room.feature_layer_name,
-        //           "height": room.feature_height,
-        //           "base_height": room.feature_base_height
-        //           },
-        //           "geometry": {
-        //             "type": room.feature_geometry.geometry_type,
-        //             "coordiantes": room.feature_geometry.geometry_coordinates
-        //           }
-        //           }
-        //         }),
-        //         "floor_indicies": buildingFloorIndeices,
-        //         "default_floor": building.building_default_floor
-        //       }
-        //       AllGeoJSONs.set(rooms[0].feature_layer_name,GeoJSONRoom)
+                  "layer_name": room.feature_layer_name,
+                  "height": room.feature_height,
+                  "base_height": room.feature_base_height
+                  },
+                  "geometry": {
+                    "type": room.feature_geometry.geometry_type,
+                    "coordiantes": room.feature_geometry.geometry_coordinates
+                  }
+                  }
+                }),
+                "floor_indicies": buildingFloorIndeices,
+                "default_floor": building.building_default_floor
+              }
+              AllGeoJSONs.set(rooms[0].feature_layer_name,GeoJSONRoom)
               
 
-        //     }
+            }
             
-        //   }
-        // })
+          }
+        })
 
-
+        console.log(AllGeoJSONs)
         
-        
+        console.log(AllGeoJSONs.get("BA_Indoor_1_room"))
 
 
       
