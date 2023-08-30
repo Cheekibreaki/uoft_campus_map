@@ -6,6 +6,7 @@ const Building = require('./database.js').Building;
 const Feature = require('./database.js').Feature;
 const Geometry = require('./database.js').Geometry;
 
+async function setupRealmDatabase() {
 // Read the GeoJSON file
 const geojsonFilePath = '../geojson/BA_Indoor_1_room.json';
 const geojson = JSON.parse(fs.readFileSync(geojsonFilePath, 'utf8'));
@@ -63,6 +64,17 @@ const realmInstance = new realm({ schema: [Feature, Geometry, Building], path: '
       console.log("Building with the same building_id already exists.");
     }
 
+    // realmInstance.write(() => {
+    //   realmInstance.create("Feature", {
+    //     _id: new Realm.BSON.ObjectId(),
+    //     building_id: feature_building_name,
+    //     building_name: "bahen",
+    //     building_floor_indicies: "B12345678",
+    //     building_default_floor: "1",
+    //   });
+    // });
+
+
     // realmInstance.create(Feature, {
     //   _id: new Realm.BSON.ObjectId(),
     //   room: feature.properties.room,
@@ -94,3 +106,6 @@ allBuildings.forEach(building => {
 
 // Close the Realm instance when done
 realmInstance.close();
+};
+
+setupRealmDatabase();

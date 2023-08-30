@@ -1,4 +1,3 @@
-const fs = require('fs');
 const realm = require('realm');
 
 // // Read the GeoJSON file
@@ -27,7 +26,7 @@ Feature.schema = {
   primaryKey: '_id',
   properties:{
     _id: 'objectId',
-    room: { type: 'string', required: true}, 
+    feature_room: { type: 'string', required: true}, 
     feature_building: { type: 'Building', required: true},
     feature_type: { type: 'string', required: true },
     feature_layer_name: { type: 'string', required: true },
