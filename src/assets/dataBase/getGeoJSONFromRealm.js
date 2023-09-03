@@ -4,13 +4,39 @@ const Feature = require('./database.js').Feature;
 const Geometry = require('./database.js').Geometry;
 import fs from 'react-native-fs';
 
+function convertStringToCoordinates(inputString) {
+  const coordinatesArray = inputString.split(',').map(Number);
 
+  // Group the coordinates in pairs
+  const groupedCoordinates = [];
+  for (let i = 0; i < coordinatesArray.length; i += 2) {
+    groupedCoordinates.push([coordinatesArray[i], coordinatesArray[i + 1]]);
+  }
 
-const getGeoJSON = () => {
+  // Wrap the groupedCoordinates array in another array
+  const nestedArray = [groupedCoordinates];
+
+  return nestedArray;
+}
+
+// function rgbArrayToRgbString(rgbArray) {
+//   if (rgbArray.length !== 3) {
+//     throw new Error("RGB array must contain exactly three values (r, g, b).");
+//   }
+
+//   const [r, g, b] = rgbArray;
+//   if (isNaN(r) || isNaN(g) || isNaN(b) || r < 0 || r > 255 || g < 0 || g > 255 || b < 0 || b > 255) {
+//     throw new Error("Invalid RGB values. Each value must be in the range 0-255.");
+//   }
+
+//   return `rgb(${r}, ${g}, ${b})`;
+// }
+
+const getGeoJSON = async () => {
     let realm;
-    const AllGeoJSONs = new Map();
+    let AllGeoJSONs = new Map();
 
-    fs.copyFileAssets('firstFloor.realm',fs.DocumentDirectoryPath+'/firstFloor.realm')
+    await fs.copyFileAssets('firstFloor.realm',fs.DocumentDirectoryPath+'/firstFloor.realm')
     .then(()=>{
       realm = new Realm({
         schema: [Building,Feature,Geometry], 
@@ -21,9 +47,9 @@ const getGeoJSON = () => {
         console.log("open successfully")
   
         const buildings = realm.objects('Building');
-        console.log(buildings)
+        // console.log(buildings)
         const feature = realm.objects('Feature');
-        console.log(feature)       
+        // console.log(feature)       
 
         buildings.forEach(building => {
           const buildingName = building.building_name
@@ -61,7 +87,7 @@ const getGeoJSON = () => {
               // AllGeoJSONs.set(contour.feature_layer_name,GeoJSONContour)
 
               const GeoJSONRoom = {
-                "type":"featureCollection",
+                "type":"FeatureCollection",
                 "name":buildingName,
                 "features":rooms.map(room=>{
                   return {
@@ -77,7 +103,7 @@ const getGeoJSON = () => {
                   },
                   "geometry": {
                     "type": room.feature_geometry.geometry_type,
-                    "coordiantes": room.feature_geometry.geometry_coordinates
+                    "coordinates": convertStringToCoordinates(room.feature_geometry.geometry_coordinates)
                   }
                   }
                 }),
@@ -91,10 +117,11 @@ const getGeoJSON = () => {
             
           }
         })
-
-        console.log(AllGeoJSONs)
-        
-        console.log(AllGeoJSONs.get("BA_Indoor_1_room"))
+        // console.log(AllGeoJSONs)
+        // AllGeoJSONs.get("BA_Indoor_1_room").features.forEach(feature=>{
+        //   console.log(feature.geometry.coordiantes)
+        // })
+        return AllGeoJSONs;
 
 
       
@@ -102,14 +129,11 @@ const getGeoJSON = () => {
         console.error('Error opening Realm database:', error);
       } finally {
         if (realm) {
-          realm.close(); 
+          // realm.close(); 
         }
       }
     });
-    
-
   
-    
     
     return AllGeoJSONs
   };

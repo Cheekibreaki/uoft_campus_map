@@ -137,7 +137,7 @@ const IndoorLabel = () => {
   }
 
   const updateLabel = () => {
-    console.log("selectedGeoJSON", selectedGeoJSON);
+    // console.log("selectedGeoJSON", selectedGeoJSON);
     let buildingName = selectedGeoJSON.name;
     if (buildingName !== null && buildingName !== undefined) {
       if(buildingName.split("_").includes("BA")){
@@ -338,14 +338,14 @@ const IndoorLabel = () => {
     let intervalId;
     if (mapState) {
       // Start the interval when isActive is true
-      console.log("update the label");
+      // console.log("update the label");
       updateLabel();
     }
   }, [mapState, selectedGeoJSON, floorNumber]);
 
   const isIconMarkersNotEmpty = Object.keys(IconMarkers).length > 0;
-  console.log("IconMarkers",IconMarkers)
-  console.log(isIconMarkersNotEmpty)
+  // console.log("IconMarkers",IconMarkers)
+  // console.log(isIconMarkersNotEmpty)
   return (
     <>
       {TextMarkers.map((AllMarker, i) => {

@@ -19,10 +19,19 @@ import cloneDeep from 'lodash/cloneDeep';
 
 
 const renderGeojsonFiles = () => {
-
+  // const { childProp } = props;
+  
   let floorNumber = useSelector(store=>store.Filter.filter)[0];
   let filterforContour = useSelector(store=>store.Filter.filter)[1];
   let filterForIndoorRoom= useSelector(store=>store.Filter.filter)[2];
+  const GeoJsonFiles = useSelector(store=>store.AllGeoJSONs.geojsonData);
+  // console.log(GeoJsonFiles.get("BA_Indoor_1_room").features[0].geometry.coordinates)
+  // GeoJsonFiles.get("BA_Indoor_1_room").features.forEach(feature=>{
+  //   console.log(feature)
+    
+  //   console.log(feature.geometry)
+  //       })
+  // console.log(BA_1_Room.features[0].geometry.coordinates)
 
   const numContourStyles = 3;
   let layerStyles = {};
@@ -51,21 +60,21 @@ const renderGeojsonFiles = () => {
       layerStyles[layerId].style.fillExtrusionOpacity = opacity;
     }
 
-    console.log("layerStyles is ", layerStyles);
+    // console.log("layerStyles is ", layerStyles);
     return layerStyles;
     
   };
 
   
   let contourStyles = getBuildingContourStyle(floorNumber,layerStyles);
- 
-
+  
 
   return (
 
     <>
-    
-    <MapboxGL.ShapeSource
+    {GeoJsonFiles && (
+      <>
+      <MapboxGL.ShapeSource
       id="BA_1_Contour"
       shape={BA_1_Contour}
       >
@@ -79,7 +88,8 @@ const renderGeojsonFiles = () => {
 
     <MapboxGL.ShapeSource
       id="BA_1_Room"
-      shape={BA_1_Room}
+       shape={GeoJsonFiles.get("BA_Indoor_1_room")}
+      //shape = {BA_1_Room}
       >
 
       <MapboxGL.FillExtrusionLayer
@@ -138,6 +148,9 @@ const renderGeojsonFiles = () => {
           style={buildingStyles.IndoorBuilding}
       />
     </MapboxGL.ShapeSource>
+      </>
+    )}
+    
 
 
 
