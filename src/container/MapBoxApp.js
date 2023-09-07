@@ -16,6 +16,7 @@ import GeojsonFiles from "../component/renderGeojsonFiles";
 import { setIsCameraMoving } from "../redux/actions/setIsCameraMovingAction";
 import { setGeoJSONInScreen } from "../redux/actions/setFeatureInScreen";
 import { setSelectRoom } from "../redux/actions/setSelectedRoom";
+import { setGeoJsonData } from "../redux/actions/setGeoJSONData";
 MapboxGL.setAccessToken("pk.eyJ1IjoiamlwaW5nbGkiLCJhIjoiY2xoanYzaGZ1MGxsNjNxbzMxNTdjMHkyOSJ9.81Fnu3ho6z2u8bhS2yRJNA");
 
 import BA_1_Room from "../assets/geojson/BA_Indoor_1_room.json";
@@ -23,6 +24,8 @@ import BA_2_Room from "../assets/geojson/BA_Indoor_2_room.json";
 import BA_3_Room from "../assets/geojson/BA_Indoor_3_room.json";
 // import getGeoJSON from "../assets/dataBase/getGeoJSONFromRealm";
 import SearchBar from "../component/searchBar";
+
+
 
 import {
   BA_1_ContourLayerID,
@@ -95,6 +98,7 @@ const MapBoxApp = (props: BaseExampleProps) => {
     let map = useRef();
     let camera = useRef();
     
+    const [geojsonData, setGeojsonData] = useState(null);
     const dispatch = useDispatch();
 
     const selectedGeoJSON = useSelector(store=>store.GeoJSONs.selectedGeoJSON);
@@ -109,6 +113,7 @@ const MapBoxApp = (props: BaseExampleProps) => {
 
     let selectedMarker = useSelector(store=>store.SelectRoom.selectRoom);
     let floorNumber = useSelector(store=>store.Filter.filter)[0]
+    const GeoJsonFiles = useSelector(store=>store.AllGeoJSONs.geojsonData);
 
     const onMapInitialized = () => {
       // This function is called when the map is fully initialized
@@ -116,17 +121,31 @@ const MapBoxApp = (props: BaseExampleProps) => {
     };
 
     useEffect(() => {
-      // if (camera.current) {
-      //   console.log("yes")
-      //   // Fit the camera to the specified bounds
-      //   camera.current.fitBounds(southwestCoordinate, northeastCoordinate);
-      // }
+      // This function will be called only once when the component is mounted
+      // You can place your initialization code here
+      const initializeApp = async () => {
+      console.log('App initialized');
+      try{
+        const data = await getGeoJSON();
+        setGeojsonData(data)
+      } catch (error) {
+        console.error('Error initializing app:', error);
+      }
       
+       
       
-      // getGeoJSON();
+    }
+      initializeApp();
     }, []);
 
-  const onPress = async (e) => {
+    useEffect(() => {
+      // This effect will run whenever AllGeoJSONs changes
+      console.log('AllGeoJSONs updated:', geojsonData);
+      dispatch(setGeoJsonData(geojsonData))
+    }, [geojsonData]);
+
+    
+    const onPress = async (e) => {
     
     const { screenPointX, screenPointY } = e.properties;
     const cursorCoordinate = e.geometry;
@@ -138,20 +157,11 @@ const MapBoxApp = (props: BaseExampleProps) => {
       []
     );
     if (featureCollection && featureCollection.features && featureCollection.features.length) {
-      // console.log(featureCollection)
-      
-      
       for (const feature of featureCollection.features) {
-
-        // console.log("roomID is", feature)
         const geometry = feature.geometry;
         const roomID = feature.properties.room;
-        
-        // console.log(geometry.coordinates)
         const isWithinRoom = computePointWithinRoom(geometry.coordinates[0],cursorCoordinate)
-        // console.log("is within the room",isWithinRoom)
         if (isWithinRoom === true) {
-
           let buildingName = selectedGeoJSON.name;
           if (buildingName !== null && buildingName !== undefined) {
             if(buildingName.split("_").includes("BA")){
@@ -167,9 +177,6 @@ const MapBoxApp = (props: BaseExampleProps) => {
           break;
         }
       }
-
-      
-
     } else {
       
     }
@@ -198,12 +205,13 @@ const MapBoxApp = (props: BaseExampleProps) => {
     
     const avoid_queryLayerFeatures =  async() => {
       const zoomlevel = mapState.properties.zoom;
-      console.log(zoomlevel)
-      console.log("zoomlevel is ",floorNumber);
+      // console.log(zoomlevel)
+      // console.log("zoomlevel is ",floorNumber);
       if(zoomlevel >= 17){
       switch (floorNumber){
-        case 1:
-          dispatch(setGeoJSON(BA_1_Room));
+        case 1:      
+          dispatch(geojsonData.get("BA_Indoor_1_room"))  
+          // dispatch(setGeoJSON(BA_1_Room));
           break
         case 2:
           dispatch(setGeoJSON(BA_2_Room));
@@ -225,7 +233,7 @@ const MapBoxApp = (props: BaseExampleProps) => {
 
     const renderGeojsonFiles = () =>{
       return (
-        <GeojsonFiles/>
+        <GeojsonFiles />
       );
     }
     const renderButtonPanel = () => {
@@ -301,6 +309,7 @@ const MapBoxApp = (props: BaseExampleProps) => {
     // const filterFeature =  useSelector(store=>store.Filter.filter);
     return (
         // <View ref={componentRef} onLayout={measureComponent}>
+
         <>
           <MapView 
             ref={map}
@@ -340,7 +349,7 @@ const MapBoxApp = (props: BaseExampleProps) => {
               bounds={southwestCoordinate, northeastCoordinate}
             />  
 
-            {renderGeojsonFiles()}
+            {GeoJsonFiles && renderGeojsonFiles()}
             <IndoorLabel/> 
           </MapView>
           <SearchBar/>
