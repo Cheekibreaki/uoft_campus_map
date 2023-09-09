@@ -3,8 +3,8 @@ import { StyleSheet } from 'react-native';
 const styles = StyleSheet.create({
     container: {
         position: 'absolute',
-        top: 25,
-        left:20,
+        top: 5,
+        left:5,
         width: '100%'
       },
       searchContainer: {

@@ -22,7 +22,7 @@ MapboxGL.setAccessToken("pk.eyJ1IjoiamlwaW5nbGkiLCJhIjoiY2xoanYzaGZ1MGxsNjNxbzMx
 import BA_1_Room from "../assets/geojson/BA_Indoor_1_room.json";
 import BA_2_Room from "../assets/geojson/BA_Indoor_2_room.json";
 import BA_3_Room from "../assets/geojson/BA_Indoor_3_room.json";
-import getGeoJSON from "../assets/dataBase/getGeoJSONFromRealm";
+// import getGeoJSON from "../assets/dataBase/getGeoJSONFromRealm";
 import SearchBar from "../component/searchBar";
 import fs from 'react-native-fs';
 
@@ -90,7 +90,8 @@ const MapBoxApp = (props: BaseExampleProps) => {
     const pitch = 40;
     const heading = 30;
     const centerCoordinate = [-79.3973449417775, 43.65997911110146]
-    
+    const southwestCoordinate = [ -79.4022460785109, 43.65546033058593]
+    const northeastCoordinate = [-79.38955386618444, 43.669756887468886]
   
     let counter = 0
     
@@ -342,13 +343,16 @@ const MapBoxApp = (props: BaseExampleProps) => {
             }}
             // onDidFinishLoadingMap={onMapInitialized}
             onDidFinishLoadingMap={onMapInitialized}
+            scaleBarEnabled = {false}
           >
             <Camera
+              
               zoomLevel={zoomLevel}
               pitch={pitch}
               heading={heading}
               centerCoordinate={centerCoordinate}
               ref={camera}
+              bounds={southwestCoordinate, northeastCoordinate}
             />  
 
             {GeoJsonFiles && renderGeojsonFiles()}
