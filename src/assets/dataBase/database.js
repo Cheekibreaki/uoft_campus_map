@@ -16,11 +16,11 @@ Building.schema = {
       building_name: { type: 'string', indexed: true, unique: true,required: true },//Bahen Centre for Information Technology
       building_floor_indicies: { type: 'string', required: true },//B12345678
       building_default_floor: { type: 'string', required: false},//1
-      // building_room_num: { type: 'int', required: false},//0
-      // building_stairs_num: { type: 'int', required: false},//0
-      // building_elevator_num: { type: 'int', required: false},//0
-      // building_f_washroom_num: { type: 'int', required: false},//0s
-      // building_m_washroom_num: { type: 'int', required: false},//0
+      building_room_num: { type: 'int', required: false},//0
+      building_stairs_num: { type: 'int', required: false},//0
+      building_elevator_num: { type: 'int', required: false},//0
+      building_f_washroom_num: { type: 'int', required: false},//0s
+      building_m_washroom_num: { type: 'int', required: false},//0
   },
 };
 

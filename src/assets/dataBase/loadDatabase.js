@@ -1,38 +1,93 @@
 const fs = require('fs');
 const realm = require('realm');
+const path = require('path');
 
 
 const Building = require('./database.js').Building;
 const Feature = require('./database.js').Feature;
 const Geometry = require('./database.js').Geometry;
 
+const realmBasePath = './geoJson.realm';
+
+// Function to delete a file if it exists
+const deleteIfExists = (filePath) => {
+  if (fs.existsSync(filePath)) {
+    fs.unlinkSync(filePath);
+    console.log(`Deleted ${filePath}`);
+  }
+};
+deleteIfExists(realmBasePath);
+deleteIfExists(`${realmBasePath}.lock`);
+
   // Read the GeoJSON file
-  const geojsonFilePath = '../geojson/BA_Indoor_1_room.json';
-  const geojson = JSON.parse(fs.readFileSync(geojsonFilePath, 'utf8'));
+const geojsonFolderPath = '../geojson';
+// const geojsonFilePath = '../geojson/BA_Indoor_1_room.json';
+
   // console.log(geojson.features[0].geometry.coordinates)
-function main() {
+
+const findGeoJSONFiles = () => {
+  try {
+    const files = fs.readdirSync(geojsonFolderPath);
+    const jsonFiles = files.filter((file) =>
+      file.endsWith('.json')
+    ).map((file) => path.join(geojsonFolderPath, file));
+    
+    // jsonFiles now contains a list of JSON file paths in the geojson folder.
+    return jsonFiles;
+  } catch (error) {
+    console.error('Error reading the folder:', error);
+  }
+};
+
+function createBuilding(
+  feature_building_abbr,
+  realmInstance,
+  geojson
+  ) {
+  try {
+    realmInstance.write(() => {
+      realmInstance.create("Building", {
+        _id: new Realm.BSON.ObjectId(),
+        building_id: feature_building_abbr,
+        building_name: geojson.name,
+        building_floor_indicies: geojson.floor_indicies,
+        building_default_floor: geojson.default_floor,
+        building_room_num: 0,
+        building_stairs_num: 0, 
+        building_elevator_num: 0,
+        building_f_washroom_num: 0,
+        building_m_washroom_num: 0,
+      });
+    });
+    console.log("writing")
+    console.log('Write transaction completed successfully.');
+  } catch (error) {
+    console.error('Error during write transaction:', error);
+  }
+}
 
 
+
+const geojsonFiles = findGeoJSONFiles()
+
+console.log(geojsonFiles)
+
+
+function main(geojsonFilePath) {
+
+  // const geojsonFolderPath = '../geojson';
+
+  const geojson = JSON.parse(fs.readFileSync(geojsonFilePath, 'utf8'));
 
   // Define the base path to the Realm database file
-  const realmBasePath = './firstFloor.realm';
+  const realmBasePath = './geoJson.realm';
 
-  // Function to delete a file if it exists
-  const deleteIfExists = (filePath) => {
-    if (fs.existsSync(filePath)) {
-      fs.unlinkSync(filePath);
-      console.log(`Deleted ${filePath}`);
-    }
-  };
 
-  // Delete the main database file, lock file, and management file if they exist
-  deleteIfExists(realmBasePath);
-  deleteIfExists(`${realmBasePath}.lock`);
 
 
 
   // Create or open the Realm database
-  const realmInstance = new realm({ schema: [Feature, Geometry, Building], path: './firstFloor.realm' });
+  const realmInstance = new realm({ schema: [Feature, Geometry, Building], path: realmBasePath });
 
   const features = geojson.features;
   // Insert GeoJSON data into the Realm database
@@ -51,7 +106,7 @@ function main() {
       let existingBuilding = realmInstance.objects("Building").filtered("building_id = $0", feature_building_abbr);
       if (existingBuilding.length === 0) {
         // If no object with the same building_id exists, create a new one
-        createBuilding(feature_building_abbr,realmInstance);
+        createBuilding(feature_building_abbr,realmInstance,geojson);
       }
 
       existingBuilding = realmInstance.objects("Building").filtered("building_id = $0", feature_building_abbr);
@@ -109,6 +164,26 @@ function main() {
   };
 
 
+
+  // Close the Realm instance when done
+  realmInstance.close();
+
+}
+
+
+
+
+geojsonFiles.forEach((geojsonFilePath)=>{
+  main(geojsonFilePath);
+  
+
+
+
+
+})
+
+const realmInstance = new realm({ schema: [Feature, Geometry, Building], path: realmBasePath });
+
   const allBuildings = realmInstance.objects('Building');
 
   // Print the content of each Building object
@@ -125,67 +200,31 @@ function main() {
     console.log('-----------------------------');
   });
 
-  const allFeatures = realmInstance.objects('Feature');
-  allFeatures.forEach(feature => {
-    console.log('Feature ID:', feature.feature_id);
-    console.log('Feature Type:', feature.feature_type);
-    console.log('Feature Layer Name:', feature.feature_layer_name);
-    console.log('Building Floor:', feature.building_floor);
-    console.log('Feature Color:', feature.feature_color);
-    console.log('Feature Height:', feature.feature_height);
-    console.log('Feature Base Height:', feature.feature_base_height);
-    console.log('Feature Geometry:', feature.feature_geometry);
-    console.log('Feature Building:', feature.feature_building);
+  // const allFeatures = realmInstance.objects('Feature');
+  // allFeatures.forEach(feature => {
+  //   console.log('Feature ID:', feature.feature_id);
+  //   console.log('Feature Type:', feature.feature_type);
+  //   console.log('Feature Layer Name:', feature.feature_layer_name);
+  //   console.log('Building Floor:', feature.building_floor);
+  //   console.log('Feature Color:', feature.feature_color);
+  //   console.log('Feature Height:', feature.feature_height);
+  //   console.log('Feature Base Height:', feature.feature_base_height);
+  //   console.log('Feature Geometry:', feature.feature_geometry);
+  //   console.log('Feature Building:', feature.feature_building);
 
-    // Print the associated building for the feature
-    console.log('Associated Building ID:', feature.feature_building.building_id);
-    console.log('-----------------------------');
-  });
+  //   // Print the associated building for the feature
+  //   console.log('Associated Building ID:', feature.feature_building.building_id);
+  //   console.log('-----------------------------');
+  // });
 
-  // Print the content of each Geometry object
-  const allGeometries = realmInstance.objects('Geometry');
-  allGeometries.forEach(geometry => {
-    console.log('Geometry Type:', geometry.geometry_type);
-    console.log('Geometry Coordinates:', geometry.geometry_coordinates);
+  // // Print the content of each Geometry object
+  // const allGeometries = realmInstance.objects('Geometry');
+  // allGeometries.forEach(geometry => {
+  //   console.log('Geometry Type:', geometry.geometry_type);
+  //   console.log('Geometry Coordinates:', geometry.geometry_coordinates);
 
-    // Print the associated building and feature for the geometry
-    console.log('Associated Building ID:', geometry.geometry_building.building_id);
-    console.log('Associated Feature ID:', geometry.geometry_feature.feature_id);
-    console.log('-----------------------------');
-  });
-
-
-  // Close the Realm instance when done
-  realmInstance.close();
-
-}
-
-
-function createBuilding(
-  feature_building_abbr,
-  realmInstance
-  ) {
-  try {
-    realmInstance.write(() => {
-      realmInstance.create("Building", {
-        _id: new Realm.BSON.ObjectId(),
-        building_id: feature_building_abbr,
-        building_name: geojson.name,
-        building_floor_indicies: geojson.floor_indicies,
-        building_default_floor: geojson.default_floor,
-        building_room_num: 0,
-        building_stairs_num: 0, 
-        building_elevator_num: 0,
-        building_f_washroom_num: 0,
-        building_m_washroom_num: 0,
-      });
-    });
-    console.log("writing")
-    console.log('Write transaction completed successfully.');
-  } catch (error) {
-    console.error('Error during write transaction:', error);
-  }
-}
-
-
-main();
+  //   // Print the associated building and feature for the geometry
+  //   console.log('Associated Building ID:', geometry.geometry_building.building_id);
+  //   console.log('Associated Feature ID:', geometry.geometry_feature.feature_id);
+  //   console.log('-----------------------------');
+  // });
