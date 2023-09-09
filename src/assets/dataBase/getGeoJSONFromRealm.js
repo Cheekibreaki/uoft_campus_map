@@ -35,17 +35,38 @@ function convertStringToCoordinates(inputString) {
 const getGeoJSON = async () => {
     let realm;
     let AllGeoJSONs = new Map();
+
+    // await fs.readDir(fs.DocumentDirectoryPath)
+    // .then((result) => {
+    //   // Step 2: Iterate over the list of files and delete them
+    //   result.forEach((item) => {
+    //     if (item.isFile()) {
+    //      fs.unlink(item.path)
+    //         .then(() => {
+    //           console.log(`Deleted file: ${item.path}`);
+    //         })
+    //         .catch((err) => {
+    //           console.error(`Failed to delete file: ${item.path}`, err.message);
+    //         });
+    //     }
+    //   });
+    // })
+    // .catch((err) => {
+    //   console.error(`Error reading directory: ${fs.DocumentDirectoryPath}`, err.message);
+    // });
+
+
     
-    await fs.exists(fs.DocumentDirectoryPath+'/firstFloor.realm').then((exists) => {
-      if (exists) {
-        console.log(`File  exists.`);
-      } else {
-        console.log(`File  does not exist.`);
-      }
-    })
-    .catch((err) => {
-      console.log('Error checking file existence:', err);
-    });
+    // await fs.exists(fs.DocumentDirectoryPath+'/firstFloor.realm').then((exists) => {
+    //   if (exists) {
+    //     console.log(`File  exists.`);
+    //   } else {
+    //     console.log(`File  does not exist.`);
+    //   }
+    // })
+    // .catch((err) => {
+    //   console.log('Error checking file existence:', err);
+    // });
     // const directoryPath = fs.DocumentDirectoryPath; // Replace with the path of the directory you want to list
 
     // await fs.readDir(directoryPath)
@@ -83,7 +104,7 @@ const getGeoJSON = async () => {
           const buildingID = building.building_id
           const buildingFloorIndeices = building.building_floor_indicies
 
-          for(i =0; i <buildingFloorIndeices.length;i++){
+          for(let i =0; i <buildingFloorIndeices.length;i++){
             let features = feature.filtered(`feature_building_id == "${buildingID}" AND building_floor == "${buildingFloorIndeices[i]}"`)
             if(features.length!==0){
               const contour =  features.filtered('feature_type == "contour"')
