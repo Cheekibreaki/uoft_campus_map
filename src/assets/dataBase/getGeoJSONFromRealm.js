@@ -35,6 +35,33 @@ function convertStringToCoordinates(inputString) {
 const getGeoJSON = async () => {
     let realm;
     let AllGeoJSONs = new Map();
+    
+    await fs.exists(fs.DocumentDirectoryPath+'/firstFloor.realm').then((exists) => {
+      if (exists) {
+        console.log(`File  exists.`);
+      } else {
+        console.log(`File  does not exist.`);
+      }
+    })
+    .catch((err) => {
+      console.log('Error checking file existence:', err);
+    });
+    // const directoryPath = fs.DocumentDirectoryPath; // Replace with the path of the directory you want to list
+
+    // await fs.readDir(directoryPath)
+    //   .then((result) => {
+    //     // Loop through the list of files and directories
+    //     result.forEach((item) => {
+    //       console.log('Name:', item.name); // Name of the file or directory
+    //       console.log('Is Directory:', item.isDirectory() ? 'Yes' : 'No'); // Check if it's a directory
+    //       console.log('Path:', item.path); // Full path to the file or directory
+    //       // console.log('Size:', item.size); // Size of the file (in bytes)
+    //       // console.log('Modification Time:', item.mtime); // Last modification time
+    //     });
+    //   })
+    //   .catch((err) => {
+    //     console.log('Error reading directory:', err);
+    //   });
 
     await fs.copyFileAssets('firstFloor.realm',fs.DocumentDirectoryPath+'/firstFloor.realm')
     .then(()=>{
@@ -77,7 +104,7 @@ const getGeoJSON = async () => {
               //     },
               //     "geometry": {
               //       "type": contour.feature_geometry.geometry_type,
-              //       "coordiantes": contour.feature_geometry.geometry_coordinates
+              //       "coordinates": contour.feature_geometry.geometry_coordinates
               //     }
               //     }
               //   ],
@@ -121,6 +148,22 @@ const getGeoJSON = async () => {
         // AllGeoJSONs.get("BA_Indoor_1_room").features.forEach(feature=>{
         //   console.log(feature.geometry.coordiantes)
         // })
+        
+        const jsonMap = JSON.stringify(AllGeoJSONs.get("BA_Indoor_1_room"));
+
+        // Define the file path where you want to save the data
+        const filePath = fs.DocumentDirectoryPath + '/BA_Indoor_1_room.json';
+
+        // Write the JSON data to the file
+        fs.writeFile(filePath, jsonMap, 'utf8')
+          .then(() => {
+            console.log('Map data saved successfully.');
+          })
+          .catch((err) => {
+            console.log('Error writing map data:', err);
+          });
+
+
         return AllGeoJSONs;
 
 
@@ -132,8 +175,11 @@ const getGeoJSON = async () => {
           // realm.close(); 
         }
       }
-    });
-  
+    }
+    
+    );
+
+    
     
     return AllGeoJSONs
   };

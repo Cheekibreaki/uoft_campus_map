@@ -24,7 +24,7 @@ import BA_2_Room from "../assets/geojson/BA_Indoor_2_room.json";
 import BA_3_Room from "../assets/geojson/BA_Indoor_3_room.json";
 import getGeoJSON from "../assets/dataBase/getGeoJSONFromRealm";
 import SearchBar from "../component/searchBar";
-
+import fs from 'react-native-fs';
 
 
 import {
@@ -162,12 +162,6 @@ const MapBoxApp = (props: BaseExampleProps) => {
         const isWithinRoom = computePointWithinRoom(geometry.coordinates[0],cursorCoordinate)
         if (isWithinRoom === true) {
           let buildingName = selectedGeoJSON.name;
-          if (buildingName !== null && buildingName !== undefined) {
-            if(buildingName.split("_").includes("BA")){
-            buildingName = "Bahen Centre for Information Technology"
-          }
-          }
-
           // console.log(selectedGeoJSON.features);
           dispatch(setSelectRoom({
             id: roomID,
@@ -209,8 +203,20 @@ const MapBoxApp = (props: BaseExampleProps) => {
       if(zoomlevel >= 17){
       switch (floorNumber){
         case 1:      
-          dispatch(geojsonData.get("BA_Indoor_1_room"))  
-          // dispatch(setGeoJSON(BA_1_Room));
+        await fs.readFile(fs.DocumentDirectoryPath+ '/BA_Indoor_1_room.json', 'utf8')
+        .then((fileData) => {
+          // Parse the JSON data into a GeoJSON object
+          const geoJsonObject = JSON.parse(fileData);
+      
+          // Now you can work with the GeoJSON object
+          //console.log('Parsed GeoJSON Object:', geoJsonObject);
+          dispatch(geoJsonObject)
+        })
+        .catch((err) => {
+          console.log('Error reading JSON file:', err);
+        });
+          //dispatch(GeoJsonFiles.get("BA_Indoor_1_room"))  
+          //dispatch(setGeoJSON(BA_1_Room));
           break
         case 2:
           dispatch(setGeoJSON(BA_2_Room));

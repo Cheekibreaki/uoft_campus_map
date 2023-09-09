@@ -12,7 +12,7 @@ const BA_2_Contour = require("../assets/geojson/BA_Indoor_2_contour.json");
 const BA_3_Room = require("../assets/geojson/BA_Indoor_3_room.json");
 const BA_3_Contour = require("../assets/geojson/BA_Indoor_3_contour.json");
 import cloneDeep from 'lodash/cloneDeep';
-
+import fs from 'react-native-fs'
 
 
 
@@ -20,7 +20,7 @@ import cloneDeep from 'lodash/cloneDeep';
 
 const renderGeojsonFiles = () => {
   // const { childProp } = props;
-  
+  const [geojsonData, setGeojsonData] = useState(null);
   let floorNumber = useSelector(store=>store.Filter.filter)[0];
   let filterforContour = useSelector(store=>store.Filter.filter)[1];
   let filterForIndoorRoom= useSelector(store=>store.Filter.filter)[2];
@@ -32,6 +32,9 @@ const renderGeojsonFiles = () => {
   //   console.log(feature.geometry)
   //       })
   // console.log(BA_1_Room.features[0].geometry.coordinates)
+  
+  
+
 
   const numContourStyles = 3;
   let layerStyles = {};
@@ -67,12 +70,26 @@ const renderGeojsonFiles = () => {
 
   
   let contourStyles = getBuildingContourStyle(floorNumber,layerStyles);
-  
+  useEffect(() => {
+    fs.readFile(fs.DocumentDirectoryPath+ '/BA_Indoor_1_room.json', 'utf8')
+        .then((fileData) => {
+          // Parse the JSON data into a GeoJSON object
+          const geoJsonObject = JSON.parse(fileData);
+          // console.log('Parsed GeoJSON Object:', geoJsonObject);
+          // Now you can work with the GeoJSON object
+          setGeojsonData(geoJsonObject)
+         
+        })
+        .catch((err) => {
+          console.log('Error reading JSON file:', err);
+        });
 
+  }, []);
+  
   return (
 
     <>
-    {GeoJsonFiles && (
+    {geojsonData && (
       <>
       <MapboxGL.ShapeSource
       id="BA_1_Contour"
@@ -88,8 +105,9 @@ const renderGeojsonFiles = () => {
 
     <MapboxGL.ShapeSource
       id="BA_1_Room"
-       shape={GeoJsonFiles.get("BA_Indoor_1_room")}
+      //shape={GeoJsonFiles.get("BA_Indoor_1_room")}
       //shape = {BA_1_Room}
+      shape = {geojsonData}
       >
 
       <MapboxGL.FillExtrusionLayer
