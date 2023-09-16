@@ -20,7 +20,9 @@ import fs from 'react-native-fs'
 
 const renderGeojsonFiles = () => {
 
-  const [geojsonData, setGeojsonData] = useState(null);
+  //const [geojsonData, setGeojsonData] = useState(null);
+  const  [geojsonRoomFiles,setGeojsonRoomFiles] = useState(null)
+  const  [geojsonContourFiles,setGeojsonContourFiles] = useState(null)
   let floorNumber = useSelector(store=>store.Filter.filter)[0];
   let filterforContour = useSelector(store=>store.Filter.filter)[1];
   let filterForIndoorRoom= useSelector(store=>store.Filter.filter)[2];
@@ -57,107 +59,75 @@ const renderGeojsonFiles = () => {
   let contourStyles = getBuildingContourStyle(floorNumber,layerStyles);
 
   useEffect(() => {
-    fs.readFile(fs.DocumentDirectoryPath+ '/BA_Indoor_1_room.json', 'utf8')
-        .then((fileData) => {
-          // Parse the JSON data into a GeoJSON object
-          const geoJsonObject = JSON.parse(fileData);
-          // console.log('Parsed GeoJSON Object:', geoJsonObject);
-          // Now you can work with the GeoJSON object
-          setGeojsonData(geoJsonObject)
-         
-        })
+
+    const geojsonFileRoomNames = ['BA_Indoor_1_room.json', 'BA_Indoor_2_room.json', 'BA_Indoor_3_room.json'];
+    const geojsonFileContourNames = ['BA_Indoor_1_contour.json', 'BA_Indoor_2_contour.json', 'BA_Indoor_3_contour.json'];
+
+    const geojsonPromises = geojsonFileRoomNames.map(async (fileName) => {
+      const filePath = fs.DocumentDirectoryPath + '/' + fileName;
+
+      return fs.readFile(filePath, 'utf8')
+        .then((fileData) => JSON.parse(fileData))
         .catch((err) => {
-          console.log('Error reading JSON file:', err);
+          console.log(`Error reading JSON file ${fileName}:`, err);
+          return null; 
         });
+    });
+    const geojsonPromisesContour = geojsonFileContourNames.map(async (fileName) => {
+      const filePath = fs.DocumentDirectoryPath + '/' + fileName;
+
+      return fs.readFile(filePath, 'utf8')
+        .then((fileData) => JSON.parse(fileData))
+        .catch((err) => {
+          console.log(`Error reading JSON file ${fileName}:`, err);
+          return null; 
+        });
+    });
+
+
+    Promise.all(geojsonPromises).then((parsedGeojsonFiles) => {
+      setGeojsonRoomFiles(parsedGeojsonFiles); 
+    });
+
+    Promise.all(geojsonPromisesContour).then((parsedGeojsonFiles) => {
+      setGeojsonContourFiles(parsedGeojsonFiles); 
+    });
 
   }, []);
   
 
+
   return (
 
     <>
-    {geojsonData && (
-      <>
-      <MapboxGL.ShapeSource
-      id="BA_1_Contour"
-      shape={BA_1_Contour}
-      >
-
-      <MapboxGL.FillExtrusionLayer
-          id="BA_1_Contour"
-          filter={filterforContour}
-          style={contourStyles['BA_1_Contour'].style}
-      />
-    </MapboxGL.ShapeSource>
-
-    <MapboxGL.ShapeSource
-      id="BA_1_Room"
-      //shape={GeoJsonFiles.get("BA_Indoor_1_room")}
-      //shape = {BA_1_Room}
-      shape = {geojsonData}
-      >
-
-      <MapboxGL.FillExtrusionLayer
-          id="BA_1_Room"
-          filter={filterForIndoorRoom}
-          style={buildingStyles.IndoorBuilding}
-      />
-    </MapboxGL.ShapeSource>
-
-    <MapboxGL.ShapeSource
-      id="BA_2_Contour"
-      shape={BA_2_Contour}
-      >
-
-      <MapboxGL.FillExtrusionLayer
-          id="BA_2_Contour"
-          filter={filterforContour}
-          style={contourStyles['BA_2_Contour'].style}
-      />
-    </MapboxGL.ShapeSource>
-
-    <MapboxGL.ShapeSource
-      id="BA_2_Room"
-      shape={BA_2_Room}
-      >
-
-      <MapboxGL.FillExtrusionLayer
-          id="BA_2_Room"
-          filter={filterForIndoorRoom}
-          style={buildingStyles.IndoorBuilding}
-      />
-    </MapboxGL.ShapeSource>
-
-    <MapboxGL.ShapeSource
-      id="BA_3_Contour"
-      shape={BA_3_Contour}
-      >
-
-      <MapboxGL.FillExtrusionLayer
-          id="BA_3_Contour"
-          filter={filterforContour}
-          style={contourStyles['BA_3_Contour'].style}
-      />
-    </MapboxGL.ShapeSource>
-
-
-
-    <MapboxGL.ShapeSource
-      id="BA_3_Room"
-      shape={BA_3_Room}
-      >
-
-      <MapboxGL.FillExtrusionLayer
-          id="BA_3_Room"
-          filter={filterForIndoorRoom}
-          style={buildingStyles.IndoorBuilding}
-      />
-    </MapboxGL.ShapeSource>
-      </>
-    )}
+ 
     
-
-
+    {geojsonRoomFiles && geojsonRoomFiles.map((geojsonData, index) => (
+      <MapboxGL.ShapeSource 
+        id={`BA_${index+1}_Room`} 
+        key = {index}
+        shape={geojsonData}
+      >
+        <MapboxGL.FillExtrusionLayer
+          id={`BA_${index+1}_Room`}
+          filter={filterForIndoorRoom}
+          style={buildingStyles.IndoorBuilding}
+        />
+      </MapboxGL.ShapeSource>
+    ))}
+    {geojsonContourFiles && geojsonContourFiles.map((geojsonData, index) => (
+      <MapboxGL.ShapeSource 
+        id={`BA_${index+1}_Contour`} 
+        key = {index}
+        shape={geojsonData}
+      >
+        <MapboxGL.FillExtrusionLayer
+          id={`BA_${index+1}_Contour`}
+          filter={filterforContour}
+          style={contourStyles[`BA_${index+1}_Contour`].style}
+        />
+      </MapboxGL.ShapeSource>
+    ))}
 
     </>
   );

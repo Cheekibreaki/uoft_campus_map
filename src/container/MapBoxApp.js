@@ -18,24 +18,9 @@ import { setGeoJSONInScreen } from "../redux/actions/setFeatureInScreen";
 import { setSelectRoom } from "../redux/actions/setSelectedRoom";
 // import { setGeoJsonData } from "../redux/actions/setGeoJSONData";
 MapboxGL.setAccessToken("pk.eyJ1IjoiamlwaW5nbGkiLCJhIjoiY2xoanYzaGZ1MGxsNjNxbzMxNTdjMHkyOSJ9.81Fnu3ho6z2u8bhS2yRJNA");
-
-import BA_1_Room from "../assets/geojson/BA_Indoor_1_room.json";
-import BA_2_Room from "../assets/geojson/BA_Indoor_2_room.json";
-import BA_3_Room from "../assets/geojson/BA_Indoor_3_room.json";
 import getGeoJSON from "../assets/dataBase/getGeoJSONFromRealm";
 import SearchBar from "../component/searchBar";
 import fs from 'react-native-fs';
-
-
-import {
-  BA_1_ContourLayerID,
-  BA_1_RoomLayerID,
-  BA_2_ContourLayerID,
-  BA_2_RoomLayerID,
-  BA_3_ContourLayerID,
-  BA_3_RoomLayerID,
-} from "../component/renderGeojsonFiles";
-
 
 //Todo:
 //Flickering issue => state update related
@@ -198,25 +183,46 @@ const MapBoxApp = (props: BaseExampleProps) => {
       switch (floorNumber){
         case 1:      
         await fs.readFile(fs.DocumentDirectoryPath+ '/BA_Indoor_1_room.json', 'utf8')
-        .then((fileData) => {
-          // Parse the JSON data into a GeoJSON object
-          const geoJsonObject = JSON.parse(fileData);
-      
-          // Now you can work with the GeoJSON object
-          //console.log('Parsed GeoJSON Object:', geoJsonObject);
-          dispatch(geoJsonObject)
-        })
-        .catch((err) => {
-          console.log('Error reading JSON file:', err);
-        });
-          //dispatch(GeoJsonFiles.get("BA_Indoor_1_room"))  
-          //dispatch(setGeoJSON(BA_1_Room));
+              .then((fileData) => {
+                // Parse the JSON data into a GeoJSON object
+                const geoJsonObject = JSON.parse(fileData);
+            
+                // Now you can work with the GeoJSON object
+                //console.log('Parsed GeoJSON Object:', geoJsonObject);
+                dispatch(geoJsonObject)
+              })
+              .catch((err) => {
+                console.log('Error reading JSON file:', err);
+              });
+          
           break
         case 2:
-          dispatch(setGeoJSON(BA_2_Room));
+          await fs.readFile(fs.DocumentDirectoryPath+ '/BA_Indoor_2_room.json', 'utf8')
+                .then((fileData) => {
+                  // Parse the JSON data into a GeoJSON object
+                  const geoJsonObject = JSON.parse(fileData);
+              
+                  // Now you can work with the GeoJSON object
+                  //console.log('Parsed GeoJSON Object:', geoJsonObject);
+                  dispatch(geoJsonObject)
+                })
+                .catch((err) => {
+                  console.log('Error reading JSON file:', err);
+                });
           break
         case 3:
-          dispatch(setGeoJSON(BA_3_Room));
+          await fs.readFile(fs.DocumentDirectoryPath+ '/BA_Indoor_3_room.json', 'utf8')
+                .then((fileData) => {
+                  // Parse the JSON data into a GeoJSON object
+                  const geoJsonObject = JSON.parse(fileData);
+              
+                  // Now you can work with the GeoJSON object
+                  //console.log('Parsed GeoJSON Object:', geoJsonObject);
+                  dispatch(geoJsonObject)
+                })
+                .catch((err) => {
+                  console.log('Error reading JSON file:', err);
+                });
           break
         default:
 
@@ -240,8 +246,7 @@ const MapBoxApp = (props: BaseExampleProps) => {
       if (mapInitialized) {
         return (
           < View>
-            <ButtonPanel/> 
-            
+            <ButtonPanel/>   
           </View>
           
         );
@@ -253,14 +258,16 @@ const MapBoxApp = (props: BaseExampleProps) => {
     const renderSearchBar = () => {
       // Function to render IndoorLabel on the map
       if (mapInitialized) {
+        // console.log("initialized successfully")
         return (
-          < View>
+          < >
             <SearchBar/>   
-          </View>
+          </>
           
         );
       } else {
         // If map is not initialized yet, return null or a loading indicator
+        
         return null;
       }
     };
@@ -351,7 +358,8 @@ const MapBoxApp = (props: BaseExampleProps) => {
             {dataInitialized && renderGeojsonFiles()}
             <IndoorLabel/> 
           </MapView>
-          <SearchBar/>
+
+          {renderSearchBar()}
           {renderButtonPanel()}
           {dataInitialized && renderSelcetedMarker()}
           

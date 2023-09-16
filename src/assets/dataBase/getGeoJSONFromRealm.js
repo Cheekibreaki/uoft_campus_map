@@ -94,33 +94,36 @@ const getGeoJSON = async () => {
             
                           for(let i =0; i <buildingFloorIndeices.length;i++){
                             let features = feature.filtered(`feature_building_id == "${buildingID}" AND building_floor == "${buildingFloorIndeices[i]}"`)
+                            
                             if(features.length!==0){
                               const contour =  features.filtered('feature_type == "contour"')
+                              // console.log(contour[0].feature_geometry)
                               const rooms = features.filtered('feature_type == "room"')
-                              // const GeoJSONContour = {
-                              //   "type":"featureCollection",
-                              //   "name":buildingName,
-                              //   "features":[{
-                              //     "type": "Feature",
-                              //     "properties":{
-                              //       "room": "",
-                              //       "floor":contour.building_floor,
-                              //       "color": contour.feature_color,
+
+                              const GeoJSONContour = {
+                                "type":"FeatureCollection",
+                                "name":buildingName,
+                                "features":[{
+                                  "type": "Feature",
+                                  "properties":{
+                                    "room": "",
+                                    "floor":contour[0].building_floor,
+                                    "color": contour[0].feature_color,
                                   
-                              //     "layer_name": contour.feature_layer_name,
-                              //     "height": contour.feature_height,
-                              //     "base_height": contour.feature_base_height
-                              //     },
-                              //     "geometry": {
-                              //       "type": contour.feature_geometry.geometry_type,
-                              //       "coordinates": contour.feature_geometry.geometry_coordinates
-                              //     }
-                              //     }
-                              //   ],
-                              //   "floor_indicies": buildingFloorIndeices,
-                              //   "default_floor": building.building_default_floor
-                              // }
-                              // AllGeoJSONs.set(contour.feature_layer_name,GeoJSONContour)
+                                  "layer_name": contour[0].feature_layer_name,
+                                  "height": contour[0].feature_height,
+                                  "base_height": contour[0].feature_base_height
+                                  },
+                                  "geometry": {
+                                    "type": "Polygon",
+                                    "coordinates": convertStringToCoordinates(contour[0].feature_geometry.geometry_coordinates)
+                                  }
+                                  }
+                                ],
+                                "floor_indicies": buildingFloorIndeices,
+                                "default_floor": building.building_default_floor
+                              }
+                              AllGeoJSONs.set(contour[0].feature_layer_name,GeoJSONContour)
             
                               const GeoJSONRoom = {
                                 "type":"FeatureCollection",
@@ -158,7 +161,7 @@ const getGeoJSON = async () => {
                     //   console.log(feature.geometry.coordiantes)
                     // })
                     for (const [key, value] of AllGeoJSONs.entries()) {
-                      console.log(`Key: ${key}, Value: ${value}`);
+                      // console.log(`Key: ${key}, Value: ${value}`);
                       
                       const jsonMap = JSON.stringify(value);
                       const filePath = fs.DocumentDirectoryPath + '/'+key+'.json';
@@ -173,19 +176,7 @@ const getGeoJSON = async () => {
                           console.log('Error writing map data:', err);
                         });
                     }
-                    // const jsonMap = JSON.stringify(AllGeoJSONs.get("BA_Indoor_1_room"));
-            
-                    // // Define the file path where you want to save the data
-                    // const filePath = fs.DocumentDirectoryPath + '/BA_Indoor_1_room.json';
-            
-                    // // Write the JSON data to the file
-                    // fs.writeFile(filePath, jsonMap, 'utf8')
-                    //   .then(() => {
-                    //     console.log('Map data saved successfully.');
-                    //   })
-                    //   .catch((err) => {
-                    //     console.log('Error writing map data:', err);
-                    //   });
+                    
             
             
             
@@ -237,33 +228,36 @@ const getGeoJSON = async () => {
             
                           for(let i =0; i <buildingFloorIndeices.length;i++){
                             let features = feature.filtered(`feature_building_id == "${buildingID}" AND building_floor == "${buildingFloorIndeices[i]}"`)
+                            
                             if(features.length!==0){
                               const contour =  features.filtered('feature_type == "contour"')
+                              // console.log(contour[0].feature_geometry)
                               const rooms = features.filtered('feature_type == "room"')
-                              // const GeoJSONContour = {
-                              //   "type":"featureCollection",
-                              //   "name":buildingName,
-                              //   "features":[{
-                              //     "type": "Feature",
-                              //     "properties":{
-                              //       "room": "",
-                              //       "floor":contour.building_floor,
-                              //       "color": contour.feature_color,
+
+                              const GeoJSONContour = {
+                                "type":"FeatureCollection",
+                                "name":buildingName,
+                                "features":[{
+                                  "type": "Feature",
+                                  "properties":{
+                                    "room": "",
+                                    "floor":contour[0].building_floor,
+                                    "color": contour[0].feature_color,
                                   
-                              //     "layer_name": contour.feature_layer_name,
-                              //     "height": contour.feature_height,
-                              //     "base_height": contour.feature_base_height
-                              //     },
-                              //     "geometry": {
-                              //       "type": contour.feature_geometry.geometry_type,
-                              //       "coordinates": contour.feature_geometry.geometry_coordinates
-                              //     }
-                              //     }
-                              //   ],
-                              //   "floor_indicies": buildingFloorIndeices,
-                              //   "default_floor": building.building_default_floor
-                              // }
-                              // AllGeoJSONs.set(contour.feature_layer_name,GeoJSONContour)
+                                  "layer_name": contour[0].feature_layer_name,
+                                  "height": contour[0].feature_height,
+                                  "base_height": contour[0].feature_base_height
+                                  },
+                                  "geometry": {
+                                    "type": "Polygon",
+                                    "coordinates": convertStringToCoordinates(contour[0].feature_geometry.geometry_coordinates)
+                                  }
+                                  }
+                                ],
+                                "floor_indicies": buildingFloorIndeices,
+                                "default_floor": building.building_default_floor
+                              }
+                              AllGeoJSONs.set(contour[0].feature_layer_name,GeoJSONContour)
             
                               const GeoJSONRoom = {
                                 "type":"FeatureCollection",
@@ -294,7 +288,7 @@ const getGeoJSON = async () => {
             
                             }
                             
-                          }
+                          }  
                     })
                     // console.log(AllGeoJSONs)
                     // AllGeoJSONs.get("BA_Indoor_1_room").features.forEach(feature=>{

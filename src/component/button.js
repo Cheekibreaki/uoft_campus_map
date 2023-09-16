@@ -8,7 +8,7 @@ import {setGeoJSON} from "../redux/actions/setGeoJsonAction";
 import BA_3_Room from "../assets/geojson/BA_Indoor_3_room.json";
 import BA_2_Room from "../assets/geojson/BA_Indoor_2_room.json";
 import BA_1_Room from "../assets/geojson/BA_Indoor_1_room.json";
-
+import fs from 'react-native-fs';
 
 
 function computeCenterLabelPosition(buildingName,points){
@@ -138,18 +138,51 @@ const ButtonPanel = () => {
     }
     const dispatch = useDispatch();
 
-    const handleButtonPress = (floorNumber) => {
+    const handleButtonPress = async (floorNumber) => {
         console.log("floorNumber is ",floorNumber);
         
         switch (floorNumber){
           case 1:
-            dispatch(setGeoJSON(BA_1_Room));
+            await fs.readFile(fs.DocumentDirectoryPath+ '/BA_Indoor_1_room.json', 'utf8')
+              .then((fileData) => {
+                // Parse the JSON data into a GeoJSON object
+                const geoJsonObject = JSON.parse(fileData);
+            
+                // Now you can work with the GeoJSON object
+                //console.log('Parsed GeoJSON Object:', geoJsonObject);
+                dispatch(geoJsonObject)
+              })
+              .catch((err) => {
+                console.log('Error reading JSON file:', err);
+              });
             break
           case 2:
-            dispatch(setGeoJSON(BA_2_Room));
+            await fs.readFile(fs.DocumentDirectoryPath+ '/BA_Indoor_2_room.json', 'utf8')
+              .then((fileData) => {
+                // Parse the JSON data into a GeoJSON object
+                const geoJsonObject = JSON.parse(fileData);
+            
+                // Now you can work with the GeoJSON object
+                //console.log('Parsed GeoJSON Object:', geoJsonObject);
+                dispatch(geoJsonObject)
+              })
+              .catch((err) => {
+                console.log('Error reading JSON file:', err);
+              });
             break
           case 3:
-            dispatch(setGeoJSON(BA_3_Room));
+            await fs.readFile(fs.DocumentDirectoryPath+ '/BA_Indoor_3_room.json', 'utf8')
+              .then((fileData) => {
+                // Parse the JSON data into a GeoJSON object
+                const geoJsonObject = JSON.parse(fileData);
+            
+                // Now you can work with the GeoJSON object
+                //console.log('Parsed GeoJSON Object:', geoJsonObject);
+                dispatch(geoJsonObject)
+              })
+              .catch((err) => {
+                console.log('Error reading JSON file:', err);
+              });
             break
           default:
   
