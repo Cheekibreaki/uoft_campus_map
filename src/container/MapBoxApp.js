@@ -16,7 +16,7 @@ import GeojsonFiles from "../component/renderGeojsonFiles";
 import { setIsCameraMoving } from "../redux/actions/setIsCameraMovingAction";
 import { setGeoJSONInScreen } from "../redux/actions/setFeatureInScreen";
 import { setSelectRoom } from "../redux/actions/setSelectedRoom";
-import { setGeoJsonData } from "../redux/actions/setGeoJSONData";
+// import { setGeoJsonData } from "../redux/actions/setGeoJSONData";
 MapboxGL.setAccessToken("pk.eyJ1IjoiamlwaW5nbGkiLCJhIjoiY2xoanYzaGZ1MGxsNjNxbzMxNTdjMHkyOSJ9.81Fnu3ho6z2u8bhS2yRJNA");
 
 import BA_1_Room from "../assets/geojson/BA_Indoor_1_room.json";
@@ -98,7 +98,8 @@ const MapBoxApp = (props: BaseExampleProps) => {
     let map = useRef();
     let camera = useRef();
     
-    const [geojsonData, setGeojsonData] = useState(null);
+    const [dataInitialized, setDataInitialized] = useState(false);
+
     const dispatch = useDispatch();
 
     const selectedGeoJSON = useSelector(store=>store.GeoJSONs.selectedGeoJSON);
@@ -120,30 +121,22 @@ const MapBoxApp = (props: BaseExampleProps) => {
       setMapInitialized(true);
     };
 
+
     useEffect(() => {
       // This function will be called only once when the component is mounted
       // You can place your initialization code here
       const initializeApp = async () => {
       console.log('App initialized');
       try{
-        const data = await getGeoJSON();
-        setGeojsonData(data)
+        await getGeoJSON();
+        // setGeojsonData(data)
+        setDataInitialized(true)
       } catch (error) {
         console.error('Error initializing app:', error);
       }
-      
-       
-      
     }
       initializeApp();
     }, []);
-
-    useEffect(() => {
-      // This effect will run whenever AllGeoJSONs changes
-      console.log('AllGeoJSONs updated:', geojsonData);
-      dispatch(setGeoJsonData(geojsonData))
-    }, [geojsonData]);
-
     
     const onPress = async (e) => {
     
@@ -355,12 +348,12 @@ const MapBoxApp = (props: BaseExampleProps) => {
               bounds={southwestCoordinate, northeastCoordinate}
             />  
 
-            {GeoJsonFiles && renderGeojsonFiles()}
+            {dataInitialized && renderGeojsonFiles()}
             <IndoorLabel/> 
           </MapView>
           <SearchBar/>
           {renderButtonPanel()}
-          {renderSelcetedMarker()}
+          {dataInitialized && renderSelcetedMarker()}
           
 
         </>

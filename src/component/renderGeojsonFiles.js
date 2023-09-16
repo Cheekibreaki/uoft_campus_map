@@ -19,23 +19,12 @@ import fs from 'react-native-fs'
 
 
 const renderGeojsonFiles = () => {
-  // const { childProp } = props;
+
   const [geojsonData, setGeojsonData] = useState(null);
   let floorNumber = useSelector(store=>store.Filter.filter)[0];
   let filterforContour = useSelector(store=>store.Filter.filter)[1];
   let filterForIndoorRoom= useSelector(store=>store.Filter.filter)[2];
-  const GeoJsonFiles = useSelector(store=>store.AllGeoJSONs.geojsonData);
-  // console.log(GeoJsonFiles.get("BA_Indoor_1_room").features[0].geometry.coordinates)
-  // GeoJsonFiles.get("BA_Indoor_1_room").features.forEach(feature=>{
-  //   console.log(feature)
-    
-  //   console.log(feature.geometry)
-  //       })
-  // console.log(BA_1_Room.features[0].geometry.coordinates)
   
-  
-
-
   const numContourStyles = 3;
   let layerStyles = {};
 
@@ -48,10 +37,6 @@ const renderGeojsonFiles = () => {
     };
 
   }
-
-  
-
-
 
   const getBuildingContourStyle = (floorNumber,layerStyles) => {
     const layerIds = ['BA_1_Contour', 'BA_2_Contour', 'BA_3_Contour'];
@@ -70,6 +55,7 @@ const renderGeojsonFiles = () => {
 
   
   let contourStyles = getBuildingContourStyle(floorNumber,layerStyles);
+
   useEffect(() => {
     fs.readFile(fs.DocumentDirectoryPath+ '/BA_Indoor_1_room.json', 'utf8')
         .then((fileData) => {
@@ -86,6 +72,7 @@ const renderGeojsonFiles = () => {
 
   }, []);
   
+
   return (
 
     <>
