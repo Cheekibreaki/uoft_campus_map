@@ -333,7 +333,7 @@ const MapBoxApp = (props: BaseExampleProps) => {
               // console.log("yes")
               dispatch(setMapState(_state));
               // queryLayerFeatures()
-              avoid_queryLayerFeatures()
+              //avoid_queryLayerFeatures()
               dispatch(setIsCameraMoving(true))
             }}
             onMapIdle = {() => {

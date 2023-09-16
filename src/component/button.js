@@ -150,7 +150,7 @@ const ButtonPanel = () => {
             
                 // Now you can work with the GeoJSON object
                 //console.log('Parsed GeoJSON Object:', geoJsonObject);
-                dispatch(geoJsonObject)
+                dispatch(setGeoJSON(geoJsonObject))
               })
               .catch((err) => {
                 console.log('Error reading JSON file:', err);
@@ -164,7 +164,7 @@ const ButtonPanel = () => {
             
                 // Now you can work with the GeoJSON object
                 //console.log('Parsed GeoJSON Object:', geoJsonObject);
-                dispatch(geoJsonObject)
+                dispatch(setGeoJSON(geoJsonObject))
               })
               .catch((err) => {
                 console.log('Error reading JSON file:', err);
@@ -178,7 +178,7 @@ const ButtonPanel = () => {
             
                 // Now you can work with the GeoJSON object
                 //console.log('Parsed GeoJSON Object:', geoJsonObject);
-                dispatch(geoJsonObject)
+                dispatch(setGeoJSON(geoJsonObject))
               })
               .catch((err) => {
                 console.log('Error reading JSON file:', err);
