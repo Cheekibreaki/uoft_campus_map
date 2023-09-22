@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback, useLayoutEffect, useRef } from "react";
-import { View, StyleSheet, Pressable } from "react-native";
+import { View, StyleSheet, Pressable, ActivityIndicator} from "react-native";
 import MapboxGL from "@rnmapbox/maps";
 import { Slider, Text} from "@rneui/base";
 import { Position } from "geojson";
@@ -94,7 +94,7 @@ const MapBoxApp = (props: BaseExampleProps) => {
     // console.log("mapState",mapState);
     // const [selectedGeoJSON, setSelectedGeoJSON] = useState(null);
     const [allowOverlap, setAllowOverlap] = useState(false);
-    
+    const [isLoading, setIsLoading] = useState(true);
     const [mapInitialized, setMapInitialized] = useState(false);
 
     let selectedMarker = useSelector(store=>store.SelectRoom.selectRoom);
@@ -118,10 +118,18 @@ const MapBoxApp = (props: BaseExampleProps) => {
         setDataInitialized(true)
       } catch (error) {
         console.error('Error initializing app:', error);
+      } finally {
+        // Once the data initialization is complete, stop showing the loading animation
+        setTimeout(() => {
+          setIsLoading(false); // Set loading to false when your data is ready
+        }, 3000); // Replace 3000 with the time it takes to load your data
+        }
       }
-    }
       initializeApp();
     }, []);
+
+    
+
     
     const onPress = async (e) => {
     
@@ -241,6 +249,7 @@ const MapBoxApp = (props: BaseExampleProps) => {
         <GeojsonFiles />
       );
     }
+
     const renderButtonPanel = () => {
       // Function to render IndoorLabel on the map
       if (mapInitialized) {
@@ -270,6 +279,14 @@ const MapBoxApp = (props: BaseExampleProps) => {
         
         return null;
       }
+    };
+
+    const LoadingAnimation = () => {
+      return (
+        <View style={{flex:1, justifyContent: 'center', alignItems: 'center' }}>
+          <ActivityIndicator animating={isLoading} size="large" color="#007AFF" />
+        </View>
+      );
     };
 
     const renderSelcetedMarker = () => {
@@ -315,7 +332,12 @@ const MapBoxApp = (props: BaseExampleProps) => {
     // const filterFeature =  useSelector(store=>store.Filter.filter);
     return (
         // <View ref={componentRef} onLayout={measureComponent}>
-
+      <>
+      {isLoading ? (
+        // Display the loading animation while data is being initialized
+        <LoadingAnimation />
+      ) : (
+        // Render your app content once data is initialized
         <>
           <MapView 
             ref={map}
@@ -365,6 +387,9 @@ const MapBoxApp = (props: BaseExampleProps) => {
           
 
         </>
+      )}
+      </>
+        
         // </View>
     );
 
