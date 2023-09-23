@@ -16,6 +16,7 @@ import GeojsonFiles from "../component/renderGeojsonFiles";
 import { setIsCameraMoving } from "../redux/actions/setIsCameraMovingAction";
 import { setGeoJSONInScreen } from "../redux/actions/setFeatureInScreen";
 import { setSelectRoom } from "../redux/actions/setSelectedRoom";
+import { setHideUIElement } from "../redux/actions/setHideUIElements";
 // import { setGeoJsonData } from "../redux/actions/setGeoJSONData";
 MapboxGL.setAccessToken("pk.eyJ1IjoiamlwaW5nbGkiLCJhIjoiY2xoanYzaGZ1MGxsNjNxbzMxNTdjMHkyOSJ9.81Fnu3ho6z2u8bhS2yRJNA");
 import getGeoJSON from "../assets/dataBase/getGeoJSONFromRealm";
@@ -100,8 +101,8 @@ const MapBoxApp = (props: BaseExampleProps) => {
     let selectedMarker = useSelector(store=>store.SelectRoom.selectRoom);
     let floorNumber = useSelector(store=>store.Filter.filter)[0]
     const GeoJsonFiles = useSelector(store=>store.AllGeoJSONs.geojsonData);
-
-
+    let NeedHideUIElement =  useSelector(store=>store.HideUIElements.hideUIElements);
+    console.log("need hide UI? ", NeedHideUIElement)
 
     const onMapInitialized = () => {
       // This function is called when the map is fully initialized
@@ -280,7 +281,7 @@ const MapBoxApp = (props: BaseExampleProps) => {
 
     const renderButtonPanel = () => {
       // Function to render IndoorLabel on the map
-      if (mapInitialized && dataInitialized) {
+      if (mapInitialized && dataInitialized && NeedHideUIElement == false) {
         return (
           < View>
             <ButtonPanel/>   
@@ -319,7 +320,7 @@ const MapBoxApp = (props: BaseExampleProps) => {
 
     const renderSelcetedMarker = () => {
       // Function to render IndoorLabel on the map
-      if (selectedMarker !== null && Object.keys(selectedMarker).length !== 0) {
+      if (selectedMarker !== null && Object.keys(selectedMarker).length !== 0 && NeedHideUIElement == false) {
           
         return (  
         //   <MapboxGL.MarkerView 
