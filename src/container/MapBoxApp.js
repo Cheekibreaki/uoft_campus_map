@@ -102,7 +102,7 @@ const MapBoxApp = (props: BaseExampleProps) => {
     let floorNumber = useSelector(store=>store.Filter.filter)[0]
     const GeoJsonFiles = useSelector(store=>store.AllGeoJSONs.geojsonData);
     let NeedHideUIElement =  useSelector(store=>store.HideUIElements.hideUIElements);
-    console.log("need hide UI? ", NeedHideUIElement)
+    // console.log("need hide UI? ", NeedHideUIElement)
 
     const onMapInitialized = () => {
       // This function is called when the map is fully initialized
@@ -281,18 +281,23 @@ const MapBoxApp = (props: BaseExampleProps) => {
 
     const renderButtonPanel = () => {
       // Function to render IndoorLabel on the map
-      if (mapInitialized && dataInitialized && NeedHideUIElement == false) {
-        return (
-          < View>
-            <ButtonPanel/>   
-          </View>
-          
-        );
-      } else {
-        // If map is not initialized yet, return null or a loading indicator
-        return null;
+      if (typeof mapState !== 'undefined'){
+        const zoomlevel = mapState.properties.zoom;
+    
+        if (mapInitialized && dataInitialized && NeedHideUIElement == false && zoomlevel > 17) {
+          return (
+            < View>
+              <ButtonPanel/>   
+            </View>
+            
+          );
+        } else {
+          // If map is not initialized yet, return null or a loading indicator
+          return null;
+        }
       }
     };
+
     const renderSearchBar = () => {
       // Function to render IndoorLabel on the map
       if (mapInitialized) {
@@ -320,41 +325,46 @@ const MapBoxApp = (props: BaseExampleProps) => {
 
     const renderSelcetedMarker = () => {
       // Function to render IndoorLabel on the map
-      if (selectedMarker !== null && Object.keys(selectedMarker).length !== 0 && NeedHideUIElement == false) {
+      if (typeof mapState !== 'undefined'){
+        const zoomlevel = mapState.properties.zoom;
+      
+        if (selectedMarker !== null && Object.keys(selectedMarker).length !== 0 
+            && mapInitialized && dataInitialized && NeedHideUIElement == false && zoomlevel > 17) {
+            
+          return (  
+          //   <MapboxGL.MarkerView 
+          //   coordinate={selectedMarker.coords}
+          // > 
+      
+          //   <View 
+          //   style={{ 
+          //     borderColor: 'black',
+          //     borderWidth: 1.0,
+          //     width: 60,   
+          //     backgroundColor: 'white',
+          //     borderRadius: 5,
+          //     shadowColor: '#000',
+          //     shadowOffset: {
+          //       width: 0,
+          //       height: 2,}
+          //     }}>
+          //   <Text>{selectedMarker.id}</Text> 
+          //   <Text>hello</Text> 
+          //   </View>
+            
+          // </MapboxGL.MarkerView>
           
-        return (  
-        //   <MapboxGL.MarkerView 
-        //   coordinate={selectedMarker.coords}
-        // > 
-     
-        //   <View 
-        //   style={{ 
-        //     borderColor: 'black',
-        //     borderWidth: 1.0,
-        //     width: 60,   
-        //     backgroundColor: 'white',
-        //     borderRadius: 5,
-        //     shadowColor: '#000',
-        //     shadowOffset: {
-        //       width: 0,
-        //       height: 2,}
-        //     }}>
-        //   <Text>{selectedMarker.id}</Text> 
-        //   <Text>hello</Text> 
-        //   </View>
-           
-        // </MapboxGL.MarkerView>
-        
-        <View style={{ position: 'absolute', bottom: 20, left: 20, width: '80%' }}>
-          <View style={{ backgroundColor: 'white', padding: 10, borderRadius: 5 }}>
-            <Text>{selectedMarker.id}</Text>
-            <Text>{selectedMarker.building}</Text>
+          <View style={{ position: 'absolute', bottom: 20, left: 20, width: '80%' }}>
+            <View style={{ backgroundColor: 'white', padding: 10, borderRadius: 5 }}>
+              <Text>{selectedMarker.id}</Text>
+              <Text>{selectedMarker.building}</Text>
+            </View>
           </View>
-        </View>
-        );
-      } else {
-        // If map is not initialized yet, return null or a loading indicator
-        return null;
+          );
+        } else {
+          // If map is not initialized yet, return null or a loading indicator
+          return null;
+        }
       }
     };
 
@@ -406,13 +416,13 @@ const MapBoxApp = (props: BaseExampleProps) => {
               bounds={southwestCoordinate, northeastCoordinate}
             />  
 
-            {dataInitialized && renderGeojsonFiles()}
+            {renderGeojsonFiles()}
             {renderIndoorLabel()}
           </MapView>
 
           {renderSearchBar()}
           {renderButtonPanel()}
-          {dataInitialized && renderSelcetedMarker()}
+          {renderSelcetedMarker()}
           
 
         </>

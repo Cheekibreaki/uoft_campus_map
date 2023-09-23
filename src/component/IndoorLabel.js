@@ -162,11 +162,14 @@ const IndoorLabel = () => {
             height: feature.properties.height,
             roomID: feature.properties.room,
           };
+          // console.log("roomID is", feature.properties.room)
           updatedCoordinates = updatedCoordinates.concat(geometry);
         }
 
         return updatedCoordinates; // Return the updated state
+        
       })();
+      // console.log("updated coordinates", markerCoordinates)
       // console.log("markerCoordinates",markerCoordinates)
     }
 
@@ -190,12 +193,82 @@ const IndoorLabel = () => {
             );
 
             let centerLabel = computeCenterLabelPosition(newMarker);
+
+            
+
             if (
-              roomNUM !== "S" &&
-              roomNUM !== "E" &&
-              roomNUM !== "FW" &&
-              roomNUM !== "MW"
+              /^FW\d+/.test(roomNUM) ||
+              /^MW\d+/.test(roomNUM) ||
+              /^S\d+/.test(roomNUM) ||
+              /^E\d+/.test(roomNUM) 
+              // roomNUM !== "S" &&
+              // roomNUM !== "E" &&
+              // roomNUM !== "FW" &&
+              // roomNUM !== "MW"
             ) {
+              console.log("find icon. RoomNUM is ", roomNUM)
+              labelIndex = labelIndex + 1;
+              
+              // switch (roomNUM) {
+              //   case /^S\d+$/.test(roomNUM):
+              //     iconMarkers.push({
+              //       id: "stairs" + labelIndex,
+              //       coordinates: centerLabel.position,
+              //       icon: "stairs",
+              //     });
+              //     break;
+              //   case /^E\d+$/.test(roomNUM):
+              //     iconMarkers.push({
+              //       id: "elevator" + labelIndex,
+              //       coordinates: centerLabel.position,
+              //       icon: "elevator",
+              //     });
+              //     break;
+              //   case /^FW\d+$/.test(roomNUM):
+              //     iconMarkers.push({
+              //       id: "woman_washroom" + labelIndex,
+              //       coordinates: centerLabel.position,
+              //       icon: "woman_washroom",
+              //     });
+              //     break;
+              //   case  /^MW\d+$/.test(roomNUM):
+              //     iconMarkers.push({
+              //       id: "man_washroom" + labelIndex,
+              //       coordinates: centerLabel.position,
+              //       icon: "man_washroom",
+              //     });
+              //     break;
+              //   default:
+              //     console.log("Invalid room entered.");
+              // }
+
+              if(/^S\d+/.test(roomNUM)){
+                iconMarkers.push({
+                  id: "stairs" + labelIndex,
+                  coordinates: centerLabel.position,
+                  icon: "stairs",
+                });
+              }else if(/^E\d+/.test(roomNUM)) {
+                iconMarkers.push({
+                  id: "elevator" + labelIndex,
+                  coordinates: centerLabel.position,
+                  icon: "elevator",
+                });
+              }else if(/^FW\d+/.test(roomNUM)){
+                iconMarkers.push({
+                  id: "woman_washroom" + labelIndex,
+                  coordinates: centerLabel.position,
+                  icon: "woman_washroom",
+                });  
+              }else if(/^MW\d+/.test(roomNUM)){
+                iconMarkers.push({
+                  id: "man_washroom" + labelIndex,
+                  coordinates: centerLabel.position,
+                  icon: "man_washroom",
+                });
+              } 
+             
+            } else {
               roomList.push(roomNUM);
               textMarkers.push({
                 coords: centerLabel.position,
@@ -203,40 +276,6 @@ const IndoorLabel = () => {
                 id: roomNUM,
                 building:buildingName
               });
-            } else {
-              labelIndex = labelIndex + 1;
-              switch (roomNUM) {
-                case "S":
-                  iconMarkers.push({
-                    id: "stairs" + labelIndex,
-                    coordinates: centerLabel.position,
-                    icon: "stairs",
-                  });
-                  break;
-                case "E":
-                  iconMarkers.push({
-                    id: "elevator" + labelIndex,
-                    coordinates: centerLabel.position,
-                    icon: "elevator",
-                  });
-                  break;
-                case "FW":
-                  iconMarkers.push({
-                    id: "woman_washroom" + labelIndex,
-                    coordinates: centerLabel.position,
-                    icon: "woman_washroom",
-                  });
-                  break;
-                case "MW":
-                  iconMarkers.push({
-                    id: "man_washroom" + labelIndex,
-                    coordinates: centerLabel.position,
-                    icon: "man_washroom",
-                  });
-                  break;
-                default:
-                  console.log("Invalid room entered.");
-              }
             }
           }
         } else {
@@ -258,11 +297,73 @@ const IndoorLabel = () => {
             let centerLabel = computeCenterLabelPosition(newMarker);
 
             if (
-              roomNUM !== "S" &&
-              roomNUM !== "E" &&
-              roomNUM !== "FW" &&
-              roomNUM !== "MW"
+              // roomNUM !== "S" &&
+              // roomNUM !== "E" &&
+              // roomNUM !== "FW" &&
+              // roomNUM !== "MW"
+              /^FW\d+/.test(roomNUM) ||
+              /^MW\d+/.test(roomNUM) ||
+              /^S\d+/.test(roomNUM) ||
+              /^E\d+/.test(roomNUM) 
             ) {
+              // switch (roomNUM) {
+              //   case "S":
+              //     iconMarkers.push({
+              //       id: "stairs" + labelIndex,
+              //       coordinates: raise(centerLabel.position, height),
+              //       icon: "stairs",
+              //     });
+              //     break;
+              //   case "E":
+              //     iconMarkers.push({
+              //       id: "elevator" + labelIndex,
+              //       coordinates: raise(centerLabel.position, height),
+              //       icon: "elevator",
+              //     });
+              //     break;
+              //   case "FW":
+              //     iconMarkers.push({
+              //       id: "woman_washroom" + labelIndex,
+              //       coordinates: raise(centerLabel.position, height),
+              //       icon: "woman_washroom",
+              //     });
+              //     break;
+              //   case "MW":
+              //     iconMarkers.push({
+              //       id: "man_washroom" + labelIndex,
+              //       coordinates: raise(centerLabel.position, height),
+              //       icon: "man_washroom",
+              //     });
+              //     break;
+              //   default:
+              //     console.log("Invalid room entered.");
+              // }
+              if(/^S\d+/.test(roomNUM)){
+                iconMarkers.push({
+                  id: "stairs" + labelIndex,
+                  coordinates: centerLabel.position,
+                  icon: "stairs",
+                });
+              }else if(/^E\d+/.test(roomNUM)) {
+                iconMarkers.push({
+                  id: "elevator" + labelIndex,
+                  coordinates: centerLabel.position,
+                  icon: "elevator",
+                });
+              }else if(/^FW\d+/.test(roomNUM)){
+                iconMarkers.push({
+                  id: "woman_washroom" + labelIndex,
+                  coordinates: centerLabel.position,
+                  icon: "woman_washroom",
+                });  
+              }else if(/^MW\d+/.test(roomNUM)){
+                iconMarkers.push({
+                  id: "man_washroom" + labelIndex,
+                  coordinates: centerLabel.position,
+                  icon: "man_washroom",
+                });
+              } 
+            } else {
               roomList.push(roomNUM);
               textMarkers.push({
                 coords: raise(centerLabel.position, height),
@@ -270,39 +371,6 @@ const IndoorLabel = () => {
                 id: roomNUM,
                 building: buildingName
               });
-            } else {
-              switch (roomNUM) {
-                case "S":
-                  iconMarkers.push({
-                    id: "stairs" + labelIndex,
-                    coordinates: raise(centerLabel.position, height),
-                    icon: "stairs",
-                  });
-                  break;
-                case "E":
-                  iconMarkers.push({
-                    id: "elevator" + labelIndex,
-                    coordinates: raise(centerLabel.position, height),
-                    icon: "elevator",
-                  });
-                  break;
-                case "FW":
-                  iconMarkers.push({
-                    id: "woman_washroom" + labelIndex,
-                    coordinates: raise(centerLabel.position, height),
-                    icon: "woman_washroom",
-                  });
-                  break;
-                case "MW":
-                  iconMarkers.push({
-                    id: "man_washroom" + labelIndex,
-                    coordinates: raise(centerLabel.position, height),
-                    icon: "man_washroom",
-                  });
-                  break;
-                default:
-                  console.log("Invalid room entered.");
-              }
             }
           }
         }
