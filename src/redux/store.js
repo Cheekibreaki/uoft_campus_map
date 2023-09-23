@@ -6,6 +6,7 @@ import IsCameraMovingReducer from './reducers/getIsCameraMovingReducer';
 import GeoJsonInScreenReducer from './reducers/getFeatureInScreenReducer';
 import SelectRoomReducer from './reducers/getSelectedRoomReducer';
 import GeoJsonDataReducer from './reducers/getGeoJSONDataReducer';
+import HideUIElementsReducer from './reducers/getHideUIElementReducer';
 
 const rootReducer = combineReducers({
     GeoJSONs:  GeoJsonReducer,
@@ -14,7 +15,8 @@ const rootReducer = combineReducers({
     IsCameraMoving: IsCameraMovingReducer,
     FeatureInScreen: GeoJsonInScreenReducer,
     SelectRoom: SelectRoomReducer,
-    AllGeoJSONs: GeoJsonDataReducer
+    AllGeoJSONs: GeoJsonDataReducer,
+    HideUIElements: HideUIElementsReducer
 });
 
 export const Store = createStore(rootReducer);

@@ -140,16 +140,14 @@ const ButtonPanel = () => {
 
     const handleButtonPress = async (floorNumber) => {
         console.log("floorNumber is ",floorNumber);
-        
+      
         switch (floorNumber){
+
           case 1:
             await fs.readFile(fs.DocumentDirectoryPath+ '/BA_Indoor_1_room.json', 'utf8')
               .then((fileData) => {
                 // Parse the JSON data into a GeoJSON object
                 const geoJsonObject = JSON.parse(fileData);
-            
-                // Now you can work with the GeoJSON object
-                //console.log('Parsed GeoJSON Object:', geoJsonObject);
                 dispatch(setGeoJSON(geoJsonObject))
               })
               .catch((err) => {
@@ -161,9 +159,6 @@ const ButtonPanel = () => {
               .then((fileData) => {
                 // Parse the JSON data into a GeoJSON object
                 const geoJsonObject = JSON.parse(fileData);
-            
-                // Now you can work with the GeoJSON object
-                //console.log('Parsed GeoJSON Object:', geoJsonObject);
                 dispatch(setGeoJSON(geoJsonObject))
               })
               .catch((err) => {
@@ -175,9 +170,6 @@ const ButtonPanel = () => {
               .then((fileData) => {
                 // Parse the JSON data into a GeoJSON object
                 const geoJsonObject = JSON.parse(fileData);
-            
-                // Now you can work with the GeoJSON object
-                //console.log('Parsed GeoJSON Object:', geoJsonObject);
                 dispatch(setGeoJSON(geoJsonObject))
               })
               .catch((err) => {
@@ -187,8 +179,8 @@ const ButtonPanel = () => {
           default:
   
             }
+              
         dispatch(setFilter([floorNumber,['<=','floor',floorNumber.toString()],['==', 'floor', floorNumber.toString()]])); 
-        // dispatch(setGeoJSON({}))
     };
 
     return (

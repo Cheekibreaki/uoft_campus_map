@@ -9,7 +9,7 @@ import Page from "../common/Page";
 import BaseExamplePropTypes from "../common/BaseExamplePropTypes";
 import {useSelector, useDispatch} from 'react-redux';
 import {setGeoJSON} from "../redux/actions/setGeoJsonAction";
-import { setMapState } from "../redux/actions/setMapstateAction";
+import {setMapState} from "../redux/actions/setMapstateAction";
 import IndoorLabel from '../component/IndoorLabel'
 import ButtonPanel from "../component/button";
 import GeojsonFiles from "../component/renderGeojsonFiles";
@@ -101,6 +101,8 @@ const MapBoxApp = (props: BaseExampleProps) => {
     let floorNumber = useSelector(store=>store.Filter.filter)[0]
     const GeoJsonFiles = useSelector(store=>store.AllGeoJSONs.geojsonData);
 
+
+
     const onMapInitialized = () => {
       // This function is called when the map is fully initialized
       setMapInitialized(true);
@@ -119,10 +121,19 @@ const MapBoxApp = (props: BaseExampleProps) => {
       } catch (error) {
         console.error('Error initializing app:', error);
       } finally {
-        // Once the data initialization is complete, stop showing the loading animation
+        await fs.readFile(fs.DocumentDirectoryPath+ '/BA_Indoor_1_room.json', 'utf8')
+        .then((fileData) => {
+          // Parse the JSON data into a GeoJSON object
+          const geoJsonObject = JSON.parse(fileData);
+          dispatch(setGeoJSON(geoJsonObject))
+        })
+        .catch((err) => {
+          console.log('Error reading JSON file:', err);
+        });
+
         setTimeout(() => {
-          setIsLoading(false); // Set loading to false when your data is ready
-        }, 3000); // Replace 3000 with the time it takes to load your data
+          setIsLoading(false); 
+        }, 3000); 
         }
       }
       initializeApp();
@@ -133,34 +144,34 @@ const MapBoxApp = (props: BaseExampleProps) => {
     
     const onPress = async (e) => {
     
-    const { screenPointX, screenPointY } = e.properties;
-    const cursorCoordinate = e.geometry;
-    // console.log("the point's coordinate is ", cursorCoordinate.coordinates)
-    // console.log("screenPointX, screenPointY", screenPointX, screenPointY)
-    const featureCollection = await map.current.queryRenderedFeaturesAtPoint(
-      [screenPointX, screenPointY],
-      null,
-      []
-    );
-    if (featureCollection && featureCollection.features && featureCollection.features.length) {
-      for (const feature of featureCollection.features) {
-        const geometry = feature.geometry;
-        const roomID = feature.properties.room;
-        const isWithinRoom = computePointWithinRoom(geometry.coordinates[0],cursorCoordinate)
-        if (isWithinRoom === true) {
-          let buildingName = selectedGeoJSON.name;
-          // console.log(selectedGeoJSON.features);
-          dispatch(setSelectRoom({
-            id: roomID,
-            building: buildingName
-          }));
-          break;
+      const { screenPointX, screenPointY } = e.properties;
+      const cursorCoordinate = e.geometry;
+      // console.log("the point's coordinate is ", cursorCoordinate.coordinates)
+      // console.log("screenPointX, screenPointY", screenPointX, screenPointY)
+      const featureCollection = await map.current.queryRenderedFeaturesAtPoint(
+        [screenPointX, screenPointY],
+        null,
+        []
+      );
+      if (featureCollection && featureCollection.features && featureCollection.features.length) {
+        for (const feature of featureCollection.features) {
+          const geometry = feature.geometry;
+          const roomID = feature.properties.room;
+          const isWithinRoom = computePointWithinRoom(geometry.coordinates[0],cursorCoordinate)
+          if (isWithinRoom === true) {
+            let buildingName = selectedGeoJSON.name;
+            // console.log(selectedGeoJSON.features);
+            dispatch(setSelectRoom({
+              id: roomID,
+              building: buildingName
+            }));
+            break;
+          }
         }
+      } else {
+        
       }
-    } else {
-      
-    }
-  };
+    };
 
 
 
@@ -244,15 +255,32 @@ const MapBoxApp = (props: BaseExampleProps) => {
 
 
 
-    const renderGeojsonFiles = () =>{
-      return (
-        <GeojsonFiles />
-      );
+    const renderGeojsonFiles = () =>{ 
+      if (mapInitialized && dataInitialized) {
+        return (
+          <GeojsonFiles />
+        );
+      }
+    }
+
+    
+    const renderIndoorLabel = () =>{
+      if (typeof mapState !== 'undefined'){
+        const zoomlevel = mapState.properties.zoom;
+        if (mapInitialized && dataInitialized &&zoomlevel > 17) {
+        return (
+          <>
+            <IndoorLabel/>   
+          </>  
+        );
+      }
+      }
+      
     }
 
     const renderButtonPanel = () => {
       // Function to render IndoorLabel on the map
-      if (mapInitialized) {
+      if (mapInitialized && dataInitialized) {
         return (
           < View>
             <ButtonPanel/>   
@@ -378,7 +406,7 @@ const MapBoxApp = (props: BaseExampleProps) => {
             />  
 
             {dataInitialized && renderGeojsonFiles()}
-            <IndoorLabel/> 
+            {renderIndoorLabel()}
           </MapView>
 
           {renderSearchBar()}
