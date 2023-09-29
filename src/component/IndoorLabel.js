@@ -150,7 +150,7 @@ const IndoorLabel = () => {
       selectedGeoJSON !== null &&
       Object.keys(selectedGeoJSON).length !== 0 &&
       selectedGeoJSON.features !== null &&
-      selectedGeoJSON.features !== {}
+      selectedGeoJSON.features !== undefined
     ) {
       const features = selectedGeoJSON.features;
       markerCoordinates = (() => {
@@ -206,7 +206,7 @@ const IndoorLabel = () => {
               // roomNUM !== "FW" &&
               // roomNUM !== "MW"
             ) {
-              console.log("find icon. RoomNUM is ", roomNUM)
+              // console.log("find icon. RoomNUM is ", roomNUM)
               labelIndex = labelIndex + 1;
               
               // switch (roomNUM) {
@@ -244,25 +244,25 @@ const IndoorLabel = () => {
 
               if(/^S\d+/.test(roomNUM)){
                 iconMarkers.push({
-                  id: "stairs" + labelIndex,
+                  id: roomNUM,
                   coordinates: centerLabel.position,
                   icon: "stairs",
                 });
               }else if(/^E\d+/.test(roomNUM)) {
                 iconMarkers.push({
-                  id: "elevator" + labelIndex,
+                  id: roomNUM,
                   coordinates: centerLabel.position,
                   icon: "elevator",
                 });
               }else if(/^FW\d+/.test(roomNUM)){
                 iconMarkers.push({
-                  id: "woman_washroom" + labelIndex,
+                  id: roomNUM,
                   coordinates: centerLabel.position,
                   icon: "woman_washroom",
                 });  
               }else if(/^MW\d+/.test(roomNUM)){
                 iconMarkers.push({
-                  id: "man_washroom" + labelIndex,
+                  id: roomNUM,
                   coordinates: centerLabel.position,
                   icon: "man_washroom",
                 });
@@ -341,25 +341,25 @@ const IndoorLabel = () => {
               if(/^S\d+/.test(roomNUM)){
                 iconMarkers.push({
                   id: "stairs" + labelIndex,
-                  coordinates: centerLabel.position,
+                  coordinates: raise(centerLabel.position, height),
                   icon: "stairs",
                 });
               }else if(/^E\d+/.test(roomNUM)) {
                 iconMarkers.push({
                   id: "elevator" + labelIndex,
-                  coordinates: centerLabel.position,
+                  coordinates: raise(centerLabel.position, height),
                   icon: "elevator",
                 });
               }else if(/^FW\d+/.test(roomNUM)){
                 iconMarkers.push({
                   id: "woman_washroom" + labelIndex,
-                  coordinates: centerLabel.position,
+                  coordinates: raise(centerLabel.position, height),
                   icon: "woman_washroom",
                 });  
               }else if(/^MW\d+/.test(roomNUM)){
                 iconMarkers.push({
                   id: "man_washroom" + labelIndex,
-                  coordinates: centerLabel.position,
+                  coordinates: raise(centerLabel.position, height),
                   icon: "man_washroom",
                 });
               } 
@@ -392,7 +392,7 @@ const IndoorLabel = () => {
         })),
         type: "FeatureCollection",
       };
-
+      // console.log(geoJSONMarkers);
       setIconMarkers(geoJSONMarkers);
     } else {
       console.log("markerCoordinates.length = 0");
