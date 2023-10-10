@@ -140,11 +140,8 @@ const ButtonPanel = () => {
 
     const handleButtonPress = async (floorNumber) => {
         console.log("floorNumber is ",floorNumber);
-      
-        switch (floorNumber){
-
-          case 1:
-            await fs.readFile(fs.DocumentDirectoryPath+ '/BA_Indoor_1_room.json', 'utf8')
+        const filePath = fs.DocumentDirectoryPath + `/BA_Indoor_${floorNumber}_room.json`;
+        await fs.readFile(filePath, 'utf8')
               .then((fileData) => {
                 // Parse the JSON data into a GeoJSON object
                 const geoJsonObject = JSON.parse(fileData);
@@ -153,32 +150,6 @@ const ButtonPanel = () => {
               .catch((err) => {
                 console.log('Error reading JSON file:', err);
               });
-            break
-          case 2:
-            await fs.readFile(fs.DocumentDirectoryPath+ '/BA_Indoor_2_room.json', 'utf8')
-              .then((fileData) => {
-                // Parse the JSON data into a GeoJSON object
-                const geoJsonObject = JSON.parse(fileData);
-                dispatch(setGeoJSON(geoJsonObject))
-              })
-              .catch((err) => {
-                console.log('Error reading JSON file:', err);
-              });
-            break
-          case 3:
-            await fs.readFile(fs.DocumentDirectoryPath+ '/BA_Indoor_3_room.json', 'utf8')
-              .then((fileData) => {
-                // Parse the JSON data into a GeoJSON object
-                const geoJsonObject = JSON.parse(fileData);
-                dispatch(setGeoJSON(geoJsonObject))
-              })
-              .catch((err) => {
-                console.log('Error reading JSON file:', err);
-              });
-            break
-          default:
-  
-            }
               
         dispatch(setFilter([floorNumber,['<=','floor',floorNumber.toString()],['==', 'floor', floorNumber.toString()]])); 
     };
@@ -189,7 +160,6 @@ const ButtonPanel = () => {
       buttons={floorNumbers.reverse()}
       selectedIndex={floorNumbers.length -1 - useSelector(store=>store.Filter.filter)[0]}
       onPress={(value) => {
-        // console.log("floorNumber is ", value);
 
         handleButtonPress(floorNumbers.length -1 -value);
       }}

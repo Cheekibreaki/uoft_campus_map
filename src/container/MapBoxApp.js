@@ -22,10 +22,7 @@ MapboxGL.setAccessToken("pk.eyJ1IjoiamlwaW5nbGkiLCJhIjoiY2xoanYzaGZ1MGxsNjNxbzMx
 import getGeoJSON from "../assets/dataBase/getGeoJSONFromRealm";
 import SearchBar from "../component/searchBar";
 import fs from 'react-native-fs';
-
-//Todo:
-//Flickering issue => state update related
-//Promise Rejection => queryRenderedFeaturesInRect @ onCameraChanged
+// import WifiScanner from "../component/WifiScanner";
 
 const style = JSON.stringify(require('../assets/map-style.json'));
 
@@ -124,7 +121,6 @@ const MapBoxApp = (props: BaseExampleProps) => {
       } finally {
         await fs.readFile(fs.DocumentDirectoryPath+ '/BA_Indoor_1_room.json', 'utf8')
         .then((fileData) => {
-          // Parse the JSON data into a GeoJSON object
           const geoJsonObject = JSON.parse(fileData);
           dispatch(setGeoJSON(geoJsonObject))
         })
@@ -138,6 +134,15 @@ const MapBoxApp = (props: BaseExampleProps) => {
         }
       }
       initializeApp();
+      // WifiScanner.startWifiScan()
+      //   .then(scanResults => {
+      //       // Handle scan results
+      //       console.log(scanResults);
+      //   })
+      //   .catch(error => {
+      //       // Handle errors
+      //       console.error(error);
+      //   });
     }, []);
 
     
@@ -174,84 +179,82 @@ const MapBoxApp = (props: BaseExampleProps) => {
       }
     };
 
-
-
-    const queryLayerFeatures = async () => {
-        setIsCameraMoving(false);
+    // const queryLayerFeatures = async () => {
+    //     setIsCameraMoving(false);
        
-        const featureCollection = await map.current.queryRenderedFeaturesInRect([], null, [
-          // "false_name"
-          "BA_1_Contour","BA_1_Room","BA_2_Contour","BA_2_Room"
-        ]);
+    //     const featureCollection = await map.current.queryRenderedFeaturesInRect([], null, [
+    //       // "false_name"
+    //       "BA_1_Contour","BA_1_Room","BA_2_Contour","BA_2_Room"
+    //     ]);
 
-        if (featureCollection && featureCollection.features && featureCollection.features.length) {
-            // setSelectedGeoJSON(featureCollection);
+    //     if (featureCollection && featureCollection.features && featureCollection.features.length) {
+    //         // setSelectedGeoJSON(featureCollection);
 
-            dispatch(setGeoJSONInScreen(featureCollection));
-        } else {
-        // console.log("no Indoor Building Layer found");
-        //setSelectedGeoJSON(null);
-        dispatch(setGeoJSONInScreen({}));
-        }
-    };
+    //         dispatch(setGeoJSONInScreen(featureCollection));
+    //     } else {
+    //     // console.log("no Indoor Building Layer found");
+    //     //setSelectedGeoJSON(null);
+    //     dispatch(setGeoJSONInScreen({}));
+    //     }
+    // };
     
-    const avoid_queryLayerFeatures =  async() => {
-      const zoomlevel = mapState.properties.zoom;
-      // console.log(zoomlevel)
-      // console.log("zoomlevel is ",floorNumber);
-      if(zoomlevel >= 17){
-      switch (floorNumber){
-        case 1:      
-        await fs.readFile(fs.DocumentDirectoryPath+ '/BA_Indoor_1_room.json', 'utf8')
-              .then((fileData) => {
-                // Parse the JSON data into a GeoJSON object
-                const geoJsonObject = JSON.parse(fileData);
+    // const avoid_queryLayerFeatures =  async() => {
+    //   const zoomlevel = mapState.properties.zoom;
+    //   // console.log(zoomlevel)
+    //   // console.log("zoomlevel is ",floorNumber);
+    //   if(zoomlevel >= 17){
+    //   switch (floorNumber){
+    //     case 1:      
+    //     await fs.readFile(fs.DocumentDirectoryPath+ '/BA_Indoor_1_room.json', 'utf8')
+    //           .then((fileData) => {
+    //             // Parse the JSON data into a GeoJSON object
+    //             const geoJsonObject = JSON.parse(fileData);
             
-                // Now you can work with the GeoJSON object
-                //console.log('Parsed GeoJSON Object:', geoJsonObject);
-                dispatch(geoJsonObject)
-              })
-              .catch((err) => {
-                console.log('Error reading JSON file:', err);
-              });
+    //             // Now you can work with the GeoJSON object
+    //             //console.log('Parsed GeoJSON Object:', geoJsonObject);
+    //             dispatch(geoJsonObject)
+    //           })
+    //           .catch((err) => {
+    //             console.log('Error reading JSON file:', err);
+    //           });
           
-          break
-        case 2:
-          await fs.readFile(fs.DocumentDirectoryPath+ '/BA_Indoor_2_room.json', 'utf8')
-                .then((fileData) => {
-                  // Parse the JSON data into a GeoJSON object
-                  const geoJsonObject = JSON.parse(fileData);
+    //       break
+    //     case 2:
+    //       await fs.readFile(fs.DocumentDirectoryPath+ '/BA_Indoor_2_room.json', 'utf8')
+    //             .then((fileData) => {
+    //               // Parse the JSON data into a GeoJSON object
+    //               const geoJsonObject = JSON.parse(fileData);
               
-                  // Now you can work with the GeoJSON object
-                  //console.log('Parsed GeoJSON Object:', geoJsonObject);
-                  dispatch(geoJsonObject)
-                })
-                .catch((err) => {
-                  console.log('Error reading JSON file:', err);
-                });
-          break
-        case 3:
-          await fs.readFile(fs.DocumentDirectoryPath+ '/BA_Indoor_3_room.json', 'utf8')
-                .then((fileData) => {
-                  // Parse the JSON data into a GeoJSON object
-                  const geoJsonObject = JSON.parse(fileData);
+    //               // Now you can work with the GeoJSON object
+    //               //console.log('Parsed GeoJSON Object:', geoJsonObject);
+    //               dispatch(geoJsonObject)
+    //             })
+    //             .catch((err) => {
+    //               console.log('Error reading JSON file:', err);
+    //             });
+    //       break
+    //     case 3:
+    //       await fs.readFile(fs.DocumentDirectoryPath+ '/BA_Indoor_3_room.json', 'utf8')
+    //             .then((fileData) => {
+    //               // Parse the JSON data into a GeoJSON object
+    //               const geoJsonObject = JSON.parse(fileData);
               
-                  // Now you can work with the GeoJSON object
-                  //console.log('Parsed GeoJSON Object:', geoJsonObject);
-                  dispatch(geoJsonObject)
-                })
-                .catch((err) => {
-                  console.log('Error reading JSON file:', err);
-                });
-          break
-        default:
+    //               // Now you can work with the GeoJSON object
+    //               //console.log('Parsed GeoJSON Object:', geoJsonObject);
+    //               dispatch(geoJsonObject)
+    //             })
+    //             .catch((err) => {
+    //               console.log('Error reading JSON file:', err);
+    //             });
+    //       break
+    //     default:
 
-          }
-      }else{
-        dispatch(setGeoJSON({}));
-        return;
-      }
-    }
+    //       }
+    //   }else{
+    //     dispatch(setGeoJSON({}));
+    //     return;
+    //   }
+    // }
      
 
 
@@ -292,7 +295,6 @@ const MapBoxApp = (props: BaseExampleProps) => {
             
           );
         } else {
-          // If map is not initialized yet, return null or a loading indicator
           return null;
         }
       }
@@ -301,16 +303,14 @@ const MapBoxApp = (props: BaseExampleProps) => {
     const renderSearchBar = () => {
       // Function to render IndoorLabel on the map
       if (mapInitialized) {
-        // console.log("initialized successfully")
+        
         return (
           < >
             <SearchBar/>   
           </>
           
         );
-      } else {
-        // If map is not initialized yet, return null or a loading indicator
-        
+      } else {        
         return null;
       }
     };
@@ -331,29 +331,7 @@ const MapBoxApp = (props: BaseExampleProps) => {
         if (selectedMarker !== null && Object.keys(selectedMarker).length !== 0 
             && mapInitialized && dataInitialized && NeedHideUIElement == false && zoomlevel > 17) {
             
-          return (  
-          //   <MapboxGL.MarkerView 
-          //   coordinate={selectedMarker.coords}
-          // > 
-      
-          //   <View 
-          //   style={{ 
-          //     borderColor: 'black',
-          //     borderWidth: 1.0,
-          //     width: 60,   
-          //     backgroundColor: 'white',
-          //     borderRadius: 5,
-          //     shadowColor: '#000',
-          //     shadowOffset: {
-          //       width: 0,
-          //       height: 2,}
-          //     }}>
-          //   <Text>{selectedMarker.id}</Text> 
-          //   <Text>hello</Text> 
-          //   </View>
-            
-          // </MapboxGL.MarkerView>
-          
+          return (   
           <View style={{ position: 'absolute', bottom: 20, left: 20, width: '80%' }}>
             <View style={{ backgroundColor: 'white', padding: 10, borderRadius: 5 }}>
               <Text>{selectedMarker.id}</Text>
@@ -362,34 +340,35 @@ const MapBoxApp = (props: BaseExampleProps) => {
           </View>
           );
         } else {
-          // If map is not initialized yet, return null or a loading indicator
           return null;
         }
       }
     };
 
-    // const filterFeature =  useSelector(store=>store.Filter.filter);
+
     return (
         // <View ref={componentRef} onLayout={measureComponent}>
       <>
       {isLoading ? (
-        // Display the loading animation while data is being initialized
+        
         <LoadingAnimation />
       ) : (
-        // Render your app content once data is initialized
+        
         <>
           <MapView 
             ref={map}
             onPress={onPress}
             styleURL={style}
             style={{ flex: 1 }}
+            
+            // compassEnabled={true} 
+            // compassStyle={{ top: 16, left: 16 }}
             onWillStartRenderingFrame = {(_state)=>{
               
             }}
             onCameraChanged={(_state) => {
               
               // console.log("_state",_state)
-              // setMapState(_state);
               counter++
               // console.log("yes")
               dispatch(setMapState(_state));
@@ -397,6 +376,7 @@ const MapBoxApp = (props: BaseExampleProps) => {
               //avoid_queryLayerFeatures()
               dispatch(setIsCameraMoving(true))
             }}
+
             onMapIdle = {() => {
               onMapInitialized()
               dispatch(setIsCameraMoving(false))
@@ -406,6 +386,7 @@ const MapBoxApp = (props: BaseExampleProps) => {
             onDidFinishLoadingMap={onMapInitialized}
             scaleBarEnabled = {false}
           >
+      
             <Camera
               
               zoomLevel={zoomLevel}
@@ -415,9 +396,10 @@ const MapBoxApp = (props: BaseExampleProps) => {
               ref={camera}
               bounds={southwestCoordinate, northeastCoordinate}
             />  
-
+            
             {renderGeojsonFiles()}
             {renderIndoorLabel()}
+
           </MapView>
 
           {renderSearchBar()}
