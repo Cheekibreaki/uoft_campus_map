@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback, useLayoutEffect, useRef } from "react";
-import { View, StyleSheet, Pressable, ActivityIndicator} from "react-native";
+import { View, StyleSheet, Pressable, ActivityIndicator,PermissionsAndroid} from "react-native";
 import MapboxGL from "@rnmapbox/maps";
 import { Slider, Text} from "@rneui/base";
 import { Position } from "geojson";
@@ -17,13 +17,14 @@ import { setIsCameraMoving } from "../redux/actions/setIsCameraMovingAction";
 import { setGeoJSONInScreen } from "../redux/actions/setFeatureInScreen";
 import { setSelectRoom } from "../redux/actions/setSelectedRoom";
 import { setHideUIElement } from "../redux/actions/setHideUIElements";
+import {setWifiGrant} from "../redux/actions/setWifiGrant";
 // import { setGeoJsonData } from "../redux/actions/setGeoJSONData";
 MapboxGL.setAccessToken("pk.eyJ1IjoiamlwaW5nbGkiLCJhIjoiY2xoanYzaGZ1MGxsNjNxbzMxNTdjMHkyOSJ9.81Fnu3ho6z2u8bhS2yRJNA");
 import getGeoJSON from "../assets/dataBase/getGeoJSONFromRealm";
 import SearchBar from "../component/searchBar";
 import fs from 'react-native-fs';
-// import WifiScanner from "../component/WifiScanner";
-
+import WifiManager from "../component/wifiManager";
+import WifiManaging from "react-native-wifi-reborn";
 const style = JSON.stringify(require('../assets/map-style.json'));
 
 function computePointWithinRoom(givenRoom,cursorCoordinate) {
@@ -75,14 +76,15 @@ const MapBoxApp = (props: BaseExampleProps) => {
     const centerCoordinate = [-79.3973449417775, 43.65997911110146]
     const southwestCoordinate = [ -79.4022460785109, 43.65546033058593]
     const northeastCoordinate = [-79.38955386618444, 43.669756887468886]
-  
+    
+
     let counter = 0
     
     let map = useRef();
     let camera = useRef();
     
     const [dataInitialized, setDataInitialized] = useState(false);
-
+    
     const dispatch = useDispatch();
 
     const selectedGeoJSON = useSelector(store=>store.GeoJSONs.selectedGeoJSON);
@@ -106,12 +108,71 @@ const MapBoxApp = (props: BaseExampleProps) => {
       setMapInitialized(true);
     };
 
+    const [wifiList, setWifiList] = useState([]);
+
+
+    useEffect(() => {
+      const getpremission = async () => {
+        let granted;
+        try{
+            granted = await PermissionsAndroid.request(
+            PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+              {
+                title: 'Location permission is required for WiFi connections',
+                message:
+                'This app needs location permission as this is required  ' +
+                'to scan for wifi networks.',
+                buttonNegative: 'DENY',
+                buttonPositive: 'ALLOW',
+              },
+            );
+        }finally{
+          if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+            // You can now use react-native-wifi-reborn
+            console.log('get the premission sucessfully!')
+            dispatch(setWifiGrant(true))    
+          }
+        }
+        
+        
+      }
+      getpremission();
+      
+    }, []);
+
+    useEffect(() => {
+      // Fetch WiFi information when the component mounts
+      fetchWifiInfo();
+
+      // Optional: You can set up a timer to periodically refresh WiFi information
+      const refreshInterval = setInterval(fetchWifiInfo, 10000); // Refresh every 10 seconds
+
+      // Cleanup the interval when the component is unmounted
+      return () => clearInterval(refreshInterval);
+    }, []);
+
+    const fetchWifiInfo = async () => {
+      try {
+        const wifiArray = await WifiManaging.loadWifiList();
+        setWifiList(wifiArray);
+    
+      } catch (error) {
+        console.error('Error fetching WiFi information:', error);
+      }
+    };
+
+
+    useEffect(()=>{
+      console.log("WIFI IS: ",wifiList)
+    },[wifiList])
 
     useEffect(() => {
       // This function will be called only once when the component is mounted
       // You can place your initialization code here
       const initializeApp = async () => {
       console.log('App initialized');
+      
+      
       try{
         await getGeoJSON();
         // setGeojsonData(data)
@@ -131,18 +192,10 @@ const MapBoxApp = (props: BaseExampleProps) => {
         setTimeout(() => {
           setIsLoading(false); 
         }, 3000); 
-        }
+        } 
       }
       initializeApp();
-      // WifiScanner.startWifiScan()
-      //   .then(scanResults => {
-      //       // Handle scan results
-      //       console.log(scanResults);
-      //   })
-      //   .catch(error => {
-      //       // Handle errors
-      //       console.error(error);
-      //   });
+      
     }, []);
 
     
@@ -345,6 +398,20 @@ const MapBoxApp = (props: BaseExampleProps) => {
       }
     };
 
+    const renderWifiMananger = () => {
+      // Function to render IndoorLabel on the map
+      if (mapInitialized) {
+        
+        return (
+          < >
+            <WifiManager/>   
+          </>
+          
+        );
+      } else {        
+        return null;
+      }
+    };
 
     return (
         // <View ref={componentRef} onLayout={measureComponent}>
