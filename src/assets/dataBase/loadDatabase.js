@@ -175,11 +175,6 @@ function main(geojsonFilePath) {
 
 geojsonFiles.forEach((geojsonFilePath)=>{
   main(geojsonFilePath);
-  
-
-
-
-
 })
 
 const realmInstance = new realm({ schema: [Feature, Geometry, Building], path: realmBasePath });
@@ -228,3 +223,16 @@ const realmInstance = new realm({ schema: [Feature, Geometry, Building], path: r
   //   console.log('Associated Feature ID:', geometry.geometry_feature.feature_id);
   //   console.log('-----------------------------');
   // });
+
+// Define the source and destination file paths
+const sourcePath = 'E:\\react-naitve project\\campus\\src\\assets\\dataBase\\geoJson.realm';
+const destinationPath = 'E:\\react-naitve project\\campus\\android\\app\\src\\main\\assets\\geoJson.realm';
+
+// Copy the file
+fs.copyFile(sourcePath, destinationPath, (err) => {
+  if (err) {
+    console.error('Error occurred:', err);
+    return;
+  }
+  console.log('File was copied successfully');
+});
