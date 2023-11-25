@@ -159,8 +159,9 @@ const ButtonPanel = () => {
       <ButtonGroup
       buttons={floorNumbers.reverse()}
       selectedIndex={floorNumbers.length -1 - useSelector(store=>store.Filter.filter)[0]}
+      disabled = {[0,2,4,8]}
       onPress={(value) => {
-
+        console.log("on press value is ", value)
         handleButtonPress(floorNumbers.length -1 -value);
       }}
       containerStyle={{ marginBottom: 20,width:30 }}

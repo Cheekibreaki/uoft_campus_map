@@ -36,14 +36,18 @@ const renderGeojsonFiles = () => {
 
   }
 
+  console.log("floor number is ", floorNumber);
   const getBuildingContourStyle = (floorNumber,layerStyles) => {
-    const layerIds = ['BA_1_Contour', 'BA_2_Contour', 'BA_3_Contour','BA_5_Contour','BA_7_Contour'];
+    const layerIds = ['BA_1_Contour', 'BA_2_Contour', 'BA_3_Contour','BA_4_Contour','BA_5_Contour','BA_6_Contour','BA_7_Contour'];
     let defaultOpacity = 0.2;
 
     for (let i = 0; i < layerIds.length; i++) {
-      const layerId = layerIds[i];
-      const opacity = floorNumber === i + 1 ? 1 : defaultOpacity;
-      layerStyles[layerId].style.fillExtrusionOpacity = opacity;
+      if( i!=3 || i !=5){
+        const layerId = layerIds[i];
+        const opacity = floorNumber === i + 1 ? 1 : defaultOpacity;
+        layerStyles[layerId].style.fillExtrusionOpacity = opacity;
+      }
+     
     }
 
     // console.log("layerStyles is ", layerStyles);
@@ -69,6 +73,7 @@ const renderGeojsonFiles = () => {
           return null; 
         });
     });
+
     const geojsonPromisesContour = geojsonFileContourNames.map(async (fileName) => {
       const filePath = fs.DocumentDirectoryPath + '/' + fileName;
 
@@ -91,7 +96,7 @@ const renderGeojsonFiles = () => {
 
   }, []);
   
-
+  const specificValues = [1, 2, 3, 5, 7];
 
   return (
 
@@ -120,7 +125,7 @@ const renderGeojsonFiles = () => {
         <MapboxGL.FillExtrusionLayer
           id={`BA_${index+1}_Contour`}
           filter={filterforContour}
-          style={contourStyles[`BA_${index+1}_Contour`].style}
+          style={contourStyles[`BA_${specificValues[index]}_Contour`].style}
         />
       </MapboxGL.ShapeSource>
     ))}
