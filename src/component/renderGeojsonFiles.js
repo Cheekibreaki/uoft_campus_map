@@ -5,21 +5,17 @@ import buildingStyles from "../styles/building";
 import {useSelector, useDispatch} from 'react-redux';
 import MapboxGL from "@rnmapbox/maps";
 
-const BA_1_Room = require("../assets/geojson/BA_Indoor_1_room.json");
-const BA_1_Contour = require("../assets/geojson/BA_Indoor_1_contour.json");
-const BA_2_Room = require("../assets/geojson/BA_Indoor_2_room.json");
-const BA_2_Contour = require("../assets/geojson/BA_Indoor_2_contour.json");
-const BA_3_Room = require("../assets/geojson/BA_Indoor_3_room.json");
-const BA_3_Contour = require("../assets/geojson/BA_Indoor_3_contour.json");
+// const BA_1_Room = require("../assets/geojson/BA_Indoor_1_room.json");
+// const BA_1_Contour = require("../assets/geojson/BA_Indoor_1_contour.json");
+// const BA_2_Room = require("../assets/geojson/BA_Indoor_2_room.json");
+// const BA_2_Contour = require("../assets/geojson/BA_Indoor_2_contour.json");
+// const BA_3_Room = require("../assets/geojson/BA_Indoor_3_room.json");
+// const BA_3_Contour = require("../assets/geojson/BA_Indoor_3_contour.json");
+
 import cloneDeep from 'lodash/cloneDeep';
 import fs from 'react-native-fs'
 
-
-
-
-
 const renderGeojsonFiles = () => {
-
   //const [geojsonData, setGeojsonData] = useState(null);
   const  [geojsonRoomFiles,setGeojsonRoomFiles] = useState(null)
   const  [geojsonContourFiles,setGeojsonContourFiles] = useState(null)
@@ -27,7 +23,7 @@ const renderGeojsonFiles = () => {
   let filterforContour = useSelector(store=>store.Filter.filter)[1];
   let filterForIndoorRoom= useSelector(store=>store.Filter.filter)[2];
   
-  const numContourStyles = 3;
+  const numContourStyles = 7;
   let layerStyles = {};
 
   for (let i = 1; i <= numContourStyles; i++) {   
@@ -41,7 +37,7 @@ const renderGeojsonFiles = () => {
   }
 
   const getBuildingContourStyle = (floorNumber,layerStyles) => {
-    const layerIds = ['BA_1_Contour', 'BA_2_Contour', 'BA_3_Contour'];
+    const layerIds = ['BA_1_Contour', 'BA_2_Contour', 'BA_3_Contour','BA_5_Contour','BA_7_Contour'];
     let defaultOpacity = 0.2;
 
     for (let i = 0; i < layerIds.length; i++) {
@@ -60,8 +56,8 @@ const renderGeojsonFiles = () => {
 
   useEffect(() => {
 
-    const geojsonFileRoomNames = ['BA_Indoor_1_room.json', 'BA_Indoor_2_room.json', 'BA_Indoor_3_room.json'];
-    const geojsonFileContourNames = ['BA_Indoor_1_contour.json', 'BA_Indoor_2_contour.json', 'BA_Indoor_3_contour.json'];
+    const geojsonFileRoomNames = ['BA_Indoor_1_room.json', 'BA_Indoor_2_room.json', 'BA_Indoor_3_room.json','BA_Indoor_5_room.json','BA_Indoor_7_room.json'];
+    const geojsonFileContourNames = ['BA_Indoor_1_contour.json', 'BA_Indoor_2_contour.json', 'BA_Indoor_3_contour.json','BA_Indoor_5_contour.json','BA_Indoor_7_contour.json'];
 
     const geojsonPromises = geojsonFileRoomNames.map(async (fileName) => {
       const filePath = fs.DocumentDirectoryPath + '/' + fileName;
