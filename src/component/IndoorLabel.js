@@ -306,38 +306,6 @@ const IndoorLabel = () => {
               /^S\d+/.test(roomNUM) ||
               /^E\d+/.test(roomNUM) 
             ) {
-              // switch (roomNUM) {
-              //   case "S":
-              //     iconMarkers.push({
-              //       id: "stairs" + labelIndex,
-              //       coordinates: raise(centerLabel.position, height),
-              //       icon: "stairs",
-              //     });
-              //     break;
-              //   case "E":
-              //     iconMarkers.push({
-              //       id: "elevator" + labelIndex,
-              //       coordinates: raise(centerLabel.position, height),
-              //       icon: "elevator",
-              //     });
-              //     break;
-              //   case "FW":
-              //     iconMarkers.push({
-              //       id: "woman_washroom" + labelIndex,
-              //       coordinates: raise(centerLabel.position, height),
-              //       icon: "woman_washroom",
-              //     });
-              //     break;
-              //   case "MW":
-              //     iconMarkers.push({
-              //       id: "man_washroom" + labelIndex,
-              //       coordinates: raise(centerLabel.position, height),
-              //       icon: "man_washroom",
-              //     });
-              //     break;
-              //   default:
-              //     console.log("Invalid room entered.");
-              // }
               if(/^S\d+/.test(roomNUM)){
                 iconMarkers.push({
                   id: "stairs" + labelIndex,

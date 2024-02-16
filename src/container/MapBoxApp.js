@@ -232,85 +232,6 @@ const MapBoxApp = (props: BaseExampleProps) => {
       }
     };
 
-    // const queryLayerFeatures = async () => {
-    //     setIsCameraMoving(false);
-       
-    //     const featureCollection = await map.current.queryRenderedFeaturesInRect([], null, [
-    //       // "false_name"
-    //       "BA_1_Contour","BA_1_Room","BA_2_Contour","BA_2_Room"
-    //     ]);
-
-    //     if (featureCollection && featureCollection.features && featureCollection.features.length) {
-    //         // setSelectedGeoJSON(featureCollection);
-
-    //         dispatch(setGeoJSONInScreen(featureCollection));
-    //     } else {
-    //     // console.log("no Indoor Building Layer found");
-    //     //setSelectedGeoJSON(null);
-    //     dispatch(setGeoJSONInScreen({}));
-    //     }
-    // };
-    
-    // const avoid_queryLayerFeatures =  async() => {
-    //   const zoomlevel = mapState.properties.zoom;
-    //   // console.log(zoomlevel)
-    //   // console.log("zoomlevel is ",floorNumber);
-    //   if(zoomlevel >= 17){
-    //   switch (floorNumber){
-    //     case 1:      
-    //     await fs.readFile(fs.DocumentDirectoryPath+ '/BA_Indoor_1_room.json', 'utf8')
-    //           .then((fileData) => {
-    //             // Parse the JSON data into a GeoJSON object
-    //             const geoJsonObject = JSON.parse(fileData);
-            
-    //             // Now you can work with the GeoJSON object
-    //             //console.log('Parsed GeoJSON Object:', geoJsonObject);
-    //             dispatch(geoJsonObject)
-    //           })
-    //           .catch((err) => {
-    //             console.log('Error reading JSON file:', err);
-    //           });
-          
-    //       break
-    //     case 2:
-    //       await fs.readFile(fs.DocumentDirectoryPath+ '/BA_Indoor_2_room.json', 'utf8')
-    //             .then((fileData) => {
-    //               // Parse the JSON data into a GeoJSON object
-    //               const geoJsonObject = JSON.parse(fileData);
-              
-    //               // Now you can work with the GeoJSON object
-    //               //console.log('Parsed GeoJSON Object:', geoJsonObject);
-    //               dispatch(geoJsonObject)
-    //             })
-    //             .catch((err) => {
-    //               console.log('Error reading JSON file:', err);
-    //             });
-    //       break
-    //     case 3:
-    //       await fs.readFile(fs.DocumentDirectoryPath+ '/BA_Indoor_3_room.json', 'utf8')
-    //             .then((fileData) => {
-    //               // Parse the JSON data into a GeoJSON object
-    //               const geoJsonObject = JSON.parse(fileData);
-              
-    //               // Now you can work with the GeoJSON object
-    //               //console.log('Parsed GeoJSON Object:', geoJsonObject);
-    //               dispatch(geoJsonObject)
-    //             })
-    //             .catch((err) => {
-    //               console.log('Error reading JSON file:', err);
-    //             });
-    //       break
-    //     default:
-
-    //       }
-    //   }else{
-    //     dispatch(setGeoJSON({}));
-    //     return;
-    //   }
-    // }
-     
-
-
 
     const renderGeojsonFiles = () =>{ 
       if (mapInitialized && dataInitialized) {
@@ -477,8 +398,6 @@ const MapBoxApp = (props: BaseExampleProps) => {
         </>
       )}
       </>
-        
-        // </View>
     );
 
 };
