@@ -134,7 +134,6 @@ const ButtonPanel = () => {
           // floorNumbers = floorNumbers.reverse()
         }        
       }
-  
     }
     const dispatch = useDispatch();
 
@@ -169,18 +168,7 @@ const ButtonPanel = () => {
       />
       </View>
 
-      // <View style={buttonStyles.buttonPanelContainer}>
-      //   {floorNumbers.map((floorNumber) => (
-      //     <TouchableOpacity 
-      //     key={floorNumber} 
-      //     style={buttonStyles.button}
-      //     onPress={()=>handleButtonPress(floorNumber)}
-      //     >
-      //       <Text style={buttonStyles.buttonText}>{floorNumber}</Text>
-            
-      //     </TouchableOpacity>
-      //   ))}
-      // </View>
+
     );
   };
 

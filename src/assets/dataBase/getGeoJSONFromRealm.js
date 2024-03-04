@@ -176,11 +176,6 @@ const getGeoJSON = async () => {
                           console.log('Error writing map data:', err);
                         });
                     }
-                    
-            
-            
-            
-                  
                   } catch (error) {
                     console.error('Error opening Realm database:', error);
                   } finally {
@@ -189,7 +184,6 @@ const getGeoJSON = async () => {
                     }
                   }
                 }
-                // })
                 );
                   })
                   .catch((mkdirError) => {

@@ -23,7 +23,10 @@ MapboxGL.setAccessToken("pk.eyJ1IjoiamlwaW5nbGkiLCJhIjoiY2xoanYzaGZ1MGxsNjNxbzMx
 import getGeoJSON from "../assets/dataBase/getGeoJSONFromRealm";
 import SearchBar from "../component/searchBar";
 import fs from 'react-native-fs';
-import WifiManager from "../component/wifiManager";
+import { Keyboard} from 'react-native';
+
+
+// import WifiManager from "../component/wifiManager";
 import WifiManaging from "react-native-wifi-reborn";
 const style = JSON.stringify(require('../assets/map-style.json'));
 
@@ -83,6 +86,7 @@ const MapBoxApp = (props: BaseExampleProps) => {
     let map = useRef();
     let camera = useRef();
     
+    const [isKeyboardVisible, setKeyboardVisible] = useState(false);
     const [dataInitialized, setDataInitialized] = useState(false);
     
     const dispatch = useDispatch();
@@ -109,6 +113,26 @@ const MapBoxApp = (props: BaseExampleProps) => {
     };
 
     const [wifiList, setWifiList] = useState([]);
+
+
+
+    useEffect(() => {
+      // Listener to detect keyboard opening
+      const keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', () => {
+          setKeyboardVisible(true); // Keyboard is visible
+      });
+      // Listener to detect keyboard closing
+      const keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', () => {
+          setKeyboardVisible(false); // Keyboard is not visible
+      });
+
+      // Clean up function to remove listeners when component unmounts
+      return () => {
+          keyboardDidShowListener.remove();
+          keyboardDidHideListener.remove();
+      };
+    }, []); // The empty array ensures this effect is only run on mount and unmount
+
 
 
     useEffect(() => {
@@ -261,7 +285,7 @@ const MapBoxApp = (props: BaseExampleProps) => {
       if (typeof mapState !== 'undefined'){
         const zoomlevel = mapState.properties.zoom;
     
-        if (mapInitialized && dataInitialized && NeedHideUIElement == false && zoomlevel > 17) {
+        if (!isKeyboardVisible && mapInitialized && dataInitialized && NeedHideUIElement == false && zoomlevel > 17) {
           return (
             < View>
               <ButtonPanel/>   
@@ -319,20 +343,20 @@ const MapBoxApp = (props: BaseExampleProps) => {
       }
     };
 
-    const renderWifiMananger = () => {
-      // Function to render IndoorLabel on the map
-      if (mapInitialized) {
+    // const renderWifiMananger = () => {
+    //   // Function to render IndoorLabel on the map
+    //   if (mapInitialized) {
         
-        return (
-          < >
-            <WifiManager/>   
-          </>
+    //     return (
+    //       < >
+    //         <WifiManager/>   
+    //       </>
           
-        );
-      } else {        
-        return null;
-      }
-    };
+    //     );
+    //   } else {        
+    //     return null;
+    //   }
+    // };
 
     return (
         // <View ref={componentRef} onLayout={measureComponent}>
@@ -348,7 +372,9 @@ const MapBoxApp = (props: BaseExampleProps) => {
             onPress={onPress}
             styleURL={style}
             style={{ flex: 1 }}
-            
+            attributionEnabled = {false}
+            logoEnabled = {false}
+            compassEnabled = {false}
             // compassEnabled={true} 
             // compassStyle={{ top: 16, left: 16 }}
             onWillStartRenderingFrame = {(_state)=>{
