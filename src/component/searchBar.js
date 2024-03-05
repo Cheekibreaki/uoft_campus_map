@@ -143,6 +143,12 @@ class SwitchComponent extends Component {
     const cameraPosition = this.AllSearchResult.get(this.state.searchResults[index]).position;
     console.log("current camera position is: ", cameraPosition);
     this.props.updateCameraPosition(cameraPosition);
+    if(this.state.searchResults[index] == 'Bahen Centre for Information Technology'){
+      this.props.updateZoomLevel(17);
+    }else{
+      this.props.updateZoomLevel(20);
+    }
+    
   };
   
   render() {

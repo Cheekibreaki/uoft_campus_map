@@ -73,7 +73,7 @@ function computePointWithinRoom(givenRoom,cursorCoordinate) {
 
 
 const MapBoxApp = (props: BaseExampleProps) => {
-    const zoomLevel = 16;
+    //const zoomLevel = 16;
     const pitch = 40;
     const heading = 30;
     const centerCoordinate = [-79.3973449417775, 43.65997911110146]
@@ -88,6 +88,7 @@ const MapBoxApp = (props: BaseExampleProps) => {
     const [isKeyboardVisible, setKeyboardVisible] = useState(false);
     const [dataInitialized, setDataInitialized] = useState(false);
     const [cameraPosition, setCameraPosition] = useState(centerCoordinate);
+    const [zoomLevel, setzoomLevel] = useState(16);
     
     const dispatch = useDispatch();
 
@@ -305,9 +306,13 @@ const MapBoxApp = (props: BaseExampleProps) => {
         const updateCameraPosition = (cameraPosition) => {
           setCameraPosition(cameraPosition);
         };
+
+        const updateZoomLevel = (zoomLevel) =>{
+          setzoomLevel(zoomLevel);
+        }
         return (
           < >
-            <SearchBar updateCameraPosition = {updateCameraPosition}/>   
+            <SearchBar updateCameraPosition = {updateCameraPosition} updateZoomLevel = {updateZoomLevel}/>   
           </>
           
         );
