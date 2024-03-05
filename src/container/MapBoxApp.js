@@ -80,7 +80,6 @@ const MapBoxApp = (props: BaseExampleProps) => {
     const southwestCoordinate = [ -79.4022460785109, 43.65546033058593]
     const northeastCoordinate = [-79.38955386618444, 43.669756887468886]
     
-
     let counter = 0
     
     let map = useRef();
@@ -88,6 +87,7 @@ const MapBoxApp = (props: BaseExampleProps) => {
     
     const [isKeyboardVisible, setKeyboardVisible] = useState(false);
     const [dataInitialized, setDataInitialized] = useState(false);
+    const [cameraPosition, setCameraPosition] = useState(centerCoordinate);
     
     const dispatch = useDispatch();
 
@@ -199,7 +199,7 @@ const MapBoxApp = (props: BaseExampleProps) => {
       
       try{
         await getGeoJSON();
-        // setGeojsonData(data)
+        //setGeojsonData(data)
         setDataInitialized(true)
       } catch (error) {
         console.error('Error initializing app:', error);
@@ -301,10 +301,13 @@ const MapBoxApp = (props: BaseExampleProps) => {
     const renderSearchBar = () => {
       // Function to render IndoorLabel on the map
       if (mapInitialized) {
-        
+        //const GeoJsonFiles = useSelector(store=>store.AllGeoJSONs.geojsonData);
+        const updateCameraPosition = (cameraPosition) => {
+          setCameraPosition(cameraPosition);
+        };
         return (
           < >
-            <SearchBar/>   
+            <SearchBar updateCameraPosition = {updateCameraPosition}/>   
           </>
           
         );
@@ -406,7 +409,7 @@ const MapBoxApp = (props: BaseExampleProps) => {
               zoomLevel={zoomLevel}
               pitch={pitch}
               heading={heading}
-              centerCoordinate={centerCoordinate}
+              centerCoordinate={cameraPosition}
               ref={camera}
               bounds={southwestCoordinate, northeastCoordinate}
             />  

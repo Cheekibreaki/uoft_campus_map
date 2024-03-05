@@ -8,6 +8,7 @@ import SelectRoomReducer from './reducers/getSelectedRoomReducer';
 import GeoJsonDataReducer from './reducers/getGeoJSONDataReducer';
 import HideUIElementsReducer from './reducers/getHideUIElementReducer';
 import IsGrantedReducer from './reducers/getWifiGrantReducer';
+import CameraPositionReducer from './reducers/getCameraPositionReducer';
 
 const rootReducer = combineReducers({
     GeoJSONs:  GeoJsonReducer,
@@ -18,7 +19,8 @@ const rootReducer = combineReducers({
     SelectRoom: SelectRoomReducer,
     AllGeoJSONs: GeoJsonDataReducer,
     HideUIElements: HideUIElementsReducer,
-    IsWifiGranted: IsGrantedReducer
+    IsWifiGranted: IsGrantedReducer,
+    CameraPosition: CameraPositionReducer,
 });
 
 export const Store = createStore(rootReducer);
