@@ -335,8 +335,10 @@ const MapBoxApp = (props: BaseExampleProps) => {
         const zoomlevel = mapState.properties.zoom;
       
         if (selectedMarker !== null && Object.keys(selectedMarker).length !== 0 
+            && selectedMarker.id !== undefined 
+            && selectedMarker.id !== ""
             && mapInitialized && dataInitialized && NeedHideUIElement == false && zoomlevel > 17) {
-            
+            console.log(selectedMarker)
           return (   
           <View style={{ position: 'absolute', bottom: 20, left: 20, width: '80%' }}>
             <View style={{ backgroundColor: 'white', padding: 10, borderRadius: 5 }}>
