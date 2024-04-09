@@ -188,7 +188,7 @@ const MapBoxApp = (props: BaseExampleProps) => {
 
 
     useEffect(()=>{
-      console.log("WIFI IS: ",wifiList)
+      // console.log("WIFI IS: ",wifiList)
     },[wifiList])
 
     useEffect(() => {
