@@ -87,8 +87,18 @@ class SwitchComponent extends Component {
 
   handleSearch = (searchQuery) => {
     let AllSearchResult = new Map();
-    const searchRoomNum = searchQuery.substring(2);
-    const searchBuilding = searchQuery.substring(0,2);
+    // const searchRoomNum = searchQuery.substring(2);
+    // const searchBuilding = searchQuery.substring(0,2);
+    const match = searchQuery.match(/(\D+)(\d+)/);
+    [searchBuilding,searchRoomNum] = ['',''] 
+    if(match){
+      [searchBuilding,searchRoomNum] = [match[1],match[2]];
+    }else{
+      searchBuilding = searchQuery;
+    }
+    searchBuilding=searchBuilding.trimEnd();
+    searchRoomNum=searchRoomNum.trimEnd();
+    
     //console.log('searchRoomNum is: ',searchRoomNum);
     this.setState({ searchQuery });
     //console.log(searchQuery);
@@ -107,9 +117,10 @@ class SwitchComponent extends Component {
     const buildingsSearchResult = buildings.filtered('building_name BEGINSWITH[c] $0', searchQuery);
 
     buildings.forEach(building => {
-      if(building.building_id.toLowerCase() == searchBuilding){
+      if((building.building_id.toLowerCase() == searchBuilding || building.building_id == searchBuilding || building.building_name.startsWith(searchBuilding)||building.building_name.toLowerCase().startsWith(searchBuilding)||building.building_name.toUpperCase().startsWith(searchBuilding))&&(searchBuilding !='' )){
 
         const buildingName = building.building_name
+        console.log(buildingName)
         const buildingID = building.building_id
         const buildingFloorIndeices = building.building_floor_indicies
   
