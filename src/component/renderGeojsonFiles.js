@@ -38,6 +38,14 @@ const renderGeojsonFiles = () => {
 
   console.log("floor number is ", floorNumber);
   const getBuildingContourStyle = (floorNumber,layerStyles) => {
+    //TODO: 
+    // add one more parameters
+    // replaced by realm
+    // should have all the 
+
+    // get all the floor indicies of first builidng name from realm
+    // for loop
+    
     const layerIds = ['BA_1_Contour', 'BA_2_Contour', 'BA_3_Contour','BA_4_Contour','BA_5_Contour','BA_6_Contour','BA_7_Contour'];
     let defaultOpacity = 0.2;
 

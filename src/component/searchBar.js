@@ -70,6 +70,7 @@ class SwitchComponent extends Component {
     this.state = {
       searchQuery: '',
       searchResults: [],
+      isButtonGroupVisible: false
     };
     this.realm = null;
     this.AllSearchResult;
@@ -148,6 +149,7 @@ class SwitchComponent extends Component {
     }else{
       this.props.updateZoomLevel(20);
     }
+    this.setState({ isButtonGroupVisible: false });
     
   };
   
@@ -163,15 +165,19 @@ class SwitchComponent extends Component {
           round={true}
           containerStyle={styles.barContainer}
           inputContainerStyle={styles.inputContainerStyle}
+          // onBlur={() => this.setState({ isButtonGroupVisible: false })}
+          onFocus={() => this.setState({ isButtonGroupVisible: true })}
         />
-        <View style={{ height: 200 }}>
-          <ScrollView showsVerticalScrollIndicator={true}>
+        <View style={{ height: 200 }}>{
+          this.state.isButtonGroupVisible && this.state.searchQuery.length > 0 &&(<ScrollView showsVerticalScrollIndicator={true}>
             <ButtonGroup
               buttons={this.state.searchResults}
               onPress={this.handleButtonPress}
               vertical = {true}
             />
-            </ScrollView>
+            </ScrollView>)
+        }
+          
           </View>
       </View>
     );

@@ -1,3 +1,4 @@
+//TODO: load Realm database floor info into the button
 import buttonStyles from "../styles/button";
 import {ButtonGroup} from '@rneui/themed'
 import React, { useState, useEffect, useCallback, useLayoutEffect, useRef } from "react";
@@ -5,9 +6,9 @@ import { View,Text, StyleSheet, TouchableOpacity, Pressable } from "react-native
 import {useSelector, useDispatch} from 'react-redux';
 import {setFilter} from '../redux/actions/setFilterAction';
 import {setGeoJSON} from "../redux/actions/setGeoJsonAction";
-import BA_3_Room from "../assets/geojson/BA_Indoor_3_room.json";
-import BA_2_Room from "../assets/geojson/BA_Indoor_2_room.json";
-import BA_1_Room from "../assets/geojson/BA_Indoor_1_room.json";
+// import BA_3_Room from "../assets/geojson/BA_Indoor_3_room.json";
+// import BA_2_Room from "../assets/geojson/BA_Indoor_2_room.json";
+// import BA_1_Room from "../assets/geojson/BA_Indoor_1_room.json";
 import fs from 'react-native-fs';
 
 
@@ -105,7 +106,8 @@ function getBuildingWithinBound(centerOfBuildings,cameraCenter,cameraBounds,feat
   return buildingName;
   
 }
-
+// TODO: can be replaced by database
+// need "first building flag in the database"
 const BA_1_Contour = require("../assets/geojson/BA_Indoor_1_contour.json");
 
 let centerOfBuildings = [];
@@ -129,6 +131,8 @@ const ButtonPanel = () => {
       let buildingForButton = getBuildingWithinBound(centerOfBuildings,cameraCenter,cameraBounds,featuresInScreen);
 
       if(buildingForButton !=="noBuilding"){       
+        // TODO: can be replaced by database
+        // need "first building flag in the database"
         if(buildingForButton === "BA_Indoor_1_contour"){
           floorNumbers = ['B', 1, 2, 3, 4, 5, 6, 7, 8];
           // floorNumbers = floorNumbers.reverse()
@@ -139,6 +143,10 @@ const ButtonPanel = () => {
 
     const handleButtonPress = async (floorNumber) => {
         console.log("floorNumber is ",floorNumber);
+        // TODO: can be replaced by database
+        // need "first building flag in the database"
+        
+
         const filePath = fs.DocumentDirectoryPath + `/BA_Indoor_${floorNumber}_room.json`;
         await fs.readFile(filePath, 'utf8')
               .then((fileData) => {
@@ -158,6 +166,8 @@ const ButtonPanel = () => {
       <ButtonGroup
       buttons={floorNumbers.reverse()}
       selectedIndex={floorNumbers.length -1 - useSelector(store=>store.Filter.filter)[0]}
+      // TODO: can be replaced by database
+        // sholud be replaced by already knowing "B1357" from realm
       disabled = {[0,2,4,8]}
       onPress={(value) => {
         console.log("on press value is ", value)

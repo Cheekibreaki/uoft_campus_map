@@ -25,6 +25,10 @@ import SearchBar from "../component/searchBar";
 import fs from 'react-native-fs';
 import { Keyboard} from 'react-native';
 
+//TODO:
+// should first compute all the center coordinates of each building, then find out which building center is closest to screen center, call it A
+// then only render the floors of A, other buildings should be in block shape
+
 
 // import WifiManager from "../component/wifiManager";
 import WifiManaging from "react-native-wifi-reborn";
@@ -223,9 +227,7 @@ const MapBoxApp = (props: BaseExampleProps) => {
       
     }, []);
 
-    
-
-    
+       
     const onPress = async (e) => {
     
       const { screenPointX, screenPointY } = e.properties;
